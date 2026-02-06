@@ -80,11 +80,14 @@ const translations: Translations = {
   'footer.hours': { es: 'Horario de Atención', en: 'Office Hours' },
   'footer.rights': { es: 'Todos los derechos reservados', en: 'All rights reserved' },
   
-  // Booking Modal
+  // Booking Page
   'booking.title': { es: 'Agendar Cita', en: 'Book Appointment' },
   'booking.step1': { es: 'Servicio', en: 'Service' },
   'booking.step2': { es: 'Datos', en: 'Details' },
   'booking.step3': { es: 'Confirmar', en: 'Confirm' },
+  'booking.step3Date': { es: 'Fecha', en: 'Date' },
+  'booking.step4': { es: 'Confirmar', en: 'Confirm' },
+  'booking.backHome': { es: 'Volver', en: 'Back' },
   'booking.selectService': { es: 'Selecciona un servicio', en: 'Select a service' },
   'booking.next': { es: 'Siguiente', en: 'Next' },
   'booking.back': { es: 'Atrás', en: 'Back' },
@@ -96,6 +99,18 @@ const translations: Translations = {
   'booking.service': { es: 'Servicio', en: 'Service' },
   'booking.patient': { es: 'Paciente', en: 'Patient' },
   'booking.success': { es: '¡Su cita ha sido agendada correctamente!', en: 'Your appointment has been successfully booked!' },
+  
+  // Calendar / Date selection
+  'calendar.selectDay': { es: 'Selecciona un día para ver los horarios disponibles', en: 'Select a day to see available times' },
+  'calendar.timezone': { es: 'Zona horaria', en: 'Timezone' },
+  'calendar.duration': { es: 'Duración', en: 'Duration' },
+  
+  // Confirmation
+  'confirm.dateTime': { es: 'Fecha y hora', en: 'Date and Time' },
+  'confirm.at': { es: 'a las', en: 'at' },
+  
+  // Service info panel
+  'serviceInfo.viewInfo': { es: 'Ver información del servicio', en: 'View service information' },
   
   // Confirmation popup
   'confirm.greeting.morning': { es: '¡Buenos días!', en: 'Good morning!' },
