@@ -124,7 +124,7 @@ const ServiceStep = ({ selectedService, onSelectService, onNext }: ServiceStepPr
           disabled={!selectedService}
           className="w-full h-12 btn-gradient rounded-full"
         >
-          {t('booking.next')}
+          <span>{t('booking.next')}</span>
         </Button>
       </div>
     </motion.div>
