@@ -179,23 +179,6 @@
     @apply relative z-10;
   }
 
-  /* Outline button with gradient hover */
-  .btn-outline-gradient {
-    @apply relative overflow-hidden font-medium px-8 py-4 rounded-full transition-all duration-300;
-    @apply border-2 border-primary text-primary bg-transparent;
-  }
-
-  .btn-outline-gradient:hover {
-    @apply text-white border-transparent;
-    transform: translateY(-2px);
-    background: var(--gradient-cta);
-    box-shadow: var(--shadow-soft);
-  }
-
-  .btn-outline-gradient > * {
-    @apply relative z-10;
-  }
-
   /* Card styles */
   .card-elevated {
     @apply bg-card rounded-2xl p-6 transition-all duration-300;

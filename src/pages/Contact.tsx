@@ -325,16 +325,15 @@ const ContactContent = () => {
               </div>
             </div>
             <Button 
-              className="h-12 btn-outline-gradient"
+              variant="outline"
+              className="rounded-full"
               onClick={() => {
                 // TODO: Replace with actual Google Maps directions link
                 window.open('https://maps.google.com', '_blank');
               }}
             >
-              <span className="flex items-center gap-2">
-                <MapPin className="w-4 h-4" />
-                {language === 'es' ? 'Cómo Llegar' : 'Get Directions'}
-              </span>
+              <MapPin className="w-4 h-4 mr-2" />
+              {language === 'es' ? 'Cómo Llegar' : 'Get Directions'}
             </Button>
           </motion.div>
         </div>
