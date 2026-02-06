@@ -1,13 +1,52 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { useState } from 'react';
+import { LanguageProvider } from '@/contexts/LanguageContext';
+import Navbar from '@/components/Navbar';
+import HeroSection from '@/components/HeroSection';
+import WhyChooseUs from '@/components/WhyChooseUs';
+import ServicesSection from '@/components/ServicesSection';
+import TestimonialsSection from '@/components/TestimonialsSection';
+import FinalCTA from '@/components/FinalCTA';
+import Footer from '@/components/Footer';
+import BookingModal from '@/components/BookingModal';
+import type { Service } from '@/data/services';
 
 const Index = () => {
+  const [isBookingOpen, setIsBookingOpen] = useState(false);
+  const [preselectedService, setPreselectedService] = useState<Service | null>(null);
+
+  const handleBookClick = () => {
+    setPreselectedService(null);
+    setIsBookingOpen(true);
+  };
+
+  const handleBookService = (service: Service) => {
+    setPreselectedService(service);
+    setIsBookingOpen(true);
+  };
+
+  const handleCloseBooking = () => {
+    setIsBookingOpen(false);
+    setPreselectedService(null);
+  };
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="mb-4 text-4xl font-bold">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
+    <LanguageProvider>
+      <div className="min-h-screen bg-background">
+        <Navbar onBookClick={handleBookClick} />
+        <HeroSection onBookClick={handleBookClick} />
+        <WhyChooseUs onBookClick={handleBookClick} />
+        <ServicesSection onBookService={handleBookService} />
+        <TestimonialsSection />
+        <FinalCTA onBookClick={handleBookClick} />
+        <Footer />
+        
+        <BookingModal
+          isOpen={isBookingOpen}
+          onClose={handleCloseBooking}
+          preselectedService={preselectedService}
+        />
       </div>
-    </div>
+    </LanguageProvider>
   );
 };
 
