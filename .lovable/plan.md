@@ -1,75 +1,78 @@
 
 
-# Plan: Corregir Bug Crítico de Hover en Botones /contacto
+# Plan: Estandarizar Estilo del Botón "Cómo Llegar"
 
-## Diagnóstico del Problema
+## Problema Actual
 
-La clase `.btn-gradient` usa un pseudo-elemento `::before` que se superpone al contenido en hover. El CSS actual solo protege elementos `<span>`:
+El botón "Cómo Llegar" usa estilos diferentes a los otros dos botones principales:
 
-```css
-.btn-gradient span {
-  @apply relative z-10;
-}
-```
-
-### Elementos afectados:
-
-| Botón | Problema |
-|-------|----------|
-| Enviar Mensaje | Ícono `<Send>` está fuera del `<span>` - desaparece en hover |
-| WhatsApp | No tiene `<span>` - TODO desaparece en hover |
+| Botón | Estilo Actual |
+|-------|---------------|
+| Enviar Mensaje | `btn-gradient` + `h-12` + `rounded-full` |
+| Chatear por WhatsApp | `btn-gradient` + `h-12` + `rounded-full` |
+| Cómo Llegar | `variant="outline"` + `rounded-full` (diferente) |
 
 ---
 
 ## Solución
 
-Cambiar el selector CSS de `.btn-gradient span` a `.btn-gradient > *` para que TODOS los hijos directos (íconos SVG, spans, texto) queden visibles sobre el overlay.
+Aplicar exactamente el mismo estilo `btn-gradient` al botón "Cómo Llegar" y envolver el texto en un `<span>` para garantizar visibilidad en hover.
 
 ---
 
 ## Cambios Requeridos
 
-### Archivo: `src/index.css`
+### Archivo: `src/pages/Contact.tsx`
 
-**Líneas 178-180 - Cambiar:**
+**Líneas 327-337 - Cambiar de:**
 
-```css
-/* ANTES - Solo protege spans */
-.btn-gradient span {
-  @apply relative z-10;
-}
+```tsx
+<Button 
+  variant="outline"
+  className="rounded-full"
+  onClick={() => {
+    window.open('https://maps.google.com', '_blank');
+  }}
+>
+  <MapPin className="w-4 h-4 mr-2" />
+  {language === 'es' ? 'Cómo Llegar' : 'Get Directions'}
+</Button>
+```
 
-/* DESPUÉS - Protege TODOS los hijos directos */
-.btn-gradient > * {
-  @apply relative z-10;
-}
+**A:**
+
+```tsx
+<Button 
+  className="h-12 px-6 btn-gradient rounded-full font-medium"
+  onClick={() => {
+    window.open('https://maps.google.com', '_blank');
+  }}
+>
+  <MapPin className="w-5 h-5" />
+  <span>{language === 'es' ? 'Cómo Llegar' : 'Get Directions'}</span>
+</Button>
 ```
 
 ---
 
-## Por qué funciona
+## Detalles Técnicos
 
-| Selector | Elementos protegidos |
-|----------|---------------------|
-| `.btn-gradient span` | Solo `<span>` |
-| `.btn-gradient > *` | `<Send>`, `<MessageCircle>`, `<span>`, texto, etc. |
-
-El selector `> *` selecciona todos los hijos directos del botón, asegurando que tanto íconos SVG como texto queden por encima del pseudo-elemento `::before` (z-index 10 > z-index automático del ::before).
+| Cambio | Razón |
+|--------|-------|
+| Remover `variant="outline"` | Evita conflicto con btn-gradient |
+| Agregar `h-12` | Altura consistente con otros botones |
+| Agregar `btn-gradient` | Aplica degradado corporativo |
+| Cambiar ícono a `w-5 h-5` | Tamaño consistente con otros botones |
+| Remover `mr-2` del ícono | btn-gradient ya tiene `gap-2` heredado |
+| Envolver texto en `<span>` | Garantiza z-index correcto en hover |
 
 ---
 
 ## Resultado
 
-- Ícono `<Send>` visible en estado normal Y hover
-- Ícono `<MessageCircle>` visible en estado normal Y hover  
-- Todo el texto visible en estado normal Y hover
-- El efecto visual del degradado hover se mantiene intacto
-
----
-
-## Resumen de Archivos
-
-| Archivo | Cambio |
-|---------|--------|
-| `src/index.css` | 1 cambio de selector (línea 178) |
+Los tres botones principales de la página tendrán:
+- Mismo degradado de fondo (magenta a fucsia)
+- Misma altura (48px)
+- Mismo efecto hover (degradado coral-fucsia + elevación)
+- Texto e íconos siempre visibles (protegidos por z-index)
 
