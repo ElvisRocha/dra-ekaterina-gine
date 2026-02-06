@@ -8,7 +8,6 @@ import { useToast } from '@/hooks/use-toast';
 
 import BookingNavbar from '@/components/booking/BookingNavbar';
 import StepIndicator from '@/components/booking/StepIndicator';
-import ServiceInfoPanel from '@/components/booking/ServiceInfoPanel';
 import ServiceStep from '@/components/booking/steps/ServiceStep';
 import PatientDataStep from '@/components/booking/steps/PatientDataStep';
 import DateTimeStep from '@/components/booking/steps/DateTimeStep';
@@ -176,83 +175,55 @@ const BookAppointmentContent = () => {
 
         {/* Main Content */}
         <div className="container mx-auto px-4 py-8">
-          <div className="flex gap-8">
-            {/* Main Stepper Content */}
-            <div className="flex-1 max-w-3xl mx-auto">
-              <AnimatePresence mode="wait">
-                {currentStep === 1 && (
-                  <ServiceStep
-                    key="service"
-                    selectedService={selectedService}
-                    onSelectService={handleSelectService}
-                    onNext={() => setCurrentStep(2)}
-                  />
-                )}
-                
-                {currentStep === 2 && (
-                  <PatientDataStep
-                    key="patient"
-                    patientData={patientData}
-                    onUpdatePatientData={setPatientData}
-                    onNext={() => setCurrentStep(3)}
-                    onBack={() => setCurrentStep(1)}
-                  />
-                )}
-                
-                {currentStep === 3 && selectedService && (
-                  <DateTimeStep
-                    key="datetime"
-                    service={selectedService}
-                    selectedDate={selectedDate}
-                    selectedTime={selectedTime}
-                    onSelectDate={setSelectedDate}
-                    onSelectTime={setSelectedTime}
-                    onNext={() => setCurrentStep(4)}
-                    onBack={() => setCurrentStep(2)}
-                  />
-                )}
-                
-                {currentStep === 4 && selectedService && selectedDate && selectedTime && (
-                  <ConfirmStep
-                    key="confirm"
-                    service={selectedService}
-                    patientData={patientData}
-                    selectedDate={selectedDate}
-                    selectedTime={selectedTime}
-                    onConfirm={handleConfirm}
-                    onBack={() => setCurrentStep(3)}
-                    isLoading={isLoading}
-                  />
-                )}
-              </AnimatePresence>
-            </div>
-
-            {/* Right Side Panel - Service Info (Desktop only, Step 1) */}
-            {currentStep === 1 && (
-              <AnimatePresence>
-                {selectedService && (
-                  <div className="hidden xl:block w-80 flex-shrink-0">
-                    <div className="sticky top-24">
-                      <ServiceInfoPanel
-                        service={selectedService}
-                        className="max-h-[calc(100vh-8rem)]"
-                      />
-                    </div>
-                  </div>
-                )}
-              </AnimatePresence>
-            )}
+          {/* Main Stepper Content */}
+          <div className="max-w-5xl mx-auto">
+            <AnimatePresence mode="wait">
+              {currentStep === 1 && (
+                <ServiceStep
+                  key="service"
+                  selectedService={selectedService}
+                  onSelectService={handleSelectService}
+                  onNext={() => setCurrentStep(2)}
+                />
+              )}
+              
+              {currentStep === 2 && (
+                <PatientDataStep
+                  key="patient"
+                  patientData={patientData}
+                  onUpdatePatientData={setPatientData}
+                  onNext={() => setCurrentStep(3)}
+                  onBack={() => setCurrentStep(1)}
+                />
+              )}
+              
+              {currentStep === 3 && selectedService && (
+                <DateTimeStep
+                  key="datetime"
+                  service={selectedService}
+                  selectedDate={selectedDate}
+                  selectedTime={selectedTime}
+                  onSelectDate={setSelectedDate}
+                  onSelectTime={setSelectedTime}
+                  onNext={() => setCurrentStep(4)}
+                  onBack={() => setCurrentStep(2)}
+                />
+              )}
+              
+              {currentStep === 4 && selectedService && selectedDate && selectedTime && (
+                <ConfirmStep
+                  key="confirm"
+                  service={selectedService}
+                  patientData={patientData}
+                  selectedDate={selectedDate}
+                  selectedTime={selectedTime}
+                  onConfirm={handleConfirm}
+                  onBack={() => setCurrentStep(3)}
+                  isLoading={isLoading}
+                />
+              )}
+            </AnimatePresence>
           </div>
-
-          {/* Mobile Service Info Panel (Step 1 only) */}
-          {currentStep === 1 && selectedService && (
-            <div className="xl:hidden mt-6">
-              <ServiceInfoPanel
-                service={selectedService}
-                isMobile
-              />
-            </div>
-          )}
         </div>
       </div>
 
