@@ -1,6 +1,7 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
 import { 
   Accordion,
   AccordionContent,
@@ -8,22 +9,22 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion';
 import { 
-  services, 
   formatPrice, 
   getCategoryServices, 
   type Service 
 } from '@/data/services';
-import { Clock, DollarSign, Check } from 'lucide-react';
+import { Clock, DollarSign } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import ServiceInfoPanel from '../ServiceInfoPanel';
+import MultiServiceInfoPanel from '../MultiServiceInfoPanel';
 
 interface ServiceStepProps {
-  selectedService: Service | null;
-  onSelectService: (service: Service) => void;
+  selectedServices: Service[];
+  onToggleService: (service: Service) => void;
+  onRemoveService: (serviceId: string) => void;
   onNext: () => void;
 }
 
-const ServiceStep = ({ selectedService, onSelectService, onNext }: ServiceStepProps) => {
+const ServiceStep = ({ selectedServices, onToggleService, onRemoveService, onNext }: ServiceStepProps) => {
   const { t, language } = useLanguage();
 
   const categories = [
@@ -32,6 +33,9 @@ const ServiceStep = ({ selectedService, onSelectService, onNext }: ServiceStepPr
     { key: 'dispositivos' as const, icon: '💊' },
     { key: 'colposcopia' as const, icon: '🔎' },
   ];
+
+  const isServiceSelected = (serviceId: string) => 
+    selectedServices.some(s => s.id === serviceId);
 
   return (
     <motion.div
@@ -46,8 +50,8 @@ const ServiceStep = ({ selectedService, onSelectService, onNext }: ServiceStepPr
         </h2>
         <p className="text-muted-foreground text-sm">
           {language === 'es' 
-            ? 'Elige el servicio que necesitas' 
-            : 'Choose the service you need'}
+            ? 'Puedes seleccionar uno o varios servicios' 
+            : 'You can select one or multiple services'}
         </p>
       </div>
 
@@ -59,6 +63,8 @@ const ServiceStep = ({ selectedService, onSelectService, onNext }: ServiceStepPr
             <Accordion type="single" collapsible className="space-y-3">
               {categories.map((category) => {
                 const categoryServices = getCategoryServices(category.key);
+                const selectedInCategory = categoryServices.filter(s => isServiceSelected(s.id)).length;
+                
                 return (
                   <AccordionItem
                     key={category.key}
@@ -74,16 +80,21 @@ const ServiceStep = ({ selectedService, onSelectService, onNext }: ServiceStepPr
                         <span className="text-xs text-muted-foreground bg-secondary px-2 py-0.5 rounded-full">
                           {categoryServices.length}
                         </span>
+                        {selectedInCategory > 0 && (
+                          <span className="text-xs text-primary-foreground bg-primary px-2 py-0.5 rounded-full">
+                            {selectedInCategory} ✓
+                          </span>
+                        )}
                       </div>
                     </AccordionTrigger>
                     <AccordionContent className="px-4 pb-4">
                       <div className="space-y-2 mt-2">
                         {categoryServices.map((service) => {
-                          const isSelected = selectedService?.id === service.id;
+                          const isSelected = isServiceSelected(service.id);
                           return (
                             <button
                               key={service.id}
-                              onClick={() => onSelectService(service)}
+                              onClick={() => onToggleService(service)}
                               className={cn(
                                 'w-full p-4 rounded-lg border text-left transition-all',
                                 isSelected
@@ -91,7 +102,11 @@ const ServiceStep = ({ selectedService, onSelectService, onNext }: ServiceStepPr
                                   : 'border-border hover:border-primary/50 hover:bg-secondary/30'
                               )}
                             >
-                              <div className="flex items-start justify-between gap-3">
+                              <div className="flex items-start gap-3">
+                                <Checkbox 
+                                  checked={isSelected}
+                                  className="mt-0.5 pointer-events-none"
+                                />
                                 <div className="flex-1 min-w-0">
                                   <h4 className="font-medium text-foreground text-sm mb-1">
                                     {language === 'es' ? service.nameEs : service.nameEn}
@@ -107,11 +122,6 @@ const ServiceStep = ({ selectedService, onSelectService, onNext }: ServiceStepPr
                                     </span>
                                   </div>
                                 </div>
-                                {isSelected && (
-                                  <div className="flex-shrink-0 w-5 h-5 rounded-full bg-primary flex items-center justify-center">
-                                    <Check className="w-3 h-3 text-primary-foreground" />
-                                  </div>
-                                )}
                               </div>
                             </button>
                           );
@@ -124,32 +134,21 @@ const ServiceStep = ({ selectedService, onSelectService, onNext }: ServiceStepPr
             </Accordion>
           </div>
 
-          {/* Service Info Panel - inside the card (Desktop) - 40% */}
-          <AnimatePresence>
-            {selectedService && (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.3 }}
-                className="hidden xl:block border-l border-border bg-blush/50 overflow-hidden"
-              >
-                <div className="p-6 h-full">
-                  <ServiceInfoPanel
-                    service={selectedService}
-                    className="bg-transparent border-0 p-0"
-                  />
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
+          {/* Multi-Service Info Panel - inside the card (Desktop) - 40% */}
+          <div className="hidden xl:block border-l border-border bg-blush/50 p-6">
+            <MultiServiceInfoPanel
+              services={selectedServices}
+              onRemoveService={onRemoveService}
+            />
+          </div>
         </div>
 
-        {/* Service Info Panel - inside the card (Mobile) */}
-        {selectedService && (
+        {/* Multi-Service Info Panel - inside the card (Mobile) */}
+        {selectedServices.length > 0 && (
           <div className="xl:hidden border-t border-border">
-            <ServiceInfoPanel
-              service={selectedService}
+            <MultiServiceInfoPanel
+              services={selectedServices}
+              onRemoveService={onRemoveService}
               isMobile
               className="rounded-none border-0"
             />
@@ -161,7 +160,7 @@ const ServiceStep = ({ selectedService, onSelectService, onNext }: ServiceStepPr
       <div className="pt-4">
         <Button
           onClick={onNext}
-          disabled={!selectedService}
+          disabled={selectedServices.length === 0}
           className="w-full h-12 btn-gradient rounded-full"
         >
           <span>{t('booking.next')}</span>
