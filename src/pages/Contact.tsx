@@ -184,7 +184,7 @@ const ContactContent = () => {
 
                 <Button 
                   type="submit" 
-                  className="w-full btn-gradient rounded-full mt-auto"
+                  className="w-full h-12 btn-gradient rounded-full mt-auto"
                   disabled={isSubmitting}
                 >
                   <Send className="w-4 h-4 mr-2" />
@@ -295,7 +295,7 @@ const ContactContent = () => {
                   href={whatsappLink}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center justify-center gap-2 w-full py-3 px-4 btn-gradient rounded-full font-medium transition-colors"
+                  className="flex items-center justify-center gap-2 w-full h-12 px-4 btn-gradient rounded-full font-medium transition-colors"
                 >
                   <MessageCircle className="w-5 h-5" />
                   {language === 'es' ? 'Chatear por WhatsApp' : 'Chat on WhatsApp'}
