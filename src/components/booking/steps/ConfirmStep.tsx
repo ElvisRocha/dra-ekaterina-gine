@@ -133,16 +133,14 @@ const ConfirmStep = ({
         <Button
           variant="outline"
           onClick={onBack}
-          className="flex-1"
-          size="lg"
+          className="flex-1 h-12 rounded-full"
           disabled={isLoading}
         >
           {t('booking.back')}
         </Button>
         <Button
           onClick={onConfirm}
-          className="flex-1 btn-gradient"
-          size="lg"
+          className="flex-1 h-12 btn-gradient rounded-full"
           disabled={isLoading}
         >
           {isLoading ? (

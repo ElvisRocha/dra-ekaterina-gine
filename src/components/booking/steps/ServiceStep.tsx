@@ -122,8 +122,7 @@ const ServiceStep = ({ selectedService, onSelectService, onNext }: ServiceStepPr
         <Button
           onClick={onNext}
           disabled={!selectedService}
-          className="w-full btn-gradient"
-          size="lg"
+          className="w-full h-12 btn-gradient rounded-full"
         >
           {t('booking.next')}
         </Button>
