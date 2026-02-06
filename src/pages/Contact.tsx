@@ -176,6 +176,12 @@ const ContactContent = () => {
                   />
                 </div>
 
+                <p className="text-sm text-muted-foreground text-center">
+                  {language === 'es' 
+                    ? 'Te contactaremos lo antes posible' 
+                    : 'We will contact you as soon as possible'}
+                </p>
+
                 <Button 
                   type="submit" 
                   className="w-full btn-gradient rounded-full mt-auto"
