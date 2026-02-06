@@ -1,184 +1,136 @@
 
-# Plan: Unificar Estilos de Botones en /BookAppointment
+# Plan: Aplicar Hover Gradient a Botones de Retroceso
 
 ## Resumen
 
-Aplicar los mismos estilos visuales de los botones de /contacto a todos los botones del flujo de agendamiento para mantener consistencia visual.
+Crear una nueva clase CSS para los botones de retroceso que mantenga su apariencia outline en estado normal, pero aplique el mismo efecto de hover gradient que tienen los botones "Siguiente".
 
 ---
 
-## Diferencias Actuales
+## Botones de Retroceso Identificados
 
-| Elemento | /contacto | /BookAppointment |
-|----------|-----------|------------------|
-| Altura | `h-12` (48px) | `size="lg"` (44px) |
-| Bordes | `rounded-full` | `rounded-md` (default) |
-| Botones primarios | `btn-gradient rounded-full` | `btn-gradient` |
-| Botones secundarios | N/A | `variant="outline"` sin rounded-full |
+| Componente | Linea | Texto del Boton |
+|------------|-------|-----------------|
+| PatientDataStep.tsx | 87-93 | "Atras" |
+| DateTimeStep.tsx | 109-115 | "Atras" |
+| ConfirmStep.tsx | 133-140 | "Atras" |
 
 ---
 
-## Cambios a Realizar
+## Solucion
 
-### 1. ServiceStep.tsx (Lineas 122-129)
+### Paso 1: Crear Nueva Clase CSS
 
-**Boton "Siguiente":**
-```tsx
-// Antes
-<Button
-  onClick={onNext}
-  disabled={!selectedService}
-  className="w-full btn-gradient"
-  size="lg"
->
+Agregar en `src/index.css` una nueva clase `btn-outline-gradient` que:
+- Mantenga el estilo outline en estado normal (borde visible, fondo transparente)
+- En hover, aplique el gradiente y colores del `btn-gradient`
 
-// Despues
-<Button
-  onClick={onNext}
-  disabled={!selectedService}
-  className="w-full h-12 btn-gradient rounded-full"
->
+**Archivo:** `src/index.css`
+
+```css
+/* Boton outline con hover gradient - para botones de retroceso */
+.btn-outline-gradient {
+  @apply relative overflow-hidden font-medium transition-all duration-300;
+  @apply bg-transparent border border-primary text-primary;
+}
+
+.btn-outline-gradient:hover {
+  @apply text-white border-transparent;
+  background: var(--gradient-cta);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-elevated);
+}
+
+.btn-outline-gradient::before {
+  content: '';
+  @apply absolute inset-0 opacity-0 transition-opacity duration-300;
+  background: linear-gradient(135deg, hsl(var(--fuchsia)) 0%, hsl(var(--coral)) 100%);
+}
+
+.btn-outline-gradient:hover::before {
+  @apply opacity-100;
+}
+
+.btn-outline-gradient > * {
+  @apply relative z-10;
+}
 ```
 
 ---
 
-### 2. PatientDataStep.tsx (Lineas 87-102)
+### Paso 2: Aplicar a Botones de Retroceso
 
-**Boton "Atras":**
+Cambiar las clases de los 3 botones "Atras":
+
+**PatientDataStep.tsx (linea 87-93):**
 ```tsx
 // Antes
-<Button
-  variant="outline"
-  onClick={onBack}
-  className="flex-1"
-  size="lg"
->
-
-// Despues
-<Button
-  variant="outline"
-  onClick={onBack}
-  className="flex-1 h-12 rounded-full"
->
-```
-
-**Boton "Siguiente":**
-```tsx
-// Antes
-<Button
-  onClick={onNext}
-  disabled={!isValid}
-  className="flex-1 btn-gradient"
-  size="lg"
->
-
-// Despues
-<Button
-  onClick={onNext}
-  disabled={!isValid}
-  className="flex-1 h-12 btn-gradient rounded-full"
->
-```
-
----
-
-### 3. DateTimeStep.tsx (Lineas 109-124)
-
-**Boton "Atras":**
-```tsx
-// Antes
-<Button
-  variant="outline"
-  onClick={onBack}
-  className="flex-1"
-  size="lg"
->
-
-// Despues
 <Button
   variant="outline"
   onClick={onBack}
   className="flex-1 h-12 rounded-full"
 >
-```
-
-**Boton "Siguiente":**
-```tsx
-// Antes
-<Button
-  onClick={onNext}
-  disabled={!isValid}
-  className="flex-1 btn-gradient"
-  size="lg"
->
 
 // Despues
 <Button
-  onClick={onNext}
-  disabled={!isValid}
-  className="flex-1 h-12 btn-gradient rounded-full"
+  variant="outline"
+  onClick={onBack}
+  className="flex-1 h-12 rounded-full btn-outline-gradient"
 >
 ```
 
----
-
-### 4. ConfirmStep.tsx (Lineas 133-156)
-
-**Boton "Atras":**
+**DateTimeStep.tsx (linea 109-115):**
 ```tsx
 // Antes
 <Button
   variant="outline"
   onClick={onBack}
-  className="flex-1"
-  size="lg"
-  disabled={isLoading}
+  className="flex-1 h-12 rounded-full"
 >
 
 // Despues
+<Button
+  variant="outline"
+  onClick={onBack}
+  className="flex-1 h-12 rounded-full btn-outline-gradient"
+>
+```
+
+**ConfirmStep.tsx (linea 133-140):**
+```tsx
+// Antes
 <Button
   variant="outline"
   onClick={onBack}
   className="flex-1 h-12 rounded-full"
   disabled={isLoading}
 >
-```
-
-**Boton "Confirmar":**
-```tsx
-// Antes
-<Button
-  onClick={onConfirm}
-  className="flex-1 btn-gradient"
-  size="lg"
-  disabled={isLoading}
->
 
 // Despues
 <Button
-  onClick={onConfirm}
-  className="flex-1 h-12 btn-gradient rounded-full"
+  variant="outline"
+  onClick={onBack}
+  className="flex-1 h-12 rounded-full btn-outline-gradient"
   disabled={isLoading}
 >
 ```
-
----
-
-## Resumen de Cambios
-
-| Archivo | Botones Modificados |
-|---------|---------------------|
-| ServiceStep.tsx | 1 (Siguiente) |
-| PatientDataStep.tsx | 2 (Atras, Siguiente) |
-| DateTimeStep.tsx | 2 (Atras, Siguiente) |
-| ConfirmStep.tsx | 2 (Atras, Confirmar) |
-| **Total** | **7 botones** |
 
 ---
 
 ## Resultado Visual
 
-- Todos los botones tendran altura uniforme de 48px (`h-12`)
-- Bordes completamente redondeados (`rounded-full`)
-- Botones primarios mantienen el efecto gradient con hover animado
-- Botones secundarios (outline) tendran el mismo estilo de borde redondeado
+| Estado | Boton Retroceso | Boton Siguiente |
+|--------|-----------------|-----------------|
+| Normal | Borde magenta, fondo transparente, texto magenta | Fondo gradiente, texto blanco |
+| Hover | Fondo gradiente, texto blanco (igual que Siguiente) | Fondo gradiente animado, texto blanco |
+
+---
+
+## Archivos a Modificar
+
+| Archivo | Cambio |
+|---------|--------|
+| src/index.css | Agregar clase `.btn-outline-gradient` |
+| src/components/booking/steps/PatientDataStep.tsx | Agregar clase al boton "Atras" |
+| src/components/booking/steps/DateTimeStep.tsx | Agregar clase al boton "Atras" |
+| src/components/booking/steps/ConfirmStep.tsx | Agregar clase al boton "Atras" |
