@@ -1,61 +1,78 @@
 
 
-# Plan: Convertir Logo a PNG con Fondo Transparente
+# Plan: Reducir Opacidad del Idioma Inactivo en Toggle
 
-## Situacion Actual
+## Resumen
 
-El logo actual (`src/assets/logo.png`) ya esta en formato PNG, pero tiene un **fondo blanco/gris** en lugar de fondo transparente. Esto causa que el logo no se integre visualmente bien con los diferentes fondos de la aplicacion.
-
----
-
-## Limitacion Importante
-
-**No puedo editar imagenes directamente.** La conversion de una imagen PNG con fondo solido a PNG con fondo transparente requiere herramientas de edicion de imagenes como:
-
-- Adobe Photoshop
-- GIMP (gratuito)
-- Canva
-- Remove.bg (herramienta online automatica)
-- Photopea (editor online gratuito)
+Aplicar una opacidad reducida al boton del idioma NO seleccionado para crear un contraste visual mas claro entre el estado activo e inactivo del toggle de idioma.
 
 ---
 
-## Pasos Recomendados
+## Estado Actual
 
-### Paso 1: Crear el Logo con Fondo Transparente (Lo haces tu)
-
-1. Abre el logo actual en un editor de imagenes
-2. Usa la herramienta "Varita Magica" o "Seleccionar por Color" para seleccionar el fondo blanco
-3. Elimina el fondo seleccionado
-4. Exporta como PNG (asegurandote de mantener la transparencia)
-
-**Opcion rapida:** Sube la imagen a [remove.bg](https://remove.bg) - elimina fondos automaticamente
-
-### Paso 2: Subir el Nuevo Logo
-
-Una vez tengas el logo con fondo transparente, subelo al chat y yo lo reemplazare en el proyecto.
+Los botones inactivos usan `text-muted-foreground` que tiene cierto contraste, pero el usuario desea que sea aun mas evidente cual idioma esta activo.
 
 ---
 
-## Ubicaciones del Logo a Actualizar
+## Cambios Propuestos
 
-| Componente | Archivo | Uso |
-|------------|---------|-----|
-| Navbar | `src/components/Navbar.tsx` | Logo principal en navegacion |
-| Footer | `src/components/Footer.tsx` | Logo en pie de pagina (con filtro invert) |
-| BookingNavbar | `src/components/booking/BookingNavbar.tsx` | Logo en pagina de reservas |
+Se modificaran 3 ubicaciones donde existe el toggle de idioma:
+
+### 1. Navbar Desktop (lineas 61-75)
+
+```tsx
+// Antes - boton inactivo
+'text-muted-foreground hover:text-foreground'
+
+// Despues - agregar opacidad reducida
+'text-muted-foreground/50 hover:text-muted-foreground'
+```
+
+### 2. Navbar Mobile (lineas 144-158)
+
+```tsx
+// Antes - boton inactivo
+'text-muted-foreground'
+
+// Despues - agregar opacidad reducida
+'text-muted-foreground/50 hover:text-muted-foreground'
+```
+
+### 3. BookingNavbar (lineas 32-46)
+
+```tsx
+// Antes - boton inactivo
+'text-muted-foreground hover:text-foreground'
+
+// Despues - agregar opacidad reducida
+'text-muted-foreground/50 hover:text-muted-foreground'
+```
 
 ---
 
-## Beneficios del Fondo Transparente
+## Comparacion Visual
 
-- Se integrara perfectamente con el fondo glass del navbar
-- Se vera mejor sobre el fondo chocolate del footer (sin necesidad de filtros invert)
-- Aspecto mas profesional y limpio en toda la aplicacion
+| Estado | Antes | Despues |
+|--------|-------|---------|
+| Activo | `bg-primary text-primary-foreground` | Sin cambios (color completo) |
+| Inactivo | `text-muted-foreground` (~45% contraste) | `text-muted-foreground/50` (~22% contraste) |
+| Inactivo + Hover | `text-foreground` | `text-muted-foreground` (sutil mejora) |
 
 ---
 
-## Siguiente Paso
+## Archivos a Modificar
 
-**Sube la version del logo con fondo transparente** y yo actualizare todas las referencias en la aplicacion, ajustando los estilos CSS si es necesario (por ejemplo, removiendo los filtros `brightness-0 invert` del footer si ya no son necesarios).
+| Archivo | Cambios |
+|---------|---------|
+| `src/components/Navbar.tsx` | 4 clases (2 desktop + 2 mobile) |
+| `src/components/booking/BookingNavbar.tsx` | 2 clases |
+
+---
+
+## Resultado Esperado
+
+- El idioma activo mantiene su apariencia completa con fondo primario
+- El idioma inactivo se ve notablemente mas apagado (50% de opacidad)
+- Al hacer hover sobre el inactivo, aumenta ligeramente la visibilidad
+- Distincion visual clara e inmediata de cual idioma esta seleccionado
 
