@@ -298,7 +298,7 @@ const ContactContent = () => {
                   className="flex items-center justify-center gap-2 w-full h-12 px-4 btn-gradient rounded-full font-medium transition-colors"
                 >
                   <MessageCircle className="w-5 h-5" />
-                  <span>{language === 'es' ? 'Chatear por WhatsApp' : 'Chat on WhatsApp'}</span>
+                  {language === 'es' ? 'Chatear por WhatsApp' : 'Chat on WhatsApp'}
                 </a>
               </div>
             </motion.div>

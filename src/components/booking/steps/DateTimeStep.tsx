@@ -5,12 +5,12 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
 import { type Service } from '@/data/services';
 import { getAvailableDays, getAvailableSlots } from '@/utils/availability';
-import MultiServiceSummary from '../calendar/MultiServiceSummary';
+import ServiceSummary from '../calendar/ServiceSummary';
 import MonthCalendar from '../calendar/MonthCalendar';
 import TimeSlots from '../calendar/TimeSlots';
 
 interface DateTimeStepProps {
-  services: Service[];
+  service: Service;
   selectedDate: Date | null;
   selectedTime: string | null;
   onSelectDate: (date: Date) => void;
@@ -20,7 +20,7 @@ interface DateTimeStepProps {
 }
 
 const DateTimeStep = ({
-  services,
+  service,
   selectedDate,
   selectedTime,
   onSelectDate,
@@ -74,12 +74,12 @@ const DateTimeStep = ({
       <div className="grid grid-cols-1 lg:grid-cols-[200px_1fr_200px] gap-6">
         {/* Left: Service Summary */}
         <div className="hidden lg:block p-4 bg-secondary/30 rounded-xl border border-border">
-          <MultiServiceSummary services={services} />
+          <ServiceSummary service={service} />
         </div>
 
         {/* Mobile: Service Summary */}
         <div className="lg:hidden p-4 bg-secondary/30 rounded-xl border border-border">
-          <MultiServiceSummary services={services} />
+          <ServiceSummary service={service} />
         </div>
 
         {/* Center: Calendar */}
@@ -109,16 +109,18 @@ const DateTimeStep = ({
         <Button
           variant="outline"
           onClick={onBack}
-          className="flex-1 h-12 rounded-full btn-outline-gradient"
+          className="flex-1"
+          size="lg"
         >
-          <span>{t('booking.back')}</span>
+          {t('booking.back')}
         </Button>
         <Button
           onClick={onNext}
           disabled={!isValid}
-          className="flex-1 h-12 btn-gradient rounded-full"
+          className="flex-1 btn-gradient"
+          size="lg"
         >
-          <span>{t('booking.next')}</span>
+          {t('booking.next')}
         </Button>
       </div>
     </motion.div>

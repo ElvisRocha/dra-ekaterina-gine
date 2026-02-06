@@ -39,19 +39,23 @@ const NewPatientModal = ({ isOpen, onChoice }: NewPatientModalProps) => {
           <div className="grid gap-3">
             <Button
               onClick={() => onChoice(true)}
-              className="h-12 rounded-full btn-gradient"
+              className="h-auto py-4 btn-gradient justify-start"
             >
-              <FileText className="w-5 h-5 mr-2" />
-              <span>{t('newpatient.now')}</span>
+              <FileText className="w-5 h-5 mr-3" />
+              <span className="text-left">
+                <span className="block font-medium">{t('newpatient.now')}</span>
+              </span>
             </Button>
 
             <Button
               onClick={() => onChoice(false)}
               variant="outline"
-              className="h-12 rounded-full btn-outline-gradient"
+              className="h-auto py-4 justify-start"
             >
-              <Building2 className="w-5 h-5 mr-2" />
-              <span>{t('newpatient.clinic')}</span>
+              <Building2 className="w-5 h-5 mr-3" />
+              <span className="text-left">
+                <span className="block font-medium">{t('newpatient.clinic')}</span>
+              </span>
             </Button>
           </div>
         </motion.div>

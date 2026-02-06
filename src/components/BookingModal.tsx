@@ -423,11 +423,6 @@ const BookingModal = ({ isOpen, onClose, preselectedService }: BookingModalProps
       <FirstTimeForm
         isOpen={showFirstTimeForm}
         onComplete={handleFirstTimeFormComplete}
-        onBack={() => {
-          setShowFirstTimeForm(false);
-          setShowNewPatientModal(true);
-        }}
-        onClose={() => setShowFirstTimeForm(false)}
         initialData={{
           fullName: formData.fullName,
           idNumber: formData.idNumber,

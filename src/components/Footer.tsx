@@ -10,8 +10,8 @@ const Footer = () => {
       <div className="container mx-auto px-4">
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
           {/* Logo & About */}
-          <div className="lg:col-span-2 text-center lg:text-left">
-            <img src={logo} alt="Clínica Esperanza" className="h-16 w-auto mb-4 brightness-0 invert opacity-90 mx-auto lg:mx-0" />
+          <div className="lg:col-span-2">
+            <img src={logo} alt="Clínica Esperanza" className="h-20 w-auto mb-4 brightness-0 invert opacity-90" />
             <p className="text-cream/70 text-sm max-w-md">
               Dra. Ekaterina Malaspina Riazanova — Ginecología y Obstetricia con calidez, profesionalismo y tecnología de punta.
             </p>
