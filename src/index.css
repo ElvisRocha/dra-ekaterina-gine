@@ -175,7 +175,35 @@
     @apply opacity-100;
   }
 
+  /* Ensure all direct children stay visible above the ::before pseudo-element */
   .btn-gradient > * {
+    @apply relative z-10;
+  }
+
+  /* Outline button that transforms to gradient on hover */
+  .btn-outline-gradient {
+    @apply relative overflow-hidden font-medium px-8 py-4 rounded-full transition-all duration-300;
+    @apply bg-transparent border border-primary text-primary;
+  }
+
+  .btn-outline-gradient::before {
+    content: '';
+    @apply absolute inset-0 opacity-0 transition-opacity duration-300;
+    background: linear-gradient(135deg, hsl(var(--fuchsia)) 0%, hsl(var(--coral)) 100%);
+  }
+
+  .btn-outline-gradient:hover {
+    @apply text-white border-transparent;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-elevated);
+  }
+
+  .btn-outline-gradient:hover::before {
+    @apply opacity-100;
+  }
+
+  /* Ensure all direct children stay visible above the ::before pseudo-element */
+  .btn-outline-gradient > * {
     @apply relative z-10;
   }
 

@@ -131,27 +131,26 @@ const ConfirmStep = ({
       {/* Navigation Buttons */}
       <div className="flex gap-3 pt-4 max-w-lg mx-auto">
         <Button
-          variant="outline"
           onClick={onBack}
-          className="flex-1"
+          className="flex-1 h-12 rounded-full btn-outline-gradient"
           size="lg"
           disabled={isLoading}
         >
-          {t('booking.back')}
+          <span>{t('booking.back')}</span>
         </Button>
         <Button
           onClick={onConfirm}
-          className="flex-1 btn-gradient"
+          className="flex-1 h-12 rounded-full btn-gradient"
           size="lg"
           disabled={isLoading}
         >
           {isLoading ? (
-            <span className="flex items-center gap-2">
+            <>
               <span className="w-4 h-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
-              {language === 'es' ? 'Confirmando...' : 'Confirming...'}
-            </span>
+              <span>{language === 'es' ? 'Confirmando...' : 'Confirming...'}</span>
+            </>
           ) : (
-            t('booking.confirm')
+            <span>{t('booking.confirm')}</span>
           )}
         </Button>
       </div>
