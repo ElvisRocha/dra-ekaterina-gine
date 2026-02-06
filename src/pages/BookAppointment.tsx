@@ -8,6 +8,7 @@ import { useToast } from '@/hooks/use-toast';
 
 import BookingNavbar from '@/components/booking/BookingNavbar';
 import StepIndicator from '@/components/booking/StepIndicator';
+import ServiceInfoPanel from '@/components/booking/ServiceInfoPanel';
 import ServiceStep from '@/components/booking/steps/ServiceStep';
 import PatientDataStep from '@/components/booking/steps/PatientDataStep';
 import DateTimeStep from '@/components/booking/steps/DateTimeStep';
@@ -30,8 +31,8 @@ const BookAppointmentContent = () => {
   // Step state
   const [currentStep, setCurrentStep] = useState(1);
   
-  // Form data - now supports multiple services
-  const [selectedServices, setSelectedServices] = useState<Service[]>([]);
+  // Form data
+  const [selectedService, setSelectedService] = useState<Service | null>(null);
   const [patientData, setPatientData] = useState<PatientData>({
     fullName: '',
     identification: '',
@@ -51,47 +52,35 @@ const BookAppointmentContent = () => {
     const serviceId = searchParams.get('service');
     if (serviceId) {
       const service = services.find(s => s.id === serviceId);
-      if (service && !selectedServices.some(s => s.id === service.id)) {
-        setSelectedServices([service]);
+      if (service) {
+        setSelectedService(service);
+        // Optionally skip to step 2
+        // setCurrentStep(2);
       }
     }
   }, [searchParams]);
 
-  const handleToggleService = (service: Service) => {
-    setSelectedServices(prev => {
-      const exists = prev.some(s => s.id === service.id);
-      if (exists) {
-        return prev.filter(s => s.id !== service.id);
-      }
-      return [...prev, service];
-    });
-    // Reset date/time when services change
+  const handleSelectService = (service: Service) => {
+    setSelectedService(service);
+    // Reset date/time when service changes
     setSelectedDate(null);
     setSelectedTime(null);
   };
 
-  const handleRemoveService = (serviceId: string) => {
-    setSelectedServices(prev => prev.filter(s => s.id !== serviceId));
-  };
-
   const handleConfirm = async () => {
-    if (selectedServices.length === 0 || !selectedDate || !selectedTime) return;
+    if (!selectedService || !selectedDate || !selectedTime) return;
 
     setIsLoading(true);
 
-    // Calculate totals
-    const totalPrice = selectedServices.reduce((sum, s) => sum + s.price, 0);
-
     // Build appointment data object
     const appointmentData = {
-      services: selectedServices.map(s => ({
-        id: s.id,
-        name: language === 'es' ? s.nameEs : s.nameEn,
-        category: s.category,
-        duration: s.duration,
-        price: s.price,
-      })),
-      totalPrice,
+      service: {
+        id: selectedService.id,
+        name: language === 'es' ? selectedService.nameEs : selectedService.nameEn,
+        category: selectedService.category,
+        duration: selectedService.duration,
+        price: selectedService.price,
+      },
       patient: {
         fullName: patientData.fullName,
         identification: patientData.identification,
@@ -136,6 +125,12 @@ const BookAppointmentContent = () => {
     setShowConfirmation(false);
     
     // Check if patient exists (mock)
+    // TODO: Replace with n8n webhook call
+    // const response = await fetch('https://tu-n8n-url/webhook/check-patient', {
+    //   method: 'POST',
+    //   body: JSON.stringify({ identificacion: patientData.identification })
+    // });
+    // const { exists } = await response.json();
     const exists = false; // Mock: change to true to simulate existing patient
 
     if (!exists) {
@@ -167,15 +162,6 @@ const BookAppointmentContent = () => {
     });
   };
 
-  const handleFirstTimeFormBack = () => {
-    setShowFirstTimeForm(false);
-    setShowNewPatientModal(true);
-  };
-
-  const handleFirstTimeFormClose = () => {
-    setShowFirstTimeForm(false);
-  };
-
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <BookingNavbar />
@@ -197,9 +183,8 @@ const BookAppointmentContent = () => {
                 {currentStep === 1 && (
                   <ServiceStep
                     key="service"
-                    selectedServices={selectedServices}
-                    onToggleService={handleToggleService}
-                    onRemoveService={handleRemoveService}
+                    selectedService={selectedService}
+                    onSelectService={handleSelectService}
                     onNext={() => setCurrentStep(2)}
                   />
                 )}
@@ -214,10 +199,10 @@ const BookAppointmentContent = () => {
                   />
                 )}
                 
-                {currentStep === 3 && selectedServices.length > 0 && (
+                {currentStep === 3 && selectedService && (
                   <DateTimeStep
                     key="datetime"
-                    services={selectedServices}
+                    service={selectedService}
                     selectedDate={selectedDate}
                     selectedTime={selectedTime}
                     onSelectDate={setSelectedDate}
@@ -227,10 +212,10 @@ const BookAppointmentContent = () => {
                   />
                 )}
                 
-                {currentStep === 4 && selectedServices.length > 0 && selectedDate && selectedTime && (
+                {currentStep === 4 && selectedService && selectedDate && selectedTime && (
                   <ConfirmStep
                     key="confirm"
-                    services={selectedServices}
+                    service={selectedService}
                     patientData={patientData}
                     selectedDate={selectedDate}
                     selectedTime={selectedTime}
@@ -241,7 +226,33 @@ const BookAppointmentContent = () => {
                 )}
               </AnimatePresence>
             </div>
+
+            {/* Right Side Panel - Service Info (Desktop only, Step 1) */}
+            {currentStep === 1 && (
+              <AnimatePresence>
+                {selectedService && (
+                  <div className="hidden xl:block w-80 flex-shrink-0">
+                    <div className="sticky top-24">
+                      <ServiceInfoPanel
+                        service={selectedService}
+                        className="max-h-[calc(100vh-8rem)]"
+                      />
+                    </div>
+                  </div>
+                )}
+              </AnimatePresence>
+            )}
           </div>
+
+          {/* Mobile Service Info Panel (Step 1 only) */}
+          {currentStep === 1 && selectedService && (
+            <div className="xl:hidden mt-6">
+              <ServiceInfoPanel
+                service={selectedService}
+                isMobile
+              />
+            </div>
+          )}
         </div>
       </div>
 
@@ -272,8 +283,6 @@ const BookAppointmentContent = () => {
       <FirstTimeForm
         isOpen={showFirstTimeForm}
         onComplete={handleFirstTimeFormComplete}
-        onBack={handleFirstTimeFormBack}
-        onClose={handleFirstTimeFormClose}
         initialData={{
           fullName: patientData.fullName,
           idNumber: patientData.identification,
