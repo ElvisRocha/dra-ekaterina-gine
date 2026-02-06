@@ -164,13 +164,13 @@ const ContactContent = () => {
 
                 <div className="space-y-2">
                   <Label htmlFor="message">
-                    {language === 'es' ? 'Mensaje' : 'Message'} *
+                    {language === 'es' ? '¿En qué podemos ayudarte?' : 'How can we help you?'} *
                   </Label>
                   <Textarea
                     id="message"
                     value={formData.message}
                     onChange={(e) => updateField('message', e.target.value)}
-                    placeholder={language === 'es' ? 'Cuéntanos cómo podemos ayudarte...' : 'Tell us how we can help you...'}
+                    placeholder={language === 'es' ? 'Cuéntanos tus dudas o lo que necesitas, estamos aquí para ti...' : "Tell us your questions or what you need, we're here for you..."}
                     rows={5}
                     required
                   />
