@@ -68,7 +68,15 @@ const Footer = () => {
         </div>
 
         {/* Bottom Bar */}
-        <div className="pt-8 border-t border-cream/10">
+        <div className="pt-8 border-t border-cream/10 flex flex-col items-center">
+          <img 
+            src={logo} 
+            alt="Clínica Esperanza" 
+            className="h-16 w-auto mb-4 brightness-0 invert opacity-80" 
+          />
+          <p className="text-cream/70 text-sm text-center max-w-md mb-2">
+            Dra. Ekaterina Malaspina Riazanova — Ginecología y Obstetricia con calidez, profesionalismo y tecnología de punta.
+          </p>
           <p className="text-center text-cream/50 text-sm">
             © 2025 Dra. Ekaterina Malaspina Riazanova — Clínica Esperanza. {t('footer.rights')}.
           </p>
