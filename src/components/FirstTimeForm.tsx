@@ -142,7 +142,7 @@ const FirstTimeForm = ({ isOpen, onComplete, initialData }: FirstTimeFormProps) 
 
         <ScrollArea className="max-h-[calc(90vh-120px)] px-6">
           <form onSubmit={handleSubmit} className="space-y-4 py-4">
-            {/* Basic Info */}
+            {/* Basic Info - Row 1: Nombre Completo | Número de Identificación */}
             <div className="grid md:grid-cols-2 gap-4">
               <div>
                 <Label htmlFor="fullName" className="flex items-center gap-1">
@@ -158,19 +158,6 @@ const FirstTimeForm = ({ isOpen, onComplete, initialData }: FirstTimeFormProps) 
                 />
               </div>
               <div>
-                <Label htmlFor="age">{t('form.age')}</Label>
-                <Input
-                  id="age"
-                  type="number"
-                  value={formData.age}
-                  onChange={(e) => updateField('age', e.target.value)}
-                  className="mt-1"
-                />
-              </div>
-            </div>
-
-            <div className="grid md:grid-cols-2 gap-4">
-              <div>
                 <Label htmlFor="idNumber" className="flex items-center gap-1">
                   {t('booking.id')}
                   <Lock className="h-3 w-3 text-muted-foreground" />
@@ -183,6 +170,10 @@ const FirstTimeForm = ({ isOpen, onComplete, initialData }: FirstTimeFormProps) 
                   title={t('form.lockedField')}
                 />
               </div>
+            </div>
+
+            {/* Row 2: Teléfono | Edad */}
+            <div className="grid md:grid-cols-2 gap-4">
               <div>
                 <Label htmlFor="phone" className="flex items-center gap-1">
                   {t('booking.phone')}
@@ -195,6 +186,16 @@ const FirstTimeForm = ({ isOpen, onComplete, initialData }: FirstTimeFormProps) 
                   disabled
                   className="mt-1 bg-muted text-muted-foreground cursor-not-allowed"
                   title={t('form.lockedField')}
+                />
+              </div>
+              <div>
+                <Label htmlFor="age">{t('form.age')}</Label>
+                <Input
+                  id="age"
+                  type="number"
+                  value={formData.age}
+                  onChange={(e) => updateField('age', e.target.value)}
+                  className="mt-1"
                 />
               </div>
             </div>
