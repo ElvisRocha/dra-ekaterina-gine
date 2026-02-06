@@ -32,7 +32,7 @@ const BookingNavbar = () => {
               className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all ${
                 language === 'es'
                   ? 'bg-primary text-primary-foreground'
-                  : 'text-muted-foreground/50 hover:text-muted-foreground'
+                  : 'text-muted-foreground hover:text-foreground'
               }`}
             >
               ES
@@ -42,7 +42,7 @@ const BookingNavbar = () => {
               className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all ${
                 language === 'en'
                   ? 'bg-primary text-primary-foreground'
-                  : 'text-muted-foreground/50 hover:text-muted-foreground'
+                  : 'text-muted-foreground hover:text-foreground'
               }`}
             >
               EN

@@ -87,18 +87,16 @@ const PatientDataStep = ({ patientData, onUpdatePatientData, onNext, onBack }: P
         <Button
           variant="outline"
           onClick={onBack}
-          className="flex-1"
-          size="lg"
+          className="flex-1 h-12 rounded-full btn-outline-gradient"
         >
-          {t('booking.back')}
+          <span>{t('booking.back')}</span>
         </Button>
         <Button
           onClick={onNext}
           disabled={!isValid}
-          className="flex-1 btn-gradient"
-          size="lg"
+          className="flex-1 h-12 btn-gradient rounded-full"
         >
-          {t('booking.next')}
+          <span>{t('booking.next')}</span>
         </Button>
       </div>
     </motion.div>

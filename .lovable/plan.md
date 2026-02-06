@@ -1,78 +1,164 @@
 
+# Plan: Agregar Navegación al Formulario de Primera Vez
 
-# Plan: Estandarizar Estilo del Botón "Cómo Llegar"
+## Resumen
 
-## Problema Actual
-
-El botón "Cómo Llegar" usa estilos diferentes a los otros dos botones principales:
-
-| Botón | Estilo Actual |
-|-------|---------------|
-| Enviar Mensaje | `btn-gradient` + `h-12` + `rounded-full` |
-| Chatear por WhatsApp | `btn-gradient` + `h-12` + `rounded-full` |
-| Cómo Llegar | `variant="outline"` + `rounded-full` (diferente) |
-
----
-
-## Solución
-
-Aplicar exactamente el mismo estilo `btn-gradient` al botón "Cómo Llegar" y envolver el texto en un `<span>` para garantizar visibilidad en hover.
+Modificar el componente `FirstTimeForm` para incluir un botón "Atrás" que regrese al modal anterior y habilitar el botón de cierre (X) para cerrar el formulario completamente.
 
 ---
 
 ## Cambios Requeridos
 
-### Archivo: `src/pages/Contact.tsx`
+### Archivo: `src/components/FirstTimeForm.tsx`
 
-**Líneas 327-337 - Cambiar de:**
+#### 1. Actualizar Props del Componente
+
+Agregar un nuevo callback `onBack` para manejar el retroceso:
 
 ```tsx
-<Button 
-  variant="outline"
-  className="rounded-full"
-  onClick={() => {
-    window.open('https://maps.google.com', '_blank');
-  }}
->
-  <MapPin className="w-4 h-4 mr-2" />
-  {language === 'es' ? 'Cómo Llegar' : 'Get Directions'}
-</Button>
+interface FirstTimeFormProps {
+  isOpen: boolean;
+  onComplete: () => void;
+  onBack: () => void;        // NUEVO: Para volver al modal anterior
+  onClose: () => void;       // NUEVO: Para cerrar el formulario
+  initialData: {
+    fullName: string;
+    idNumber: string;
+    phone: string;
+  };
+}
 ```
 
-**A:**
+#### 2. Habilitar el Botón X de Cierre
+
+Cambiar el `onOpenChange` del Dialog para que llame a `onClose`:
 
 ```tsx
-<Button 
-  className="h-12 px-6 btn-gradient rounded-full font-medium"
-  onClick={() => {
-    window.open('https://maps.google.com', '_blank');
-  }}
->
-  <MapPin className="w-5 h-5" />
-  <span>{language === 'es' ? 'Cómo Llegar' : 'Get Directions'}</span>
-</Button>
+// Antes (línea 134)
+<Dialog open={isOpen} onOpenChange={() => {}}>
+
+// Después
+<Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
+```
+
+#### 3. Agregar Botón "Atrás" en la Sección de Botones
+
+Modificar la sección de botones (líneas 392-396) para incluir dos botones con el layout estándar:
+
+```tsx
+// Antes
+<div className="pt-4 pb-6">
+  <Button type="submit" className="w-full btn-gradient">
+    <span>{t('form.submit')}</span>
+  </Button>
+</div>
+
+// Después
+<div className="flex gap-3 pt-4 pb-6">
+  <Button
+    type="button"
+    variant="outline"
+    onClick={onBack}
+    className="flex-1 h-12 rounded-full btn-outline-gradient"
+  >
+    <span>{t('booking.back')}</span>
+  </Button>
+  <Button
+    type="submit"
+    className="flex-1 h-12 rounded-full btn-gradient"
+  >
+    <span>{t('form.submit')}</span>
+  </Button>
+</div>
 ```
 
 ---
 
-## Detalles Técnicos
+### Archivo: `src/pages/BookAppointment.tsx`
 
-| Cambio | Razón |
-|--------|-------|
-| Remover `variant="outline"` | Evita conflicto con btn-gradient |
-| Agregar `h-12` | Altura consistente con otros botones |
-| Agregar `btn-gradient` | Aplica degradado corporativo |
-| Cambiar ícono a `w-5 h-5` | Tamaño consistente con otros botones |
-| Remover `mr-2` del ícono | btn-gradient ya tiene `gap-2` heredado |
-| Envolver texto en `<span>` | Garantiza z-index correcto en hover |
+#### 1. Agregar Handler para "Atrás"
+
+Crear función que cierre el FirstTimeForm y vuelva a mostrar el NewPatientModal:
+
+```tsx
+const handleFirstTimeFormBack = () => {
+  setShowFirstTimeForm(false);
+  setShowNewPatientModal(true);
+};
+```
+
+#### 2. Agregar Handler para Cerrar
+
+Crear función que simplemente cierre el formulario sin volver al modal:
+
+```tsx
+const handleFirstTimeFormClose = () => {
+  setShowFirstTimeForm(false);
+};
+```
+
+#### 3. Actualizar el Uso del Componente
+
+Pasar los nuevos props al FirstTimeForm:
+
+```tsx
+// Antes (líneas 263-271)
+<FirstTimeForm
+  isOpen={showFirstTimeForm}
+  onComplete={handleFirstTimeFormComplete}
+  initialData={{...}}
+/>
+
+// Después
+<FirstTimeForm
+  isOpen={showFirstTimeForm}
+  onComplete={handleFirstTimeFormComplete}
+  onBack={handleFirstTimeFormBack}
+  onClose={handleFirstTimeFormClose}
+  initialData={{...}}
+/>
+```
 
 ---
 
-## Resultado
+## Flujo de Navegación Resultante
 
-Los tres botones principales de la página tendrán:
-- Mismo degradado de fondo (magenta a fucsia)
-- Misma altura (48px)
-- Mismo efecto hover (degradado coral-fucsia + elevación)
-- Texto e íconos siempre visibles (protegidos por z-index)
+```text
+ConfirmationPopup
+       |
+       v
+NewPatientModal
+  |           |
+  v           v
+"Llenar     "Llenar en
+ ahora"      la clínica"
+  |               |
+  v               v
+FirstTimeForm   Toast + Cerrar
+  |     |
+  v     v
+Atrás  Enviar
+  |      |
+  v      v
+Vuelve  Toast + Cerrar
+al Modal
+```
 
+---
+
+## Archivos a Modificar
+
+| Archivo | Cambio |
+|---------|--------|
+| `src/components/FirstTimeForm.tsx` | Agregar props `onBack` y `onClose`, habilitar botón X, agregar botón "Atrás" |
+| `src/pages/BookAppointment.tsx` | Agregar handlers y pasar nuevos props |
+
+---
+
+## Estilos Aplicados
+
+Los botones utilizarán exactamente los mismos estilos que los botones de navegación del flujo de agendamiento:
+
+- **Botón Atrás**: `h-12 rounded-full btn-outline-gradient` (outline con hover gradient)
+- **Botón Enviar**: `h-12 rounded-full btn-gradient` (gradient sólido)
+- **Layout**: `flex gap-3` con `flex-1` en ambos botones para distribución equitativa

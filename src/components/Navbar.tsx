@@ -61,7 +61,7 @@ const Navbar = ({ onBookClick }: NavbarProps) => {
                 className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
                   language === 'es'
                     ? 'bg-primary text-primary-foreground'
-                    : 'text-muted-foreground/50 hover:text-muted-foreground'
+                    : 'text-muted-foreground hover:text-foreground'
                 }`}
               >
                 ES
@@ -71,7 +71,7 @@ const Navbar = ({ onBookClick }: NavbarProps) => {
                 className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
                   language === 'en'
                     ? 'bg-primary text-primary-foreground'
-                    : 'text-muted-foreground/50 hover:text-muted-foreground'
+                    : 'text-muted-foreground hover:text-foreground'
                 }`}
               >
                 EN
@@ -144,7 +144,7 @@ const Navbar = ({ onBookClick }: NavbarProps) => {
                   className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${
                     language === 'es'
                       ? 'bg-primary text-primary-foreground'
-                      : 'text-muted-foreground/50 hover:text-muted-foreground'
+                      : 'text-muted-foreground'
                   }`}
                 >
                   ES
@@ -154,7 +154,7 @@ const Navbar = ({ onBookClick }: NavbarProps) => {
                   className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${
                     language === 'en'
                       ? 'bg-primary text-primary-foreground'
-                      : 'text-muted-foreground/50 hover:text-muted-foreground'
+                      : 'text-muted-foreground'
                   }`}
                 >
                   EN

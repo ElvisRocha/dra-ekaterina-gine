@@ -230,6 +230,33 @@
     @apply border-primary bg-secondary;
     box-shadow: var(--shadow-glow);
   }
+
+  /* Outline button with gradient hover - for back buttons */
+  .btn-outline-gradient {
+    @apply relative overflow-hidden font-medium transition-all duration-300;
+    @apply bg-transparent border border-primary text-primary;
+  }
+
+  .btn-outline-gradient:hover {
+    @apply text-white border-transparent;
+    background: var(--gradient-cta);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-elevated);
+  }
+
+  .btn-outline-gradient::before {
+    content: '';
+    @apply absolute inset-0 opacity-0 transition-opacity duration-300;
+    background: linear-gradient(135deg, hsl(var(--fuchsia)) 0%, hsl(var(--coral)) 100%);
+  }
+
+  .btn-outline-gradient:hover::before {
+    @apply opacity-100;
+  }
+
+  .btn-outline-gradient > * {
+    @apply relative z-10;
+  }
 }
 
 @layer utilities {
