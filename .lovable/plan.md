@@ -1,78 +1,89 @@
 
+# Plan: Envolver el Layout 60-40 en una Card Principal
 
-# Plan: Estandarizar Estilo del Botón "Cómo Llegar"
+## Situacion Actual
 
-## Problema Actual
+El layout actual tiene:
+- Lista de servicios (acordeón con categorías) - 60%
+- Panel de información del servicio - 40%
 
-El botón "Cómo Llegar" usa estilos diferentes a los otros dos botones principales:
+Ambos componentes están lado a lado usando flexbox, pero **no están contenidos dentro de una card principal**. Son elementos independientes visualmente.
 
-| Botón | Estilo Actual |
-|-------|---------------|
-| Enviar Mensaje | `btn-gradient` + `h-12` + `rounded-full` |
-| Chatear por WhatsApp | `btn-gradient` + `h-12` + `rounded-full` |
-| Cómo Llegar | `variant="outline"` + `rounded-full` (diferente) |
+## Objetivo
 
----
-
-## Solución
-
-Aplicar exactamente el mismo estilo `btn-gradient` al botón "Cómo Llegar" y envolver el texto en un `<span>` para garantizar visibilidad en hover.
-
----
+Crear una **card contenedora principal** que envuelva ambos componentes, manteniendo la distribución 60-40 interna. Esto dará una apariencia más cohesiva y profesional al paso de selección de servicios.
 
 ## Cambios Requeridos
 
-### Archivo: `src/pages/Contact.tsx`
+### Archivo: `src/components/booking/steps/ServiceStep.tsx`
 
-**Líneas 327-337 - Cambiar de:**
+Envolver el contenedor flex 60-40 dentro de un componente `Card`:
 
-```tsx
-<Button 
-  variant="outline"
-  className="rounded-full"
-  onClick={() => {
-    window.open('https://maps.google.com', '_blank');
-  }}
->
-  <MapPin className="w-4 h-4 mr-2" />
-  {language === 'es' ? 'Cómo Llegar' : 'Get Directions'}
-</Button>
+```text
+Estructura actual:
++------------------+     +------------------+
+|  Services List   |     |  Info Panel      |
+|      (60%)       |     |     (40%)        |
++------------------+     +------------------+
+
+Nueva estructura:
++------------------------------------------------+
+|              CARD PRINCIPAL                     |
+|  +------------------+   +------------------+   |
+|  |  Services List   |   |  Info Panel      |   |
+|  |      (60%)       |   |     (40%)        |   |
+|  +------------------+   +------------------+   |
++------------------------------------------------+
 ```
 
-**A:**
+**Cambios específicos:**
+
+1. Importar el componente `Card` de shadcn/ui
+2. Envolver el div con `className="flex flex-col lg:flex-row gap-6"` dentro de un `Card`
+3. Aplicar padding interno al Card
+4. Mantener la distribución 60-40 exactamente igual
+
+---
+
+## Detalles Tecnicos
+
+| Cambio | Descripcion |
+|--------|-------------|
+| Importar Card | `import { Card } from '@/components/ui/card'` |
+| Wrapper Card | Envuelve el contenedor flex con `<Card className="p-6">` |
+| Mantener flex 60-40 | El div interno sigue siendo `flex flex-col lg:flex-row gap-6` |
+| Responsivo | En movil se apila verticalmente, en desktop 60-40 |
+
+---
+
+## Codigo Propuesto
 
 ```tsx
-<Button 
-  className="h-12 px-6 btn-gradient rounded-full font-medium"
-  onClick={() => {
-    window.open('https://maps.google.com', '_blank');
-  }}
->
-  <MapPin className="w-5 h-5" />
-  <span>{language === 'es' ? 'Cómo Llegar' : 'Get Directions'}</span>
-</Button>
+import { Card } from '@/components/ui/card';
+
+// ... resto del codigo ...
+
+{/* Card principal contenedora */}
+<Card className="p-6">
+  <div className="flex flex-col lg:flex-row gap-6">
+    {/* Services list - 60% */}
+    <div className="w-full lg:w-[60%]">
+      {/* Accordion con categorias */}
+    </div>
+
+    {/* Service Info Panel - 40% */}
+    <div className="w-full lg:w-[40%]">
+      {/* Panel de informacion */}
+    </div>
+  </div>
+</Card>
 ```
 
 ---
 
-## Detalles Técnicos
+## Resultado Visual
 
-| Cambio | Razón |
-|--------|-------|
-| Remover `variant="outline"` | Evita conflicto con btn-gradient |
-| Agregar `h-12` | Altura consistente con otros botones |
-| Agregar `btn-gradient` | Aplica degradado corporativo |
-| Cambiar ícono a `w-5 h-5` | Tamaño consistente con otros botones |
-| Remover `mr-2` del ícono | btn-gradient ya tiene `gap-2` heredado |
-| Envolver texto en `<span>` | Garantiza z-index correcto en hover |
-
----
-
-## Resultado
-
-Los tres botones principales de la página tendrán:
-- Mismo degradado de fondo (magenta a fucsia)
-- Misma altura (48px)
-- Mismo efecto hover (degradado coral-fucsia + elevación)
-- Texto e íconos siempre visibles (protegidos por z-index)
-
+- Ambos componentes (lista y panel) quedaran visualmente unidos dentro de una card con borde y sombra sutil
+- La distribucion 60-40 se mantiene exactamente igual
+- El diseno se ve mas cohesivo y profesional
+- En movil, los componentes se apilan verticalmente dentro de la misma card
