@@ -175,7 +175,7 @@
     @apply opacity-100;
   }
 
-  .btn-gradient span {
+  .btn-gradient > * {
     @apply relative z-10;
   }
 
