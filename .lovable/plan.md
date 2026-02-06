@@ -1,71 +1,49 @@
 
 
-# Plan: Agregar Texto de Ayuda Debajo del Textarea
+# Plan: Actualizar Label y Placeholder del Textarea
 
 ## Resumen
 
-Agregar un parrafo sutil debajo del campo "Mensaje" y antes del boton "Enviar Mensaje" en el formulario de contacto, con soporte para ambos idiomas.
+Cambiar el texto del label y placeholder del campo de mensaje en el formulario de contacto para hacerlo mas amigable y centrado en el usuario.
 
 ---
 
-## Cambio a Realizar
+## Cambios a Realizar
 
 **Archivo:** `src/pages/Contact.tsx`
 
-**Ubicacion:** Entre el cierre del `</div>` del textarea (linea 177) y el `<Button>` (linea 179).
-
-**Codigo a agregar:**
+### 1. Label del Textarea (Linea 167)
 
 ```tsx
-// Despues de la linea 177 (cierre del div del textarea)
-<p className="text-sm text-muted-foreground">
-  {language === 'es' 
-    ? 'Te contactaremos lo antes posible' 
-    : 'We will contact you as soon as possible'}
-</p>
+// Antes
+{language === 'es' ? 'Mensaje' : 'Message'} *
+
+// Despues
+{language === 'es' ? '¿En qué podemos ayudarte?' : 'How can we help you?'} *
+```
+
+### 2. Placeholder del Textarea (Linea 173)
+
+```tsx
+// Antes
+placeholder={language === 'es' ? 'Cuéntanos cómo podemos ayudarte...' : 'Tell us how we can help you...'}
+
+// Despues
+placeholder={language === 'es' ? 'Cuéntanos tus dudas o lo que necesitas, estamos aquí para ti...' : "Tell us your questions or what you need, we're here for you..."}
 ```
 
 ---
 
-## Estructura Resultante
+## Textos Finales
 
-```tsx
-<div className="space-y-2">
-  <Label htmlFor="message">
-    {language === 'es' ? 'Mensaje' : 'Message'} *
-  </Label>
-  <Textarea
-    id="message"
-    ...
-  />
-</div>
-
-{/* NUEVO: Texto de ayuda */}
-<p className="text-sm text-muted-foreground">
-  {language === 'es' 
-    ? 'Te contactaremos lo antes posible' 
-    : 'We will contact you as soon as possible'}
-</p>
-
-<Button type="submit" ...>
-  ...
-</Button>
-```
-
----
-
-## Estilos Aplicados
-
-| Clase | Efecto |
-|-------|--------|
-| `text-sm` | Texto pequeño (14px) |
-| `text-muted-foreground` | Color gris suave del tema (variable CSS) |
-
-El texto heredara el espaciado del `space-y-5` del formulario, manteniendo consistencia visual.
+| Elemento | Español | Ingles |
+|----------|---------|--------|
+| Label | ¿En que podemos ayudarte? * | How can we help you? * |
+| Placeholder | Cuentanos tus dudas o lo que necesitas, estamos aqui para ti... | Tell us your questions or what you need, we're here for you... |
 
 ---
 
 ## Archivo Modificado
 
-- `src/pages/Contact.tsx` (1 elemento `<p>` nuevo)
+- `src/pages/Contact.tsx` (2 cambios de texto)
 
