@@ -1,61 +1,80 @@
 
-# Plan: Ajustes de Consistencia Visual en Contacto
+
+# Plan: Estilizar Boton WhatsApp y Alinear Botones
 
 ## Resumen
 
-Aplicar dos ajustes de estilo en la pagina `/contacto` para mejorar la consistencia visual entre las dos secciones principales.
+Dos cambios en `/contacto`: unificar el estilo del boton de WhatsApp con el de "Enviar Mensaje" y alinear ambos botones a la misma altura visual.
 
 ---
 
 ## Cambios a Realizar
 
-### 1. Boton "Enviar Mensaje" - Border Radius
+### 1. Color del Boton WhatsApp
 
 **Archivo:** `src/pages/Contact.tsx`
 
-**Linea 179-190:** El boton actualmente usa la clase `btn-gradient` sin especificar border-radius. El boton de WhatsApp usa `rounded-full`.
+**Linea 288-296:** El boton de WhatsApp actualmente usa colores verdes personalizados.
 
-**Cambio:**
 ```tsx
-// Antes (linea 181)
-className="w-full btn-gradient"
+// Antes
+className="flex items-center justify-center gap-2 w-full py-3 px-4 bg-[#25D366] hover:bg-[#22c55e] text-white rounded-full font-medium transition-colors"
 
-// Despues
-className="w-full btn-gradient rounded-full"
+// Despues - usar btn-gradient igual que "Enviar Mensaje"
+className="flex items-center justify-center gap-2 w-full py-3 px-4 btn-gradient rounded-full font-medium transition-colors"
 ```
+
+El icono de WhatsApp (MessageCircle) y el texto se mantienen sin cambios.
 
 ---
 
-### 2. Consistencia Entre Cards
+### 2. Alinear Botones Horizontalmente
 
-Ambas cards ya tienen estilos similares, pero hay que asegurar que tengan la misma altura minima para verse alineadas.
+Para que ambos botones queden a la misma altura, necesitamos que ambas cards usen flexbox con distribucion vertical y empujen el boton hacia abajo.
 
-**Estado actual de ambas cards:**
-- Card izquierda (linea 103): `bg-card rounded-2xl p-6 md:p-8 shadow-sm border border-border`
-- Card derecha (linea 199): `bg-card rounded-2xl p-6 md:p-8 shadow-sm border border-border`
-
-Los estilos base son identicos. El problema es que tienen contenido de diferente tamaño, por lo que una puede verse mas corta que la otra.
-
-**Solucion:** Agregar `h-full` a ambas cards para que ocupen el 100% de la altura disponible en el grid, asegurando que se vean parejas.
-
-**Cambios:**
-
+**Card izquierda (formulario) - Linea 103:**
 ```tsx
-// Card izquierda (linea 103)
 // Antes
-className="bg-card rounded-2xl p-6 md:p-8 shadow-sm border border-border"
-
-// Despues
 className="bg-card rounded-2xl p-6 md:p-8 shadow-sm border border-border h-full"
+
+// Despues - agregar flex flex-col
+className="bg-card rounded-2xl p-6 md:p-8 shadow-sm border border-border h-full flex flex-col"
 ```
 
+**Form dentro de la card - Linea 109:**
 ```tsx
-// Card derecha (linea 199)
 // Antes
-className="bg-card rounded-2xl p-6 md:p-8 shadow-sm border border-border"
+<form onSubmit={handleSubmit} className="space-y-5">
 
-// Despues
+// Despues - agregar flex-1 flex flex-col
+<form onSubmit={handleSubmit} className="space-y-5 flex-1 flex flex-col">
+```
+
+**Boton "Enviar Mensaje" - Linea 179:**
+```tsx
+// Antes
+<Button type="submit" className="w-full btn-gradient rounded-full" ...>
+
+// Despues - agregar mt-auto para empujar al fondo
+<Button type="submit" className="w-full btn-gradient rounded-full mt-auto" ...>
+```
+
+**Card derecha (info contacto) - Linea 199:**
+```tsx
+// Antes
 className="bg-card rounded-2xl p-6 md:p-8 shadow-sm border border-border h-full"
+
+// Despues - agregar flex flex-col
+className="bg-card rounded-2xl p-6 md:p-8 shadow-sm border border-border h-full flex flex-col"
+```
+
+**Seccion WhatsApp CTA - Linea 282:**
+```tsx
+// Antes
+<div className="mt-8 pt-6 border-t border-border">
+
+// Despues - agregar mt-auto para empujar al fondo
+<div className="mt-auto pt-6 border-t border-border">
 ```
 
 ---
@@ -64,12 +83,25 @@ className="bg-card rounded-2xl p-6 md:p-8 shadow-sm border border-border h-full"
 
 | Elemento | Cambio |
 |----------|--------|
-| Boton "Enviar Mensaje" | Agregar `rounded-full` para igualar el border-radius del boton de WhatsApp |
-| Card "Envíanos un Mensaje" | Agregar `h-full` para altura consistente |
-| Card "Información de Contacto" | Agregar `h-full` para altura consistente |
+| Boton WhatsApp | Reemplazar `bg-[#25D366] hover:bg-[#22c55e] text-white` por `btn-gradient` |
+| Card formulario | Agregar `flex flex-col` |
+| Form | Agregar `flex-1 flex flex-col` |
+| Boton Enviar | Agregar `mt-auto` |
+| Card info contacto | Agregar `flex flex-col` |
+| Seccion WhatsApp | Cambiar `mt-8` por `mt-auto` |
 
 ---
 
-## Archivos Modificados
+## Resultado Visual
 
-- `src/pages/Contact.tsx` (3 cambios menores de clases CSS)
+Ambos botones quedaran:
+- Con el mismo estilo de degradado (btn-gradient)
+- Con el mismo border-radius (rounded-full)
+- Alineados horizontalmente en la parte inferior de sus respectivas cards
+
+---
+
+## Archivo Modificado
+
+- `src/pages/Contact.tsx` (6 cambios de clases CSS)
+
