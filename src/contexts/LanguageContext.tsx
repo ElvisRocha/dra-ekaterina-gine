@@ -170,6 +170,7 @@ const translations: Translations = {
   'form.no': { es: 'No', en: 'No' },
   'form.submit': { es: 'Guardar datos', en: 'Save information' },
   'form.success': { es: '¡Datos guardados correctamente! Gracias por completar su información.', en: 'Information saved successfully! Thank you for completing your details.' },
+  'form.lockedField': { es: 'Este dato fue proporcionado al agendar su cita', en: 'This information was provided when booking your appointment' },
   
   // Notes
   'notes.vph': { 

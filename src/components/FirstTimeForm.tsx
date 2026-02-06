@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
+import { Lock } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -132,12 +133,16 @@ const FirstTimeForm = ({ isOpen, onComplete, initialData }: FirstTimeFormProps) 
             {/* Basic Info */}
             <div className="grid md:grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="fullName">{t('booking.fullName')}</Label>
+                <Label htmlFor="fullName" className="flex items-center gap-1">
+                  {t('booking.fullName')}
+                  <Lock className="h-3 w-3 text-muted-foreground" />
+                </Label>
                 <Input
                   id="fullName"
                   value={formData.fullName}
-                  onChange={(e) => updateField('fullName', e.target.value)}
-                  className="mt-1"
+                  disabled
+                  className="mt-1 bg-muted text-muted-foreground cursor-not-allowed"
+                  title={t('form.lockedField')}
                 />
               </div>
               <div>
@@ -154,22 +159,30 @@ const FirstTimeForm = ({ isOpen, onComplete, initialData }: FirstTimeFormProps) 
 
             <div className="grid md:grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="idNumber">{t('booking.id')}</Label>
+                <Label htmlFor="idNumber" className="flex items-center gap-1">
+                  {t('booking.id')}
+                  <Lock className="h-3 w-3 text-muted-foreground" />
+                </Label>
                 <Input
                   id="idNumber"
                   value={formData.idNumber}
-                  onChange={(e) => updateField('idNumber', e.target.value)}
-                  className="mt-1"
+                  disabled
+                  className="mt-1 bg-muted text-muted-foreground cursor-not-allowed"
+                  title={t('form.lockedField')}
                 />
               </div>
               <div>
-                <Label htmlFor="phone">{t('booking.phone')}</Label>
+                <Label htmlFor="phone" className="flex items-center gap-1">
+                  {t('booking.phone')}
+                  <Lock className="h-3 w-3 text-muted-foreground" />
+                </Label>
                 <Input
                   id="phone"
                   type="tel"
                   value={formData.phone}
-                  onChange={(e) => updateField('phone', e.target.value)}
-                  className="mt-1"
+                  disabled
+                  className="mt-1 bg-muted text-muted-foreground cursor-not-allowed"
+                  title={t('form.lockedField')}
                 />
               </div>
             </div>
