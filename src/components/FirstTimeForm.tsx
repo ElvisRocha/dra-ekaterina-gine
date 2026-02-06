@@ -19,6 +19,8 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 interface FirstTimeFormProps {
   isOpen: boolean;
   onComplete: () => void;
+  onBack: () => void;
+  onClose: () => void;
   initialData: {
     fullName: string;
     idNumber: string;
@@ -26,7 +28,7 @@ interface FirstTimeFormProps {
   };
 }
 
-const FirstTimeForm = ({ isOpen, onComplete, initialData }: FirstTimeFormProps) => {
+const FirstTimeForm = ({ isOpen, onComplete, onBack, onClose, initialData }: FirstTimeFormProps) => {
   const { t, language } = useLanguage();
   const [formData, setFormData] = useState({
     fullName: initialData.fullName,
@@ -131,7 +133,7 @@ const FirstTimeForm = ({ isOpen, onComplete, initialData }: FirstTimeFormProps) 
   );
 
   return (
-    <Dialog open={isOpen} onOpenChange={() => {}}>
+    <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="max-w-2xl max-h-[90vh] p-0">
         <DialogHeader className="p-6 pb-0">
           <DialogTitle className="font-display text-xl text-foreground flex items-center gap-2">
@@ -389,8 +391,19 @@ const FirstTimeForm = ({ isOpen, onComplete, initialData }: FirstTimeFormProps) 
               />
             </div>
 
-            <div className="pt-4 pb-6">
-              <Button type="submit" className="w-full btn-gradient">
+            <div className="flex gap-3 pt-4 pb-6">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={onBack}
+                className="flex-1 h-12 rounded-full btn-outline-gradient"
+              >
+                <span>{t('booking.back')}</span>
+              </Button>
+              <Button
+                type="submit"
+                className="flex-1 h-12 rounded-full btn-gradient"
+              >
                 <span>{t('form.submit')}</span>
               </Button>
             </div>
