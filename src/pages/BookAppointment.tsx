@@ -167,6 +167,15 @@ const BookAppointmentContent = () => {
     });
   };
 
+  const handleFirstTimeFormBack = () => {
+    setShowFirstTimeForm(false);
+    setShowNewPatientModal(true);
+  };
+
+  const handleFirstTimeFormClose = () => {
+    setShowFirstTimeForm(false);
+  };
+
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <BookingNavbar />
@@ -263,6 +272,8 @@ const BookAppointmentContent = () => {
       <FirstTimeForm
         isOpen={showFirstTimeForm}
         onComplete={handleFirstTimeFormComplete}
+        onBack={handleFirstTimeFormBack}
+        onClose={handleFirstTimeFormClose}
         initialData={{
           fullName: patientData.fullName,
           idNumber: patientData.identification,
