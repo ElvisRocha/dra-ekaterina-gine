@@ -51,11 +51,11 @@ const ServiceStep = ({ selectedService, onSelectService, onNext }: ServiceStepPr
         </p>
       </div>
 
-      {/* Main card container with services and info panel inside */}
+      {/* Main card container with services and info panel inside - 60/40 split */}
       <div className="bg-card rounded-2xl border border-border overflow-hidden">
-        <div className="flex flex-col xl:flex-row">
-          {/* Services accordion section */}
-          <div className="flex-1 p-4 xl:p-6">
+        <div className="flex flex-col xl:grid xl:grid-cols-[60%_40%]">
+          {/* Services accordion section - 60% */}
+          <div className="p-4 xl:p-6">
             <Accordion type="single" collapsible className="space-y-3">
               {categories.map((category) => {
                 const categoryServices = getCategoryServices(category.key);
@@ -124,15 +124,15 @@ const ServiceStep = ({ selectedService, onSelectService, onNext }: ServiceStepPr
             </Accordion>
           </div>
 
-          {/* Service Info Panel - inside the card (Desktop) */}
+          {/* Service Info Panel - inside the card (Desktop) - 40% */}
           <AnimatePresence>
             {selectedService && (
               <motion.div
-                initial={{ opacity: 0, width: 0 }}
-                animate={{ opacity: 1, width: 'auto' }}
-                exit={{ opacity: 0, width: 0 }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
                 transition={{ duration: 0.3 }}
-                className="hidden xl:block xl:w-80 border-l border-border bg-blush/50 overflow-hidden"
+                className="hidden xl:block border-l border-border bg-blush/50 overflow-hidden"
               >
                 <div className="p-6 h-full">
                   <ServiceInfoPanel
