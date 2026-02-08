@@ -5,7 +5,6 @@ import HeroSection from '@/components/HeroSection';
 import WhyChooseUs from '@/components/WhyChooseUs';
 import ServicesSection from '@/components/ServicesSection';
 import TestimonialsSection from '@/components/TestimonialsSection';
-import FAQ from '@/components/FAQ';
 import FinalCTA from '@/components/FinalCTA';
 import Footer from '@/components/Footer';
 import type { Service } from '@/data/services';
@@ -28,7 +27,6 @@ const IndexContent = () => {
       <WhyChooseUs onBookClick={handleBookClick} />
       <ServicesSection onBookService={handleBookService} />
       <TestimonialsSection />
-      <FAQ onBookClick={handleBookClick} />
       <FinalCTA onBookClick={handleBookClick} />
       <Footer />
     </div>

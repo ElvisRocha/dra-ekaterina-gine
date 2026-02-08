@@ -174,115 +174,13 @@ const translations: Translations = {
   'form.lockedField': { es: 'Este dato fue proporcionado al agendar su cita', en: 'This information was provided when booking your appointment' },
   
   // Notes
-  'notes.vph': {
-    es: 'La prueba de VPH vale ₡50.000, no se realiza sola, sino en conjunto con consulta u otra cosa.',
-    en: 'The HPV test costs ₡50,000, it is not performed alone, but in conjunction with a consultation or another service.'
+  'notes.vph': { 
+    es: 'La prueba de VPH vale ₡50.000, no se realiza sola, sino en conjunto con consulta u otra cosa.', 
+    en: 'The HPV test costs ₡50,000, it is not performed alone, but in conjunction with a consultation or another service.' 
   },
-  'notes.diu': {
-    es: 'Retiro de DIU + Colocación de otro: no se cobra el retiro, solo el costo del DIU.',
-    en: 'IUD removal + Placement of another: removal is not charged, only the cost of the IUD.'
-  },
-
-  // FAQ
-  'faq.title': {
-    es: '¿Tienes dudas? Estamos aquí para ayudarte',
-    en: 'Have questions? We\'re here to help',
-  },
-  'faq.subtitle': {
-    es: 'Resolvemos las preguntas más frecuentes sobre nuestros servicios ginecológicos y obstétricos',
-    en: 'We answer the most frequently asked questions about our gynecological and obstetric services',
-  },
-  'faq.q1': {
-    es: '¿Cuándo debo realizar mi primera consulta ginecológica?',
-    en: 'When should I have my first gynecological consultation?',
-  },
-  'faq.a1': {
-    es: 'Se recomienda la primera visita ginecológica al inicio de la vida sexual activa o a partir de los 21 años. Las consultas anuales son fundamentales para la prevención y detección temprana de cualquier anomalía. En nuestra clínica ofrecemos un ambiente cálido y profesional para que te sientas cómoda en cada visita.',
-    en: 'The first gynecological visit is recommended at the start of sexual activity or from age 21. Annual consultations are essential for prevention and early detection of any abnormalities. At our clinic, we offer a warm and professional environment so you feel comfortable at every visit.',
-  },
-  'faq.q2': {
-    es: '¿Qué incluye una consulta ginecológica completa?',
-    en: 'What does a complete gynecological consultation include?',
-  },
-  'faq.a2': {
-    es: 'Nuestra consulta incluye: evaluación del historial médico, examen físico general, exploración ginecológica, Papanicolaou (si corresponde), ultrasonido si es necesario, y orientación personalizada sobre anticoncepción, salud sexual y bienestar femenino. Utilizamos tecnología 3D/4D para diagnósticos más precisos.',
-    en: 'Our consultation includes: medical history evaluation, general physical exam, gynecological examination, Pap smear (if applicable), ultrasound if necessary, and personalized guidance on contraception, sexual health, and women\'s wellness. We use 3D/4D technology for more precise diagnoses.',
-  },
-  'faq.q3': {
-    es: '¿Con qué frecuencia debo hacerme un ultrasonido ginecológico?',
-    en: 'How often should I get a gynecological ultrasound?',
-  },
-  'faq.a3': {
-    es: 'La frecuencia depende de tu edad, historial médico y síntomas. Generalmente se recomienda anualmente como parte del chequeo preventivo, o según indicación médica si presentas síntomas específicos. Contamos con equipos de última generación para diagnósticos precisos.',
-    en: 'The frequency depends on your age, medical history, and symptoms. It is generally recommended annually as part of a preventive checkup, or as medically indicated if you have specific symptoms. We have state-of-the-art equipment for precise diagnoses.',
-  },
-  'faq.q4': {
-    es: '¿Qué diferencia hay entre un ultrasonido 3D y 4D?',
-    en: 'What is the difference between a 3D and 4D ultrasound?',
-  },
-  'faq.a4': {
-    es: 'El ultrasonido 3D ofrece imágenes tridimensionales estáticas del bebé, mientras que el 4D muestra imágenes en movimiento en tiempo real. Ambos permiten visualizar con mayor detalle estructuras anatómicas y detectar posibles anomalías. Son especialmente emotivos para los futuros padres al ver a su bebé con mayor claridad.',
-    en: 'The 3D ultrasound provides static three-dimensional images of the baby, while the 4D shows moving images in real time. Both allow more detailed visualization of anatomical structures and detection of possible abnormalities. They are especially emotional for expecting parents as they see their baby more clearly.',
-  },
-  'faq.q5': {
-    es: '¿Cuándo debo empezar mi control prenatal?',
-    en: 'When should I start my prenatal care?',
-  },
-  'faq.a5': {
-    es: 'Lo ideal es iniciar el control prenatal tan pronto sepas que estás embarazada, preferiblemente antes de las 12 semanas de gestación. El seguimiento temprano permite detectar y prevenir complicaciones, asegurando la salud tanto de la madre como del bebé.',
-    en: 'Ideally, prenatal care should start as soon as you know you are pregnant, preferably before 12 weeks of gestation. Early monitoring helps detect and prevent complications, ensuring the health of both mother and baby.',
-  },
-  'faq.q6': {
-    es: '¿Qué métodos anticonceptivos ofrecen y cuál es el mejor para mí?',
-    en: 'What contraceptive methods do you offer, and which is best for me?',
-  },
-  'faq.a6': {
-    es: 'Ofrecemos asesoría completa sobre todos los métodos anticonceptivos disponibles: pastillas, inyecciones, DIU (incluyendo colocación de dispositivos), implantes, y métodos de barrera. La elección del mejor método depende de tu edad, historial médico, estilo de vida y planes futuros. Juntas encontraremos la opción ideal para ti.',
-    en: 'We offer complete advice on all available contraceptive methods: pills, injections, IUDs (including device placement), implants, and barrier methods. Choosing the best method depends on your age, medical history, lifestyle, and future plans. Together, we will find the ideal option for you.',
-  },
-  'faq.q7': {
-    es: '¿Realizan procedimientos de colposcopia? ¿Cuándo es necesaria?',
-    en: 'Do you perform colposcopy procedures? When is it necessary?',
-  },
-  'faq.a7': {
-    es: 'Sí, realizamos colposcopias cuando los resultados del Papanicolaou muestran células anormales o si hay hallazgos sospechosos durante el examen. Es un procedimiento seguro, rápido y fundamental para la prevención del cáncer cervical. Contamos con equipamiento especializado para garantizar tu comodidad.',
-    en: 'Yes, we perform colposcopies when Pap smear results show abnormal cells or if there are suspicious findings during the exam. It is a safe, quick procedure essential for cervical cancer prevention. We have specialized equipment to ensure your comfort.',
-  },
-  'faq.q8': {
-    es: '¿Qué debo llevar a mi primera cita?',
-    en: 'What should I bring to my first appointment?',
-  },
-  'faq.a8': {
-    es: 'Te recomendamos traer: resultados de exámenes previos (si los tienes), lista de medicamentos que tomas actualmente, información sobre tu historial médico familiar, y cualquier duda o síntoma que quieras consultar. Si es control prenatal, trae también tu test de embarazo positivo.',
-    en: 'We recommend bringing: previous exam results (if you have them), a list of medications you currently take, information about your family medical history, and any questions or symptoms you want to discuss. If it is prenatal care, also bring your positive pregnancy test.',
-  },
-  'faq.q9': {
-    es: '¿Aceptan seguros médicos o solo pago privado?',
-    en: 'Do you accept medical insurance or only private payment?',
-  },
-  'faq.a9': {
-    es: 'Trabajamos tanto con seguros médicos como con pagos privados. Contáctanos para verificar si tu seguro está dentro de nuestra red de proveedores. Ofrecemos diferentes opciones de pago para tu comodidad.',
-    en: 'We work with both medical insurance and private payments. Contact us to verify if your insurance is within our provider network. We offer different payment options for your convenience.',
-  },
-  'faq.q10': {
-    es: '¿Cómo puedo prepararme para un ultrasonido pélvico?',
-    en: 'How can I prepare for a pelvic ultrasound?',
-  },
-  'faq.a10': {
-    es: 'Para ultrasonidos pélvicos transabdominales es necesario acudir con la vejiga llena (tomar 4-6 vasos de agua 1 hora antes). Para ultrasonidos transvaginales no se requiere preparación especial. Te indicaremos las instrucciones específicas al agendar tu cita.',
-    en: 'For transabdominal pelvic ultrasounds, you need to come with a full bladder (drink 4-6 glasses of water 1 hour before). For transvaginal ultrasounds, no special preparation is required. We will provide specific instructions when you schedule your appointment.',
-  },
-  'faq.ctaTitle': {
-    es: '¿No encontraste respuesta a tu pregunta?',
-    en: 'Didn\'t find the answer to your question?',
-  },
-  'faq.ctaDescription': {
-    es: 'Estamos aquí para resolver todas tus dudas. Agenda tu cita y conversemos personalmente sobre tu salud y bienestar.',
-    en: 'We\'re here to answer all your questions. Book your appointment and let\'s talk personally about your health and well-being.',
-  },
-  'faq.ctaButton': {
-    es: 'Agendar mi consulta',
-    en: 'Book my consultation',
+  'notes.diu': { 
+    es: 'Retiro de DIU + Colocación de otro: no se cobra el retiro, solo el costo del DIU.', 
+    en: 'IUD removal + Placement of another: removal is not charged, only the cost of the IUD.' 
   },
 };
 

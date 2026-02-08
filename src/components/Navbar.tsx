@@ -88,9 +88,6 @@ const Navbar = ({ onBookClick }: NavbarProps) => {
               <Instagram className="w-5 h-5" />
             </a>
 
-            {/* Divider */}
-            <div className="h-6 w-px bg-border" />
-
             {/* CTA Button */}
             <Button
               onClick={onBookClick}
