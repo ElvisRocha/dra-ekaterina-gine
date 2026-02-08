@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
+import { Stethoscope } from 'lucide-react';
 import heroBackground from '@/assets/hero-background.jpeg';
 
 interface HeroSectionProps {
@@ -64,7 +65,7 @@ const HeroSection = ({ onBookClick }: HeroSectionProps) => {
                 className="btn-gradient text-lg px-10 py-6 rounded-full"
               >
                 <span className="flex items-center gap-2">
-                  <span>🩺</span>
+                  <Stethoscope className="!size-5 text-white" />
                   {t('hero.cta')}
                 </span>
               </Button>
