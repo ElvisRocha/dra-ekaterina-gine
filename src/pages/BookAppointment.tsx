@@ -29,7 +29,8 @@ const BookAppointmentContent = () => {
   
   // Step state
   const [currentStep, setCurrentStep] = useState(1);
-  
+  const [completedSteps, setCompletedSteps] = useState<number[]>([]);
+
   // Form data
   const [selectedService, setSelectedService] = useState<Service | null>(null);
   const [patientData, setPatientData] = useState<PatientData>({
@@ -60,10 +61,34 @@ const BookAppointmentContent = () => {
   }, [searchParams]);
 
   const handleSelectService = (service: Service) => {
+    const serviceChanged = selectedService?.id !== service.id;
     setSelectedService(service);
-    // Reset date/time when service changes
-    setSelectedDate(null);
-    setSelectedTime(null);
+    if (serviceChanged) {
+      // Reset date/time when service changes
+      setSelectedDate(null);
+      setSelectedTime(null);
+      // Remove steps 3+ from completed since date/time are reset
+      setCompletedSteps(prev => prev.filter(s => s < 3));
+    }
+  };
+
+  // Mark current step as completed and advance to next step
+  const goToStep = (nextStep: number) => {
+    setCompletedSteps(prev => {
+      const newCompleted = new Set(prev);
+      newCompleted.add(currentStep);
+      return Array.from(newCompleted);
+    });
+    setCurrentStep(nextStep);
+  };
+
+  // Handle stepper click navigation
+  const handleStepClick = (stepNumber: number) => {
+    if (stepNumber === currentStep) return;
+    const maxCompleted = completedSteps.length > 0 ? Math.max(...completedSteps) : 0;
+    if (stepNumber <= maxCompleted + 1) {
+      setCurrentStep(stepNumber);
+    }
   };
 
   const handleConfirm = async () => {
@@ -171,9 +196,13 @@ const BookAppointmentContent = () => {
 
       <div className="flex-1 pt-20">
         {/* Step Indicator */}
-        <div className="border-b border-border bg-background">
+        <div className="bg-background">
           <div className="container mx-auto">
-            <StepIndicator currentStep={currentStep} />
+            <StepIndicator
+              currentStep={currentStep}
+              completedSteps={completedSteps}
+              onStepClick={handleStepClick}
+            />
           </div>
         </div>
 
@@ -187,7 +216,7 @@ const BookAppointmentContent = () => {
                   key="service"
                   selectedService={selectedService}
                   onSelectService={handleSelectService}
-                  onNext={() => setCurrentStep(2)}
+                  onNext={() => goToStep(2)}
                 />
               )}
               
@@ -196,7 +225,7 @@ const BookAppointmentContent = () => {
                   key="patient"
                   patientData={patientData}
                   onUpdatePatientData={setPatientData}
-                  onNext={() => setCurrentStep(3)}
+                  onNext={() => goToStep(3)}
                   onBack={() => setCurrentStep(1)}
                 />
               )}
@@ -209,7 +238,7 @@ const BookAppointmentContent = () => {
                   selectedTime={selectedTime}
                   onSelectDate={setSelectedDate}
                   onSelectTime={setSelectedTime}
-                  onNext={() => setCurrentStep(4)}
+                  onNext={() => goToStep(4)}
                   onBack={() => setCurrentStep(2)}
                 />
               )}
