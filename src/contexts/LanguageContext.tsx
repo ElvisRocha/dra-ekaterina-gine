@@ -79,6 +79,7 @@ const translations: Translations = {
   'footer.contact': { es: 'Contacto', en: 'Contact' },
   'footer.hours': { es: 'Horario de Atención', en: 'Office Hours' },
   'footer.rights': { es: 'Todos los derechos reservados', en: 'All rights reserved' },
+  'footer.madeBy': { es: 'Hecho por', en: 'Made by' },
   
   // Booking Page
   'booking.title': { es: 'Agendar Cita', en: 'Book Appointment' },

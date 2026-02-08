@@ -68,9 +68,20 @@ const Footer = () => {
         </div>
 
         {/* Bottom Bar — uses box-shadow instead of border to avoid sub-pixel rendering artifacts */}
-        <div className="pt-8" style={{ boxShadow: 'inset 0 1px 0 0 rgba(255,255,255,0.1)' }}>
-          <p className="text-center text-cream/50 text-sm">
+        <div className="pt-8 flex flex-col md:flex-row md:justify-between md:items-center gap-2" style={{ boxShadow: 'inset 0 1px 0 0 rgba(255,255,255,0.1)' }}>
+          <p className="text-center md:text-left text-cream/50 text-sm">
             © 2025 Dra. Ekaterina Malaspina Riazanova — Clínica Esperanza. {t('footer.rights')}.
+          </p>
+          <p className="text-center md:text-right text-cream/50 text-sm">
+            {t('footer.madeBy')}{' '}
+            <a
+              href="https://www.smartflow-automations.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-cream/50 hover:text-cream/80 hover:underline transition-colors"
+            >
+              SmartFlow Automations
+            </a>
           </p>
         </div>
       </div>
