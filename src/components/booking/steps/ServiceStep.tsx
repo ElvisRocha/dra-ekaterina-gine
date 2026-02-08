@@ -68,12 +68,12 @@ const ServiceStep = ({ selectedService, onSelectService, onNext }: ServiceStepPr
                     className="border border-border rounded-xl overflow-hidden bg-card"
                   >
                     <AccordionTrigger className="px-4 py-4 hover:no-underline hover:bg-secondary/50 transition-colors">
-                      <div className="flex items-center gap-3">
-                        <span className="text-xl">{category.icon}</span>
-                        <span className="font-medium text-foreground">
+                      <div className="flex items-center gap-3 flex-1 min-w-0">
+                        <span className="text-xl flex-shrink-0">{category.icon}</span>
+                        <span className="font-medium text-foreground flex-1 min-w-0 text-left">
                           {t(`cat.${category.key}`)}
                         </span>
-                        <span className="text-xs text-muted-foreground bg-secondary px-2 py-0.5 rounded-full">
+                        <span className="text-xs text-muted-foreground bg-secondary px-2 py-0.5 rounded-full flex-shrink-0">
                           {categoryServices.length}
                         </span>
                       </div>

@@ -76,12 +76,12 @@ const ServicesSection = ({ onBookService }: ServicesSectionProps) => {
                   className="border border-border rounded-2xl overflow-hidden bg-card shadow-soft"
                 >
                   <AccordionTrigger className="px-6 py-5 hover:no-underline hover:bg-secondary/50 transition-colors">
-                    <div className="flex items-center gap-4">
-                      <span className="text-2xl">{category.icon}</span>
-                      <span className="font-display text-xl text-foreground">
+                    <div className="flex items-center gap-4 flex-1 min-w-0">
+                      <span className="text-2xl flex-shrink-0">{category.icon}</span>
+                      <span className="font-display text-xl text-foreground flex-1 min-w-0 text-left">
                         {t(`cat.${category.key}`)}
                       </span>
-                      <span className="text-sm text-muted-foreground bg-secondary px-3 py-1 rounded-full">
+                      <span className="text-sm text-muted-foreground bg-secondary px-3 py-1 rounded-full flex-shrink-0">
                         {categoryServices.length}
                       </span>
                     </div>
