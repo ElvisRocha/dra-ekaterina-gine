@@ -29,7 +29,7 @@ const FinalCTA = ({ onBookClick }: FinalCTAProps) => {
           {/* Decorative */}
           <div className="flex items-center justify-center gap-4 mb-8">
             <div className="h-px w-16 bg-gradient-to-r from-transparent to-white/50" />
-            <span className="text-3xl">🌷</span>
+            <img src="/src/assets/Isotipo.png" alt="" class="h-40 w-auto mb-4 brightness-0 invert opacity-90"></img>
             <div className="h-px w-16 bg-gradient-to-l from-transparent to-white/50" />
           </div>
 

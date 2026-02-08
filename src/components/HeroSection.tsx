@@ -39,7 +39,7 @@ const HeroSection = ({ onBookClick }: HeroSectionProps) => {
             {/* Decorative Line */}
             <div className="flex items-center justify-center gap-4 mb-8">
               <div className="h-px w-16 bg-gradient-to-r from-transparent to-coral" />
-              <span className="text-coral text-lg">🌷</span>
+              <img src="/src/assets/Isotipo.png" alt="" class="h-40 w-auto mb-1"></img>
               <div className="h-px w-16 bg-gradient-to-l from-transparent to-coral" />
             </div>
 

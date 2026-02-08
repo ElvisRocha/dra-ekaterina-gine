@@ -46,7 +46,7 @@ const FAQ = ({ onBookClick }: FAQProps) => {
         >
           <div className="flex items-center justify-center gap-4 mb-6">
             <div className="h-px w-16 bg-gradient-to-r from-transparent to-coral/50" />
-            <img src="/assets/Isotipo.png" alt="" className="w-10 h-10" />
+            <img src="/src/assets/Isotipo.png" alt="" className="w-10 h-10" />
             <div className="h-px w-16 bg-gradient-to-l from-transparent to-coral/50" />
           </div>
           <h2 className="font-display text-3xl md:text-4xl lg:text-5xl text-foreground mb-4">
