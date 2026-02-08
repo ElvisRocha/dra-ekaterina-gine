@@ -6,7 +6,7 @@ import { LanguageProvider, useLanguage } from '@/contexts/LanguageContext';
 import { services, type Service } from '@/data/services';
 import { useToast } from '@/hooks/use-toast';
 
-import BookingNavbar from '@/components/booking/BookingNavbar';
+import Navbar from '@/components/Navbar';
 import StepIndicator from '@/components/booking/StepIndicator';
 import ServiceStep from '@/components/booking/steps/ServiceStep';
 import PatientDataStep from '@/components/booking/steps/PatientDataStep';
@@ -161,11 +161,15 @@ const BookAppointmentContent = () => {
     });
   };
 
+  const handleBookClick = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      <BookingNavbar />
-      
-      <div className="flex-1">
+      <Navbar onBookClick={handleBookClick} />
+
+      <div className="flex-1 pt-20">
         {/* Step Indicator */}
         <div className="border-b border-border bg-background">
           <div className="container mx-auto">
