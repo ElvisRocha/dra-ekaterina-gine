@@ -17,6 +17,7 @@ import { Clock, DollarSign, Check } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Card } from '@/components/ui/card';
 import ServiceInfoPanel from '@/components/booking/ServiceInfoPanel';
+import IsotipoImg from '@/assets/Isotipo.png';
 
 interface ServiceStepProps {
   selectedService: Service | null;
@@ -146,13 +147,21 @@ const ServiceStep = ({ selectedService, onSelectService, onNext }: ServiceStepPr
                 <motion.div
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  className="h-full min-h-[200px] flex items-center justify-center border border-dashed border-border rounded-2xl bg-muted/30"
+                  className="h-full min-h-[200px] flex flex-col items-center justify-center border border-dashed border-border rounded-2xl bg-muted/30"
                 >
                   <p className="text-muted-foreground text-sm text-center px-4">
-                    {language === 'es' 
-                      ? 'Selecciona un servicio para ver más información' 
+                    {language === 'es'
+                      ? 'Selecciona un servicio para ver más información'
                       : 'Select a service to see more information'}
                   </p>
+                  <motion.img
+                    src={IsotipoImg}
+                    alt="Isotipo clínica"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 0.65 }}
+                    transition={{ duration: 0.6, delay: 0.2 }}
+                    className="mt-6 w-[130px] h-auto"
+                  />
                 </motion.div>
               )}
             </AnimatePresence>
