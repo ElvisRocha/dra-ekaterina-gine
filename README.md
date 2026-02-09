@@ -1,73 +1,144 @@
-# Welcome to your Lovable project
+# Clínica Esperanza - Sistema de Reservas
 
-## Project info
+Sistema web de gestión de citas para la Clínica Esperanza de la Dra. Ekaterina Malaspina Riazanova, especialista en Ginecología y Obstetricia.
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+## Descripción
 
-## How can I edit this code?
+Plataforma web moderna que permite a las pacientes:
+- Explorar servicios ginecológicos y obstétricos
+- Agendar citas en línea
+- Consultar disponibilidad en tiempo real
+- Gestionar su historial médico
+- Recibir confirmaciones automáticas
 
-There are several ways of editing your application.
+## Tecnologías
 
-**Use Lovable**
+- **Frontend**: React 18 + TypeScript
+- **Build Tool**: Vite
+- **Styling**: Tailwind CSS
+- **UI Components**: shadcn/ui (Radix UI)
+- **Routing**: React Router DOM
+- **Forms**: React Hook Form + Zod
+- **Animations**: Framer Motion
+- **Icons**: Lucide React
+- **Date Handling**: date-fns
+- **State Management**: React Context + TanStack Query
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+## Instalación
 
-Changes made via Lovable will be committed automatically to this repo.
+### Prerrequisitos
 
-**Use your preferred IDE**
+- Node.js 18+
+- npm o yarn
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+### Pasos
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+1. Clonar el repositorio
+```bash
+git clone <repo-url>
+cd clinica-esperanza
+```
 
-Follow these steps:
+2. Instalar dependencias
+```bash
+npm install
+```
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+3. Configurar variables de entorno
+```bash
+cp .env.example .env
+```
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
+4. Iniciar servidor de desarrollo
+```bash
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+El proyecto estará disponible en `http://localhost:8080`
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## Scripts Disponibles
 
-**Use GitHub Codespaces**
+- `npm run dev` - Inicia el servidor de desarrollo
+- `npm run build` - Genera build de producción
+- `npm run build:dev` - Build en modo desarrollo
+- `npm run preview` - Preview del build de producción
+- `npm run lint` - Ejecuta ESLint
+- `npm run test` - Ejecuta tests
+- `npm run test:watch` - Tests en modo watch
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## Estructura del Proyecto
 
-## What technologies are used for this project?
+```
+clinica-esperanza/
+├── public/              # Archivos estáticos (favicons, manifest)
+├── src/
+│   ├── assets/         # Imágenes y recursos
+│   ├── components/     # Componentes reutilizables
+│   │   ├── ui/        # Componentes base (shadcn/ui)
+│   │   └── booking/   # Componentes del sistema de reservas
+│   ├── contexts/      # React Context providers
+│   ├── data/          # Datos estáticos
+│   ├── hooks/         # Custom React hooks
+│   ├── lib/           # Utilidades
+│   ├── pages/         # Páginas principales
+│   ├── test/          # Configuración de tests
+│   ├── utils/         # Funciones utilitarias
+│   ├── App.tsx        # Componente principal
+│   └── main.tsx       # Entry point
+├── index.html         # HTML template
+├── vite.config.ts     # Configuración de Vite
+├── tailwind.config.ts # Configuración de Tailwind CSS
+└── tsconfig.json      # Configuración de TypeScript
+```
 
-This project is built with:
+## Deployment
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+### Build de producción
 
-## How can I deploy this project?
+```bash
+npm run build
+```
 
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
+Los archivos optimizados se generarán en `/dist`.
 
-## Can I connect a custom domain to my Lovable project?
+### Configuración de servidor (SPA)
 
-Yes, you can!
+**Nginx:**
+```nginx
+location / {
+  try_files $uri $uri/ /index.html;
+}
+```
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+**Apache (.htaccess):**
+```apache
+RewriteEngine On
+RewriteBase /
+RewriteRule ^index\.html$ - [L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . /index.html [L]
+```
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+## Características
+
+- Sistema de reservas multi-paso
+- Calendario de disponibilidad
+- Gestión de servicios
+- Formulario de historial médico
+- Diseño responsive
+- Multiidioma (ES/EN)
+
+## Licencia
+
+Copyright 2025 Clínica Esperanza. Todos los derechos reservados.
+
+## Desarrollo
+
+Desarrollado por [SmartFlow Automations](https://www.smartflow-automations.com)
+
+## Contacto
+
+- **Email**: info@clinicaesperanza.cr
+- **Dirección**: San José, Costa Rica
+- **Website**: https://clinicaesperanza.com
