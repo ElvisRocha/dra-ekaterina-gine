@@ -1,24 +1,25 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { Button } from '@/components/ui/button';
-import { 
+import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion';
-import { 
-  services, 
-  formatPrice, 
-  getCategoryServices, 
-  type Service 
+import {
+  services,
+  formatPrice,
+  getCategoryServices,
+  type Service
 } from '@/data/services';
-import { Clock, Check } from 'lucide-react';
+import { Clock, ChevronRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Card } from '@/components/ui/card';
 import ServiceInfoPanel from '@/components/booking/ServiceInfoPanel';
+import ServiceInfoModal from '@/components/booking/ServiceInfoModal';
 import IsotipoImg from '@/assets/Isotipo.png';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface ServiceStepProps {
   selectedService: Service | null;
@@ -28,9 +29,11 @@ interface ServiceStepProps {
 
 const ServiceStep = ({ selectedService, onSelectService, onNext }: ServiceStepProps) => {
   const { t, language } = useLanguage();
+  const isMobile = useIsMobile();
   const [expandedCategory, setExpandedCategory] = useState<string>(
     selectedService?.category ?? ''
   );
+  const [showMobileInfoModal, setShowMobileInfoModal] = useState(false);
   const hasAutoExpanded = useRef(false);
 
   // Auto-expand category when service is pre-selected (e.g., from URL params)
@@ -48,6 +51,21 @@ const ServiceStep = ({ selectedService, onSelectService, onNext }: ServiceStepPr
     { key: 'colposcopia' as const, icon: '🔎' },
   ];
 
+  const handleNextClick = () => {
+    if (!selectedService) return;
+
+    if (isMobile) {
+      setShowMobileInfoModal(true);
+    } else {
+      onNext();
+    }
+  };
+
+  const handleMobileModalContinue = () => {
+    setShowMobileInfoModal(false);
+    onNext();
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -60,8 +78,8 @@ const ServiceStep = ({ selectedService, onSelectService, onNext }: ServiceStepPr
           {t('booking.selectService')}
         </h2>
         <p className="text-muted-foreground text-sm">
-          {language === 'es' 
-            ? 'Elige el servicio que necesitas' 
+          {language === 'es'
+            ? 'Elige el servicio que necesitas'
             : 'Choose the service you need'}
         </p>
       </div>
@@ -122,9 +140,23 @@ const ServiceStep = ({ selectedService, onSelectService, onNext }: ServiceStepPr
                                   </div>
                                 </div>
                                 {isSelected && (
-                                  <div className="flex-shrink-0 w-5 h-5 rounded-full bg-primary flex items-center justify-center">
-                                    <Check className="w-3 h-3 text-primary-foreground" />
-                                  </div>
+                                  <motion.div
+                                    initial={{ opacity: 0, scale: 0.9 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    transition={{ duration: 0.2 }}
+                                    className="flex-shrink-0"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      handleNextClick();
+                                    }}
+                                  >
+                                    <span
+                                      className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-primary text-primary-foreground text-xs font-medium hover:bg-primary/90 transition-colors"
+                                    >
+                                      {t('booking.next')}
+                                      <ChevronRight className="w-3.5 h-3.5" />
+                                    </span>
+                                  </motion.div>
                                 )}
                               </div>
                             </button>
@@ -138,8 +170,8 @@ const ServiceStep = ({ selectedService, onSelectService, onNext }: ServiceStepPr
             </Accordion>
           </div>
 
-          {/* Service Info Panel - 40% */}
-          <div className="w-full lg:w-[40%]">
+          {/* Service Info Panel - 40% (desktop only) */}
+          <div className="hidden lg:block w-full lg:w-[40%]">
             <AnimatePresence mode="wait">
               {selectedService ? (
                 <motion.div
@@ -181,17 +213,13 @@ const ServiceStep = ({ selectedService, onSelectService, onNext }: ServiceStepPr
         </div>
       </Card>
 
-      {/* Next Button */}
-      <div className="pt-4">
-        <Button
-          onClick={onNext}
-          disabled={!selectedService}
-          className="w-full h-12 rounded-full btn-gradient font-medium"
-          size="lg"
-        >
-          <span>{t('booking.next')}</span>
-        </Button>
-      </div>
+      {/* Mobile service info modal */}
+      <ServiceInfoModal
+        isOpen={showMobileInfoModal}
+        service={selectedService}
+        onClose={() => setShowMobileInfoModal(false)}
+        onContinue={handleMobileModalContinue}
+      />
     </motion.div>
   );
 };

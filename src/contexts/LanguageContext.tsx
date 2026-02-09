@@ -112,6 +112,8 @@ const translations: Translations = {
   
   // Service info panel
   'serviceInfo.viewInfo': { es: 'Ver información del servicio', en: 'View service information' },
+  'serviceInfo.title': { es: 'Información del servicio', en: 'Service information' },
+  'serviceInfo.continue': { es: 'Continuar', en: 'Continue' },
   
   // Confirmation popup
   'confirm.greeting.morning': { es: '¡Buenos días!', en: 'Good morning!' },

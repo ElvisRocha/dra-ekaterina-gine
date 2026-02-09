@@ -46,15 +46,19 @@ const BookAppointmentContent = () => {
   const [showFirstTimeForm, setShowFirstTimeForm] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  // Pre-select service from URL param
+  // Pre-select service from URL param and skip to step 2
   useEffect(() => {
     const serviceId = searchParams.get('service');
     if (serviceId) {
       const service = services.find(s => s.id === serviceId);
       if (service) {
         setSelectedService(service);
-        // Optionally skip to step 2
-        // setCurrentStep(2);
+        setCompletedSteps(prev => {
+          const newCompleted = new Set(prev);
+          newCompleted.add(1);
+          return Array.from(newCompleted);
+        });
+        setCurrentStep(2);
       }
     }
   }, [searchParams]);
