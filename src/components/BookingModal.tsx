@@ -26,7 +26,7 @@ import {
   type Service 
 } from '@/data/services';
 import { toast } from '@/hooks/use-toast';
-import { Check, Clock, DollarSign, ChevronLeft, ChevronRight, User, Phone, CreditCard, Info } from 'lucide-react';
+import { Check, Clock, ChevronLeft, ChevronRight, User, Phone, CreditCard, Info } from 'lucide-react';
 import ConfirmationPopup from './ConfirmationPopup';
 import NewPatientModal from './NewPatientModal';
 import FirstTimeForm from './FirstTimeForm';
@@ -369,7 +369,6 @@ const BookingModal = ({ isOpen, onClose, preselectedService }: BookingModalProps
                         {selectedService?.duration}
                       </span>
                       <span className="flex items-center gap-1 font-semibold text-primary">
-                        <DollarSign className="w-4 h-4" />
                         {selectedService && formatPrice(selectedService.price)}
                       </span>
                     </div>

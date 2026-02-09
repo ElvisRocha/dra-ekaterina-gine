@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import { Clock, DollarSign, ChevronDown, ChevronUp } from 'lucide-react';
+import { Clock, ChevronDown, ChevronUp } from 'lucide-react';
 import { useState } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { formatPrice, serviceInfoEs, serviceInfoEn, type Service } from '@/data/services';
@@ -91,7 +91,6 @@ const ServiceContent = ({ service, serviceName, info, language }: ServiceContent
           {service.duration}
         </span>
         <span className="inline-flex items-center gap-1 text-sm font-semibold text-primary bg-background/50 px-3 py-1 rounded-full">
-          <DollarSign className="w-4 h-4" />
           {formatPrice(service.price)}
         </span>
       </div>

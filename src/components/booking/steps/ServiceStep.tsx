@@ -14,7 +14,7 @@ import {
   getCategoryServices, 
   type Service 
 } from '@/data/services';
-import { Clock, DollarSign, Check } from 'lucide-react';
+import { Clock, Check } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Card } from '@/components/ui/card';
 import ServiceInfoPanel from '@/components/booking/ServiceInfoPanel';
@@ -117,7 +117,6 @@ const ServiceStep = ({ selectedService, onSelectService, onNext }: ServiceStepPr
                                       {service.duration}
                                     </span>
                                     <span className="flex items-center gap-1 font-semibold text-primary">
-                                      <DollarSign className="w-3 h-3" />
                                       {formatPrice(service.price)}
                                     </span>
                                   </div>
