@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import { format } from 'date-fns';
 import { es, enUS } from 'date-fns/locale';
-import { Calendar, Clock, User, Globe, DollarSign, Phone, CreditCard } from 'lucide-react';
+import { Calendar, Clock, User, Globe, Phone, CreditCard } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
 import { formatPrice, type Service } from '@/data/services';
@@ -76,7 +76,6 @@ const ConfirmStep = ({
                   {service.duration}
                 </span>
                 <span className="flex items-center gap-1 font-semibold text-primary">
-                  <DollarSign className="w-4 h-4" />
                   {formatPrice(service.price)}
                 </span>
               </div>

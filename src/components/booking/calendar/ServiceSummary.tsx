@@ -1,4 +1,4 @@
-import { Clock, Globe, DollarSign } from 'lucide-react';
+import { Clock, Globe } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { formatPrice, type Service } from '@/data/services';
 
@@ -28,7 +28,6 @@ const ServiceSummary = ({ service }: ServiceSummaryProps) => {
         </div>
 
         <div className="flex items-center gap-2 text-sm font-semibold text-primary">
-          <DollarSign className="w-4 h-4 flex-shrink-0" />
           <span>{formatPrice(service.price)}</span>
         </div>
 
