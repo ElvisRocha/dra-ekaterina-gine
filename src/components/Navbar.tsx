@@ -1,10 +1,17 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, Instagram } from 'lucide-react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
 import logo from '@/assets/logo.png';
+
+interface NavLink {
+  to?: string;
+  sectionId?: string;
+  labelEs: string;
+  labelEn: string;
+}
 
 interface NavbarProps {
   onBookClick: () => void;
@@ -14,14 +21,30 @@ const Navbar = ({ onBookClick }: NavbarProps) => {
   const { language, setLanguage, t } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
 
-  const navLinks = [
+  const navLinks: NavLink[] = [
     { to: '/', labelEs: 'Inicio', labelEn: 'Home' },
+    { sectionId: 'servicios', labelEs: 'Servicios', labelEn: 'Services' },
     { to: '/galeria', labelEs: 'Galería', labelEn: 'Gallery' },
     { to: '/contacto', labelEs: 'Contacto', labelEn: 'Contact' },
   ];
 
   const isActive = (path: string) => location.pathname === path;
+
+  const scrollToSection = (sectionId: string) => {
+    if (location.pathname === '/') {
+      const element = document.getElementById(sectionId);
+      if (element) {
+        const headerOffset = 80;
+        const elementPosition = element.getBoundingClientRect().top;
+        const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+        window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
+      }
+    } else {
+      navigate('/', { state: { scrollTo: sectionId } });
+    }
+  };
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 glass">
@@ -36,19 +59,29 @@ const Navbar = ({ onBookClick }: NavbarProps) => {
           <div className="hidden md:flex items-center gap-6">
             {/* Nav Links */}
             <div className="flex items-center gap-1">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.to}
-                  to={link.to}
-                  className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
-                    isActive(link.to)
-                      ? 'text-primary'
-                      : 'text-muted-foreground hover:text-foreground'
-                  }`}
-                >
-                  {language === 'es' ? link.labelEs : link.labelEn}
-                </Link>
-              ))}
+              {navLinks.map((link) =>
+                link.to ? (
+                  <Link
+                    key={link.to}
+                    to={link.to}
+                    className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
+                      isActive(link.to)
+                        ? 'text-primary'
+                        : 'text-muted-foreground hover:text-foreground'
+                    }`}
+                  >
+                    {language === 'es' ? link.labelEs : link.labelEn}
+                  </Link>
+                ) : (
+                  <button
+                    key={link.sectionId}
+                    onClick={() => scrollToSection(link.sectionId!)}
+                    className="px-4 py-2 rounded-full text-sm font-medium transition-all text-muted-foreground hover:text-foreground"
+                  >
+                    {language === 'es' ? link.labelEs : link.labelEn}
+                  </button>
+                )
+              )}
             </div>
 
             {/* Divider */}
@@ -122,20 +155,33 @@ const Navbar = ({ onBookClick }: NavbarProps) => {
             <div className="container mx-auto px-4 py-6 space-y-4">
               {/* Nav Links */}
               <div className="flex flex-col space-y-2">
-                {navLinks.map((link) => (
-                  <Link
-                    key={link.to}
-                    to={link.to}
-                    onClick={() => setIsOpen(false)}
-                    className={`px-4 py-3 rounded-lg text-center font-medium transition-all ${
-                      isActive(link.to)
-                        ? 'bg-primary/10 text-primary'
-                        : 'text-muted-foreground hover:bg-secondary'
-                    }`}
-                  >
-                    {language === 'es' ? link.labelEs : link.labelEn}
-                  </Link>
-                ))}
+                {navLinks.map((link) =>
+                  link.to ? (
+                    <Link
+                      key={link.to}
+                      to={link.to}
+                      onClick={() => setIsOpen(false)}
+                      className={`px-4 py-3 rounded-lg text-center font-medium transition-all ${
+                        isActive(link.to)
+                          ? 'bg-primary/10 text-primary'
+                          : 'text-muted-foreground hover:bg-secondary'
+                      }`}
+                    >
+                      {language === 'es' ? link.labelEs : link.labelEn}
+                    </Link>
+                  ) : (
+                    <button
+                      key={link.sectionId}
+                      onClick={() => {
+                        scrollToSection(link.sectionId!);
+                        setIsOpen(false);
+                      }}
+                      className="px-4 py-3 rounded-lg text-center font-medium transition-all text-muted-foreground hover:bg-secondary"
+                    >
+                      {language === 'es' ? link.labelEs : link.labelEn}
+                    </button>
+                  )
+                )}
               </div>
 
               <div className="border-t border-border pt-4" />

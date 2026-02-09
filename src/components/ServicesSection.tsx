@@ -39,7 +39,7 @@ const ServicesSection = ({ onBookService }: ServicesSectionProps) => {
   };
 
   return (
-    <section id="services" className="py-24 bg-background relative">
+    <section id="servicios" className="py-24 bg-background relative">
       <div className="container mx-auto px-4">
         {/* Section Header */}
         <motion.div
