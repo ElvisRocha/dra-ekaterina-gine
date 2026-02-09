@@ -1,3 +1,4 @@
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
@@ -27,6 +28,18 @@ interface ServiceStepProps {
 
 const ServiceStep = ({ selectedService, onSelectService, onNext }: ServiceStepProps) => {
   const { t, language } = useLanguage();
+  const [expandedCategory, setExpandedCategory] = useState<string>(
+    selectedService?.category ?? ''
+  );
+  const hasAutoExpanded = useRef(false);
+
+  // Auto-expand category when service is pre-selected (e.g., from URL params)
+  useEffect(() => {
+    if (selectedService && !hasAutoExpanded.current) {
+      setExpandedCategory(selectedService.category);
+      hasAutoExpanded.current = true;
+    }
+  }, [selectedService]);
 
   const categories = [
     { key: 'consultas' as const, icon: '👩‍⚕️' },
@@ -58,7 +71,7 @@ const ServiceStep = ({ selectedService, onSelectService, onNext }: ServiceStepPr
         <div className="flex flex-col lg:flex-row gap-6">
           {/* Services list - 60% */}
           <div className="w-full lg:w-[60%]">
-            <Accordion type="single" collapsible className="space-y-3">
+            <Accordion type="single" collapsible value={expandedCategory} onValueChange={setExpandedCategory} className="space-y-3">
               {categories.map((category) => {
                 const categoryServices = getCategoryServices(category.key);
                 return (
