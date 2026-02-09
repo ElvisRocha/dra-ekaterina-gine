@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { PhoneInput } from '@/components/ui/PhoneInput';
 import { Label } from '@/components/ui/label';
 
 interface PatientData {
@@ -20,7 +21,8 @@ interface PatientDataStepProps {
 const PatientDataStep = ({ patientData, onUpdatePatientData, onNext, onBack }: PatientDataStepProps) => {
   const { t, language } = useLanguage();
 
-  const isValid = patientData.fullName.trim() && patientData.identification.trim() && patientData.phone.trim();
+  const phoneDigits = patientData.phone.replace(/^\+506/, '').replace(/\D/g, '');
+  const isValid = patientData.fullName.trim() && patientData.identification.trim() && phoneDigits.length === 8;
 
   const handleChange = (field: keyof PatientData, value: string) => {
     onUpdatePatientData({ ...patientData, [field]: value });
@@ -71,12 +73,10 @@ const PatientDataStep = ({ patientData, onUpdatePatientData, onNext, onBack }: P
 
         <div className="space-y-2">
           <Label htmlFor="phone">{t('booking.phone')} *</Label>
-          <Input
+          <PhoneInput
             id="phone"
-            type="tel"
             value={patientData.phone}
-            onChange={(e) => handleChange('phone', e.target.value)}
-            placeholder="+506 8888-8888"
+            onChange={(value) => handleChange('phone', value)}
             className="h-12"
           />
         </div>

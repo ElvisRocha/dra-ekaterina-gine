@@ -123,7 +123,11 @@ const ConfirmStep = ({
           </div>
           <div className="flex items-center gap-3">
             <Phone className="w-4 h-4 text-muted-foreground" />
-            <span className="text-sm text-muted-foreground">{patientData.phone}</span>
+            <span className="text-sm text-muted-foreground">
+              {patientData.phone.startsWith('+506') && patientData.phone.length > 4
+                ? `+506 ${patientData.phone.slice(4, 8)}-${patientData.phone.slice(8)}`
+                : patientData.phone}
+            </span>
           </div>
         </div>
       </div>
