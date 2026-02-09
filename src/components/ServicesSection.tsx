@@ -16,7 +16,7 @@ import {
   serviceInfoEn,
   type Service 
 } from '@/data/services';
-import { Clock, DollarSign, ChevronRight, Info, X } from 'lucide-react';
+import { Clock, ChevronRight, Info, X } from 'lucide-react';
 
 interface ServicesSectionProps {
   onBookService: (service: Service) => void;
@@ -104,7 +104,6 @@ const ServicesSection = ({ onBookService }: ServicesSectionProps) => {
                                   {service.duration}
                                 </span>
                                 <span className="flex items-center gap-1 font-semibold text-primary">
-                                  <DollarSign className="w-4 h-4" />
                                   {formatPrice(service.price)}
                                   {service.priceNote && (
                                     <span className="text-xs text-muted-foreground ml-1">
@@ -120,7 +119,7 @@ const ServicesSection = ({ onBookService }: ServicesSectionProps) => {
                                   variant="ghost"
                                   size="sm"
                                   onClick={() => setSelectedInfo(service.infoKey!)}
-                                  className="text-muted-foreground hover:text-primary"
+                                  className="text-muted-foreground hover:bg-coral hover:text-white active:bg-coral-dark active:text-white"
                                 >
                                   <Info className="w-4 h-4 mr-1" />
                                   {t('services.more')}
