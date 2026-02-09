@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 import { format } from 'date-fns';
 import { LanguageProvider, useLanguage } from '@/contexts/LanguageContext';
 import { services, type Service } from '@/data/services';
-import { useToast } from '@/hooks/use-toast';
 
 import Navbar from '@/components/Navbar';
 import StepIndicator from '@/components/booking/StepIndicator';
@@ -25,7 +24,7 @@ interface PatientData {
 const BookAppointmentContent = () => {
   const [searchParams] = useSearchParams();
   const { language, t } = useLanguage();
-  const { toast } = useToast();
+  const navigate = useNavigate();
   
   // Step state
   const [currentStep, setCurrentStep] = useState(1);
@@ -133,32 +132,27 @@ const BookAppointmentContent = () => {
 
     setIsLoading(false);
 
-    // Show success toast
-    toast({
-      title: language === 'es' ? '¡Cita agendada!' : 'Appointment booked!',
-      description: language === 'es' 
-        ? '¡Su cita ha sido agendada correctamente!' 
-        : 'Your appointment has been successfully booked!',
-    });
-
-    // Show confirmation popup
+    // Show confirmation popup (no toast)
     setShowConfirmation(true);
   };
 
   const handleCloseConfirmation = () => {
     setShowConfirmation(false);
-    
+
     // Check if patient exists (mock)
     // TODO: Replace with n8n webhook call
     // const response = await fetch('https://tu-n8n-url/webhook/check-patient', {
     //   method: 'POST',
     //   body: JSON.stringify({ identificacion: patientData.identification })
     // });
-    // const { exists } = await response.json();
-    const exists = false; // Mock: change to true to simulate existing patient
+    // const { isFirstTimeUser } = await response.json();
+    const isFirstTimeUser = true; // Mock: change to false to simulate existing patient
 
-    if (!exists) {
+    if (isFirstTimeUser) {
       setShowNewPatientModal(true);
+    } else {
+      // Existing patient → redirect to landing page
+      navigate('/');
     }
   };
 
@@ -169,21 +163,14 @@ const BookAppointmentContent = () => {
 
   const handleFillAtClinic = () => {
     setShowNewPatientModal(false);
-    toast({
-      description: language === 'es' 
-        ? 'Perfecto, podrá completar sus datos al llegar a la clínica.' 
-        : 'Perfect, you can complete your information when you arrive at the clinic.',
-    });
+    // Redirect to landing page
+    navigate('/');
   };
 
   const handleFirstTimeFormComplete = () => {
     setShowFirstTimeForm(false);
-    toast({
-      title: language === 'es' ? '¡Datos guardados!' : 'Information saved!',
-      description: language === 'es' 
-        ? '¡Datos guardados correctamente! Gracias por completar su información.' 
-        : 'Information saved successfully! Thank you for completing your details.',
-    });
+    // Redirect to landing page
+    navigate('/');
   };
 
   const handleBookClick = () => {

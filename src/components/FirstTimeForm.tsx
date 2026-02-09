@@ -14,7 +14,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { toast } from '@/hooks/use-toast';
 import { ScrollArea } from '@/components/ui/scroll-area';
 
 interface FirstTimeFormProps {
@@ -88,11 +87,6 @@ const FirstTimeForm = ({ isOpen, onComplete, initialData }: FirstTimeFormProps) 
     //   method: 'POST',
     //   body: JSON.stringify(patientData)
     // });
-
-    toast({
-      title: t('form.success'),
-      className: 'bg-primary text-primary-foreground',
-    });
 
     onComplete();
   };
