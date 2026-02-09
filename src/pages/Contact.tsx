@@ -7,6 +7,7 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { PhoneInput } from '@/components/ui/PhoneInput';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { toast } from '@/hooks/use-toast';
@@ -140,12 +141,10 @@ const ContactContent = () => {
                     <Label htmlFor="phone">
                       {language === 'es' ? 'Teléfono (opcional)' : 'Phone (optional)'}
                     </Label>
-                    <Input
+                    <PhoneInput
                       id="phone"
-                      type="tel"
                       value={formData.phone}
-                      onChange={(e) => updateField('phone', e.target.value)}
-                      placeholder="+506 8888-8888"
+                      onChange={(value) => updateField('phone', value)}
                     />
                   </div>
                   <div className="space-y-2">

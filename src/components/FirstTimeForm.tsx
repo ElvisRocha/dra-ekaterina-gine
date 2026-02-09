@@ -4,6 +4,7 @@ import { Lock } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { PhoneInput } from '@/components/ui/PhoneInput';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
@@ -179,13 +180,12 @@ const FirstTimeForm = ({ isOpen, onComplete, initialData }: FirstTimeFormProps) 
                   {t('booking.phone')}
                   <Lock className="h-3 w-3 text-muted-foreground" />
                 </Label>
-                <Input
+                <PhoneInput
                   id="phone"
-                  type="tel"
                   value={formData.phone}
+                  onChange={() => {}}
                   disabled
                   className="mt-1 bg-muted text-muted-foreground cursor-not-allowed"
-                  title={t('form.lockedField')}
                 />
               </div>
               <div>

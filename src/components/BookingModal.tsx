@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { PhoneInput } from '@/components/ui/PhoneInput';
 import { Label } from '@/components/ui/label';
 import { 
   Dialog, 
@@ -71,7 +72,8 @@ const BookingModal = ({ isOpen, onClose, preselectedService }: BookingModalProps
       return;
     }
     if (step === 2) {
-      if (!formData.fullName || !formData.idNumber || !formData.phone) {
+      const phoneDigits = formData.phone.replace(/^\+506/, '').replace(/\D/g, '');
+      if (!formData.fullName || !formData.idNumber || !formData.phone || phoneDigits.length !== 8) {
         toast({
           title: language === 'es' ? 'Completa todos los campos' : 'Complete all fields',
           variant: 'destructive',
@@ -336,12 +338,10 @@ const BookingModal = ({ isOpen, onClose, preselectedService }: BookingModalProps
                     <Phone className="w-4 h-4 text-muted-foreground" />
                     {t('booking.phone')}
                   </Label>
-                  <Input
+                  <PhoneInput
                     id="phone"
-                    type="tel"
                     value={formData.phone}
-                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                    placeholder="+506 XXXX-XXXX"
+                    onChange={(value) => setFormData({ ...formData, phone: value })}
                     className="h-12"
                   />
                 </div>
@@ -378,7 +378,11 @@ const BookingModal = ({ isOpen, onClose, preselectedService }: BookingModalProps
                     <p className="text-sm text-muted-foreground mb-1">{t('booking.patient')}</p>
                     <p className="font-medium text-foreground">{formData.fullName}</p>
                     <p className="text-sm text-muted-foreground">{formData.idNumber}</p>
-                    <p className="text-sm text-muted-foreground">{formData.phone}</p>
+                    <p className="text-sm text-muted-foreground">
+                      {formData.phone.startsWith('+506') && formData.phone.length > 4
+                        ? `+506 ${formData.phone.slice(4, 8)}-${formData.phone.slice(8)}`
+                        : formData.phone}
+                    </p>
                   </div>
                 </div>
               </motion.div>
