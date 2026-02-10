@@ -9,18 +9,18 @@ import { Button } from '@/components/ui/button';
 
 // TODO: Replace these placeholder images with real clinic photos
 const galleryImages = [
-  { id: 1, src: 'https://images.unsplash.com/photo-1631217868264-e5b90bb7e133?w=600&h=400&fit=crop', category: 'office', alt: 'Consultorio médico' },
-  { id: 2, src: 'https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=600&h=400&fit=crop', category: 'equipment', alt: 'Equipo médico' },
-  { id: 3, src: 'https://images.unsplash.com/photo-1551601651-2a8555f1a136?w=600&h=400&fit=crop', category: 'ultrasounds', alt: 'Ultrasonido' },
-  { id: 4, src: 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=600&h=400&fit=crop', category: 'patients', alt: 'Paciente feliz' },
-  { id: 5, src: 'https://images.unsplash.com/photo-1666214280557-f1b5022eb634?w=600&h=400&fit=crop', category: 'office', alt: 'Sala de espera' },
-  { id: 6, src: 'https://images.unsplash.com/photo-1516549655169-df83a0774514?w=600&h=400&fit=crop', category: 'equipment', alt: 'Equipos de diagnóstico' },
-  { id: 7, src: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=600&h=400&fit=crop', category: 'ultrasounds', alt: 'Ecografía 4D' },
-  { id: 8, src: 'https://images.unsplash.com/photo-1609220136736-443140cffec6?w=600&h=400&fit=crop', category: 'patients', alt: 'Futura mamá' },
-  { id: 9, src: 'https://images.unsplash.com/photo-1581595220892-b0739db3ba8c?w=600&h=400&fit=crop', category: 'office', alt: 'Recepción' },
-  { id: 10, src: 'https://images.unsplash.com/photo-1538108149393-fbbd81895907?w=600&h=400&fit=crop', category: 'equipment', alt: 'Sala de procedimientos' },
-  { id: 11, src: 'https://images.unsplash.com/photo-1530026405186-ed1f139313f8?w=600&h=400&fit=crop', category: 'ultrasounds', alt: 'Monitoreo fetal' },
-  { id: 12, src: 'https://images.unsplash.com/photo-1584515933487-779824d29309?w=600&h=400&fit=crop', category: 'patients', alt: 'Cuidado prenatal' },
+  { id: 1, src: 'https://res.cloudinary.com/da1sq9diw/image/upload/f_auto,q_auto/v1770732824/atencion_en_camilla.jpg', loading: "lazy",  category: 'office', alt: 'Consultorio médico' },
+  { id: 2, src: 'https://res.cloudinary.com/da1sq9diw/image/upload/f_auto,q_auto/v1770732824/doctoras.jpg', loading: "lazy", category: 'equipment', alt: 'Equipo médico' },
+  { id: 3, src: 'https://res.cloudinary.com/da1sq9diw/image/upload/f_auto,q_auto/v1770732824/doctora_con_utero.jpg', loading: "lazy", category: 'ultrasounds', alt: 'Doctora Ekaterina' },
+  { id: 4, src: 'https://res.cloudinary.com/da1sq9diw/image/upload/w_550,h_450,c_fill,g_face,f_auto,q_auto/v1770732824/doctora_ekaterina.jpg', loading: "lazy", category: 'patients', alt: 'Doctora Ekaterina' },
+  { id: 5, src: 'https://res.cloudinary.com/da1sq9diw/image/upload/f_auto,q_auto/v1770732824/puerta_consultorio.jpg', loading: "lazy", category: 'office', alt: 'Consultorio' },
+  { id: 6, src: 'https://images.unsplash.com/photo-1516549655169-df83a0774514?w=600&h=400&fit=crop', loading: "lazy", category: 'equipment', alt: 'Equipos de diagnóstico' },
+  { id: 7, src: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=600&h=400&fit=crop', loading: "lazy", category: 'ultrasounds', alt: 'Ecografía 4D' },
+  { id: 8, src: 'https://images.unsplash.com/photo-1609220136736-443140cffec6?w=600&h=400&fit=crop', loading: "lazy", category: 'patients', alt: 'Futura mamá' },
+  { id: 9, src: 'https://res.cloudinary.com/da1sq9diw/image/upload/f_auto,q_auto/v1770732824/consultorio_medico.jpg', loading: "lazy", category: 'office', alt: 'Consultorio' },
+  { id: 10, src: 'https://images.unsplash.com/photo-1538108149393-fbbd81895907?w=600&h=400&fit=crop', loading: "lazy", category: 'equipment', alt: 'Sala de procedimientos' },
+  { id: 11, src: 'https://images.unsplash.com/photo-1530026405186-ed1f139313f8?w=600&h=400&fit=crop', loading: "lazy", category: 'ultrasounds', alt: 'Monitoreo fetal' },
+  { id: 12, src: 'https://images.unsplash.com/photo-1584515933487-779824d29309?w=600&h=400&fit=crop', loading: "lazy", category: 'patients', alt: 'Cuidado prenatal' },
 ];
 
 type Category = 'all' | 'office' | 'equipment' | 'ultrasounds' | 'patients';

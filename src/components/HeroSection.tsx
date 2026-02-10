@@ -2,7 +2,6 @@ import { motion } from 'framer-motion';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
 import { Stethoscope } from 'lucide-react';
-import heroBackground from '@/assets/hero-background.jpeg';
 
 interface HeroSectionProps {
   onBookClick: () => void;
@@ -16,9 +15,11 @@ const HeroSection = ({ onBookClick }: HeroSectionProps) => {
       {/* Background Image with Overlay */}
       <div className="absolute inset-0">
         <img
-          src={heroBackground}
-          alt=""
+          src="https://res.cloudinary.com/da1sq9diw/image/upload/w_auto,dpr_auto,f_auto,q_auto/v1770736693/hero-background.jpg"
+          alt="Hero background"
           className="w-full h-full object-cover"
+          fetchpriority="high"
+          decoding="async"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-background/60 to-background" />
       </div>
