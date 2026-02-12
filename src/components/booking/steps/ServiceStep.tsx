@@ -124,7 +124,7 @@ const ServiceStep = ({ selectedService, onSelectService, onNext }: ServiceStepPr
                                   : 'border-border hover:border-primary/50 hover:bg-secondary/30'
                               )}
                             >
-                              <div className="flex items-start justify-between gap-3">
+                              <div className="flex items-center justify-between gap-3">
                                 <div className="flex-1 min-w-0">
                                   <h4 className="font-medium text-foreground text-sm mb-1">
                                     {language === 'es' ? service.nameEs : service.nameEn}
@@ -151,10 +151,10 @@ const ServiceStep = ({ selectedService, onSelectService, onNext }: ServiceStepPr
                                     }}
                                   >
                                     <span
-                                      className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-primary text-primary-foreground text-xs font-medium hover:bg-primary/90 transition-colors"
+                                      className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-primary text-primary-foreground text-sm font-semibold hover:bg-primary/90 transition-colors shadow-sm"
                                     >
                                       {t('booking.next')}
-                                      <ChevronRight className="w-3.5 h-3.5" />
+                                      <ChevronRight className="w-4 h-4" />
                                     </span>
                                   </motion.div>
                                 )}
