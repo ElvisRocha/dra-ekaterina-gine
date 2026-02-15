@@ -143,30 +143,6 @@ const ServicesSection = ({ onBookService }: ServicesSectionProps) => {
               );
             })}
           </Accordion>
-
-          {/* Important Notes */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.4 }}
-            className="mt-8 p-6 bg-secondary/50 rounded-2xl border border-border"
-          >
-            <h4 className="font-display text-lg text-foreground mb-3 flex items-center gap-2">
-              <span>📋</span>
-              {language === 'es' ? 'Notas importantes' : 'Important notes'}
-            </h4>
-            <ul className="space-y-2 text-sm text-muted-foreground">
-              <li className="flex items-start gap-2">
-                <span className="text-coral mt-0.5">•</span>
-                <span>{t('notes.vph')}</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="text-coral mt-0.5">•</span>
-                <span>{t('notes.diu')}</span>
-              </li>
-            </ul>
-          </motion.div>
         </motion.div>
       </div>
 
