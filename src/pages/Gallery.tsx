@@ -17,7 +17,7 @@ const galleryImages = [
   { id: 6, src: 'https://res.cloudinary.com/dcvipikha/image/upload/w_550,h_450,c_fill,g_face,f_auto,q_auto/v1770786745/doctora_ekaterina_sjbvon.jpg', loading: "lazy", category: 'patients', alt: 'Doctora Ekaterina' },
   { id: 7, src: 'https://res.cloudinary.com/dcvipikha/image/upload/f_auto,q_auto/v1770786745/puerta_consultorio_vvevmw.jpg', loading: "lazy", category: 'office', alt: 'Consultorio' },
   { id: 8, src: 'https://res.cloudinary.com/dcvipikha/image/upload/f_auto,q_auto/v1771106361/equipo_medico_abij92.jpg', loading: "lazy", category: 'equipment', alt: 'Equipos de diagnóstico' },
-  { id: 9, src: 'https://res.cloudinary.com/dcvipikha/image/upload/f_auto,q_auto/v1771106903/ultrasonidos_jtccpd.jpg', loading: "lazy", category: 'ultrasounds', alt: 'Ecografía 4D' },
+  { id: 9, src: 'https://res.cloudinary.com/dcvipikha/image/upload/f_auto,q_auto/v1771251714/ultrasounds_zwqznm.jpg', loading: "lazy", category: 'ultrasounds', alt: 'Ecografía 4D' },
   { id: 10, src: 'https://images.unsplash.com/photo-1609220136736-443140cffec6?w=600&h=400&fit=crop', loading: "lazy", category: 'patients', alt: 'Futura mamá' },
   { id: 11, src: 'https://res.cloudinary.com/dcvipikha/image/upload/f_auto,q_auto/v1770786745/consultorio_medico_kisecf.jpg', loading: "lazy", category: 'office', alt: 'Consultorio' },
   { id: 12, src: 'https://res.cloudinary.com/dcvipikha/image/upload/f_auto,q_auto/v1771107243/utero_aaghxz.jpg', loading: "lazy", category: 'ultrasounds', alt: 'útero' },
