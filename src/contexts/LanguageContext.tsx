@@ -74,6 +74,11 @@ const translations: Translations = {
   },
   'testimonials.badge': { es: 'Ginecología y Obstetricia certificada', en: 'Certified Gynecology and Obstetrics' },
   'testimonials.follow': { es: 'Síguenos en Instagram', en: 'Follow us on Instagram' },
+  'testimonials.readMore': { es: 'Ver más', en: 'Read more' },
+  'testimonials.close': { es: 'Cerrar', en: 'Close' },
+  'testimonials.prev': { es: 'Testimonios anteriores', en: 'Previous testimonials' },
+  'testimonials.next': { es: 'Siguientes testimonios', en: 'Next testimonials' },
+  'testimonials.goToSlide': { es: 'Ir al grupo', en: 'Go to group' },
   
   // Final CTA
   'cta.headline': { es: 'Tu bienestar no puede esperar. Reserva tu cita ahora.', en: 'Your well-being can\'t wait. Book your appointment now.' },

@@ -1,53 +1,63 @@
 export interface Testimonial {
   id: number;
-  nameEs: string;
-  nameEn: string;
-  contextEs: string;
-  contextEn: string;
+  name: string;
+  text: string;
   rating: number;
-  textEs: string;
-  textEn: string;
-  date: string;
 }
 
 export const testimonials: Testimonial[] = [
   {
     id: 1,
-    nameEs: 'María González',
-    nameEn: 'María González',
-    contextEs: '34 años · Madre primeriza',
-    contextEn: '34 years old · First-time mother',
+    name: 'Daniela A.',
+    text: 'Quiero recomendar ampliamente a la doctora Ekaterina. Es una profesional con una trayectoria sólida, vasta experiencia y un dominio excepcional de su campo. Sin embargo, lo que realmente la distingue es su calidad humana: su trato empático, cercano y lleno de sensibilidad. Con ella no solo se siente la seguridad de estar en manos expertas, sino también la tranquilidad de ser escuchada, comprendida y acompañada. Sus consultas van más allá de lo meramente médico; integra la parte emocional, psicológica y humana de una manera natural y respetuosa. Con la doctora se vive una experiencia cálida, confiable y amena, que brinda paz y confianza desde el primer momento.',
     rating: 5,
-    textEs:
-      'La Dra. Ekaterina me acompañó durante todo mi embarazo con dedicación y calidez. Los ultrasonidos 4D fueron mágicos. Una doctora excepcional que realmente se preocupa por sus pacientes.',
-    textEn:
-      'Dr. Ekaterina accompanied me throughout my pregnancy with dedication and warmth. The 4D ultrasounds were magical. An exceptional doctor who truly cares about her patients.',
-    date: '2025-01',
   },
   {
     id: 2,
-    nameEs: 'Ana Sofía Ramírez',
-    nameEn: 'Ana Sofía Ramírez',
-    contextEs: '28 años · Control ginecológico',
-    contextEn: '28 years old · Gynecological checkup',
+    name: 'Noelia',
+    text: 'Holaaa Me realicé un ultrasonido a mis 16 semanas de embarazo con la doctora, el trato es excelente, me sentí súper cómoda durante toda la consulta. Mi bebé estaba dormida, de espalda, con las piernas cruzadas y el cordón en medio de las piernas y usted hizo todo lo posible por revisarla bien y ver el sexo. Me dio un 80% de probabilidades de que era niña y lo acertó. Actualmente mi hija tiene 11 meses. Excelente profesional, a veces tengo algunas dudas que le realizo por mensaje y siempre me responde.',
     rating: 5,
-    textEs:
-      'La tecnología de última generación y explicaciones detalladas me dieron tranquilidad absoluta. Me siento en las mejores manos para cuidar mi salud femenina.',
-    textEn:
-      'The cutting-edge technology and detailed explanations gave me absolute peace of mind. I feel I\'m in the best hands to take care of my women\'s health.',
-    date: '2024-12',
   },
   {
     id: 3,
-    nameEs: 'Carolina Mora',
-    nameEn: 'Carolina Mora',
-    contextEs: '41 años · Segunda maternidad',
-    contextEn: '41 years old · Second pregnancy',
+    name: 'Fabiola',
+    text: 'Considero que es la mejor aquí en la zona en gine, a parte de que es una excelente profesional, su forma de ser hace que uno se sienta con muchísima confianza y eso refleja mucho el amor que le tiene a su profesión 💖',
     rating: 5,
-    textEs:
-      'Una ginecóloga que me hizo sentir cómoda y escuchada. Su experiencia, empatía y las instalaciones modernas son insuperables. La recomiendo con los ojos cerrados.',
-    textEn:
-      'A gynecologist who made me feel comfortable and heard. Her experience, empathy, and the modern facilities are unmatched. I recommend her wholeheartedly.',
-    date: '2024-11',
+  },
+  {
+    id: 4,
+    name: 'Meli',
+    text: 'Iba a la misma ginecóloga desde mis 18 años (hoy tengo 29), pero desde la semana 14 de mi embarazo comencé mi control con la Dra. Ekaterina y, sinceramente, ha sido una experiencia completamente distinta. Desde el primer día tanto mi esposo como yo nos hemos sentido sumamente bien y, sobre todo, escuchados y entendidos. En una etapa tan importante y sensible, la calidez y la empatía hacen toda la diferencia. La doctora tiene una forma muy especial de acompañar este proceso: nos explica cada detalle en los ultrasonidos, responde nuestras dudas con paciencia y nos hace sentir parte de cada momento. Eso para nosotros no tiene precio. Estamos demasiado agradecidos y siempre que puedo, la recomiendo con total confianza 🩷💐',
+    rating: 5,
+  },
+  {
+    id: 5,
+    name: 'Paola',
+    text: 'Yo me hice 3 ultrasonidos. 14 semanas, 25 semanas, 34 semanas. Y quedamos encantados con el trato, el amor que le tiene a los bebés. Nos dio tranquilidad, seguridad y paz, todo lo explicas súper bien, revisas súper bien a los bebés 🥹 Sin duda alguna para mí es la mejor ginecóloga.',
+    rating: 5,
+  },
+  {
+    id: 6,
+    name: 'J.s.z',
+    text: 'La doc es un angel en esta tierra ella me ayudo y estuvo cuando más la necesité en mi embarazo, ella descubrió que mi bebe venía con cositas, siempre me dio palabra de aliento me apoyó en todo lo que pudo, simpre trató de explicarme todo lo mejor que pudo para que entendiera todo, simplemente una profesional excepcional con su trabajo. Gracias por tan hermosa labor que haces.',
+    rating: 5,
+  },
+  {
+    id: 7,
+    name: 'T. R.',
+    text: 'La súper recomiendo, excelente trato, súper paciente, un ser hermoso. Atendió mi primer embarazo y ahora deseo que lo haga en mi segundo. No he tenido la oportunidad de ir, pero si ustedes sí la tienen, créanme que no se van a arrepentir. Ya estoy deseando sacar mi cita para ver a mi bebé en las mejores manos.❤️',
+    rating: 5,
+  },
+  {
+    id: 8,
+    name: 'Naty',
+    text: 'La Doctora de las Girlies 🥹🩷 Recomendar a la Dra. Ekaterina es hacerlo desde la gratitud y la confianza plena. Desde el primer momento, su trato cálido, respetuoso y humano hace que cada consulta se sienta como un espacio seguro, donde una se siente escuchada, comprendida y cuidada. La Doc, no solo destaca por su gran profesionalismo y conocimiento, sino también por su sensibilidad y empatía. Se toma el tiempo necesario para explicar cada detalle con claridad, resolver dudas con paciencia y acompañar a sus pacientes con una dedicación genuina. Su enfoque va más allá de lo médico: se interesa verdaderamente por el bienestar integral de la mujer, transmitiendo tranquilidad, seguridad y apoyo en cada etapa. Ponerse en manos de ella, es elegir a una profesional comprometida, amorosa y profundamente ética, que ejerce su vocación con pasión y responsabilidad. Sin duda, es una ginecóloga que marca la diferencia.',
+    rating: 5,
+  },
+  {
+    id: 9,
+    name: 'Mónica Guzmán',
+    text: 'Doctora Ekaterina 🌷 Quiero agradecerte de corazón. Eres una profesional increíble, pero aún más, un ser humano maravilloso. Su carisma, paciencia y tacto profesional son realmente excepcionales. En cada consulta me he sentido escuchada, comprendida y acompañada, pero sobre todo segura y en excelentes manos. 🫶🏻 En un momento en el que me encontraba vulnerable, encontrar una doctora que me brindara tanta empatía hizo toda la diferencia en mi proceso. Su forma de ejercer la medicina no solo sana, sino que también reconforta.❤️‍🩹 Gracias por cuidarme con tanta dedicación y humanidad. Su trabajo deja una huella muy bonita en sus pacientes y en mí especialmente. Con mucho cariño y gratitud.',
+    rating: 5,
   },
 ];
