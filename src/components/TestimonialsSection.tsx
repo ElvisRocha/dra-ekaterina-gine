@@ -1,7 +1,8 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { Instagram, Award, Star, Quote, ChevronLeft, ChevronRight, X } from 'lucide-react';
+import { Instagram, Facebook, Award, Star, Quote, ChevronLeft, ChevronRight, X } from 'lucide-react';
+import TikTokIcon from '@/components/icons/TikTokIcon';
 import { testimonials } from '@/data/testimonials';
 import type { Testimonial } from '@/data/testimonials';
 
@@ -426,29 +427,53 @@ const TestimonialsSection = () => {
             </div>
           </motion.div>
 
-          {/* Instagram CTA */}
-          <motion.a
-            href="https://instagram.com/dra_ekaterina_gine"
-            target="_blank"
-            rel="noopener noreferrer"
+          {/* Social Media CTA */}
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.3 }}
-            className="block card-elevated group hover:border-primary/20 transition-colors mt-8"
+            className="card-elevated mt-8"
           >
-            <div className="flex flex-col md:flex-row items-center justify-center gap-4 text-center md:text-left">
-              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-coral to-magenta flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                <Instagram className="w-8 h-8 text-white" />
-              </div>
-              <div>
-                <h3 className="font-display text-xl text-foreground mb-1">
-                  {t('testimonials.follow')}
-                </h3>
-                <p className="text-primary font-medium">@dra_ekaterina_gine</p>
-              </div>
+            <h3 className="font-display text-xl text-foreground mb-4 text-center">
+              {t('testimonials.follow')}
+            </h3>
+            <div className="flex flex-col md:flex-row items-center justify-center gap-4">
+              <a
+                href="https://www.instagram.com/dra_ekaterina_gine"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group flex items-center gap-3 px-4 py-2 rounded-xl hover:bg-primary/5 transition-colors"
+              >
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-coral to-magenta flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                  <Instagram className="w-6 h-6 text-white" />
+                </div>
+                <span className="text-primary font-medium">Instagram</span>
+              </a>
+              <a
+                href="https://www.facebook.com/dra.ekaterina.malaspina.riazanova"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group flex items-center gap-3 px-4 py-2 rounded-xl hover:bg-primary/5 transition-colors"
+              >
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-coral to-magenta flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                  <Facebook className="w-6 h-6 text-white" />
+                </div>
+                <span className="text-primary font-medium">Facebook</span>
+              </a>
+              <a
+                href="https://www.tiktok.com/@dra.ekaterina.gine"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group flex items-center gap-3 px-4 py-2 rounded-xl hover:bg-primary/5 transition-colors"
+              >
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-coral to-magenta flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                  <TikTokIcon className="w-6 h-6 text-white" />
+                </div>
+                <span className="text-primary font-medium">TikTok</span>
+              </a>
             </div>
-          </motion.a>
+          </motion.div>
         </div>
       </div>
 

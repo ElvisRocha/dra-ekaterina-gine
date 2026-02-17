@@ -73,7 +73,7 @@ const translations: Translations = {
     en: 'Real stories from satisfied patients who trust our experience and professionalism',
   },
   'testimonials.badge': { es: 'Ginecología y Obstetricia certificada', en: 'Certified Gynecology and Obstetrics' },
-  'testimonials.follow': { es: 'Síguenos en Instagram', en: 'Follow us on Instagram' },
+  'testimonials.follow': { es: 'Síguenos en redes sociales', en: 'Follow us on social media' },
   'testimonials.readMore': { es: 'Ver más', en: 'Read more' },
   'testimonials.close': { es: 'Cerrar', en: 'Close' },
   'testimonials.prev': { es: 'Testimonios anteriores', en: 'Previous testimonials' },

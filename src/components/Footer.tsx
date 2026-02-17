@@ -1,5 +1,6 @@
 import { useLanguage } from '@/contexts/LanguageContext';
-import { Instagram, Phone, Mail, MapPin, Clock } from 'lucide-react';
+import { Instagram, Facebook, Phone, Mail, MapPin, Clock } from 'lucide-react';
+import TikTokIcon from '@/components/icons/TikTokIcon';
 import logo from '@/assets/logo.png';
 
 const Footer = () => {
@@ -15,15 +16,35 @@ const Footer = () => {
             <p className="text-cream/70 text-sm max-w-md">
               Dra. Ekaterina Malaspina Riazanova — Ginecología y Obstetricia con calidez, profesionalismo y tecnología de punta.
             </p>
-            <a
-              href="https://instagram.com/dra_ekaterina_gine"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 mt-4 text-coral-light hover:text-coral transition-colors"
-            >
-              <Instagram className="w-5 h-5" />
-              <span>@dra_ekaterina_gine</span>
-            </a>
+            <div className="flex items-center gap-4 mt-4">
+              <a
+                href="https://www.instagram.com/dra_ekaterina_gine"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center text-coral-light hover:text-coral transition-colors"
+                aria-label="Instagram"
+              >
+                <Instagram className="w-5 h-5" />
+              </a>
+              <a
+                href="https://www.facebook.com/dra.ekaterina.malaspina.riazanova"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center text-coral-light hover:text-coral transition-colors"
+                aria-label="Facebook"
+              >
+                <Facebook className="w-5 h-5" />
+              </a>
+              <a
+                href="https://www.tiktok.com/@dra.ekaterina.gine"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center text-coral-light hover:text-coral transition-colors"
+                aria-label="TikTok"
+              >
+                <TikTokIcon className="w-5 h-5" />
+              </a>
+            </div>
           </div>
 
           {/* Contact */}

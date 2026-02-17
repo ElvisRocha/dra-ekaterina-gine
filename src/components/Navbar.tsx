@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, Instagram } from 'lucide-react';
+import { Menu, X, Instagram, Facebook } from 'lucide-react';
+import TikTokIcon from '@/components/icons/TikTokIcon';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
@@ -111,15 +112,36 @@ const Navbar = ({ onBookClick }: NavbarProps) => {
               </button>
             </div>
 
-            {/* Instagram */}
-            <a
-              href="https://instagram.com/dra_ekaterina_gine"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-muted-foreground hover:text-primary transition-colors"
-            >
-              <Instagram className="w-5 h-5" />
-            </a>
+            {/* Social Media */}
+            <div className="flex items-center gap-3">
+              <a
+                href="https://www.instagram.com/dra_ekaterina_gine"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-muted-foreground hover:text-primary transition-colors"
+                aria-label="Instagram"
+              >
+                <Instagram className="w-5 h-5" />
+              </a>
+              <a
+                href="https://www.facebook.com/dra.ekaterina.malaspina.riazanova"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-muted-foreground hover:text-primary transition-colors"
+                aria-label="Facebook"
+              >
+                <Facebook className="w-5 h-5" />
+              </a>
+              <a
+                href="https://www.tiktok.com/@dra.ekaterina.gine"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-muted-foreground hover:text-primary transition-colors"
+                aria-label="TikTok"
+              >
+                <TikTokIcon className="w-5 h-5" />
+              </a>
+            </div>
 
             {/* Divider */}
             <div className="h-6 w-px bg-border" />
@@ -210,16 +232,36 @@ const Navbar = ({ onBookClick }: NavbarProps) => {
                 </button>
               </div>
 
-              {/* Instagram */}
-              <a
-                href="https://instagram.com/dra_ekaterina_gine"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center justify-center gap-2 text-muted-foreground hover:text-primary transition-colors py-2"
-              >
-                <Instagram className="w-5 h-5" />
-                <span>@dra_ekaterina_gine</span>
-              </a>
+              {/* Social Media */}
+              <div className="flex items-center justify-center gap-4 py-2">
+                <a
+                  href="https://www.instagram.com/dra_ekaterina_gine"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-muted-foreground hover:text-primary transition-colors"
+                  aria-label="Instagram"
+                >
+                  <Instagram className="w-5 h-5" />
+                </a>
+                <a
+                  href="https://www.facebook.com/dra.ekaterina.malaspina.riazanova"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-muted-foreground hover:text-primary transition-colors"
+                  aria-label="Facebook"
+                >
+                  <Facebook className="w-5 h-5" />
+                </a>
+                <a
+                  href="https://www.tiktok.com/@dra.ekaterina.gine"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-muted-foreground hover:text-primary transition-colors"
+                  aria-label="TikTok"
+                >
+                  <TikTokIcon className="w-5 h-5" />
+                </a>
+              </div>
 
               {/* CTA Button */}
               <Button
