@@ -29,16 +29,18 @@ interface TestimonialCardProps {
   testimonial: Testimonial;
   truncateLength: number;
   readMoreLabel: string;
+  language: 'es' | 'en';
   onReadMore: (testimonial: Testimonial) => void;
 }
 
-const TestimonialCard = ({ testimonial, truncateLength, readMoreLabel, onReadMore }: TestimonialCardProps) => {
+const TestimonialCard = ({ testimonial, truncateLength, readMoreLabel, language, onReadMore }: TestimonialCardProps) => {
   const initials = testimonial.name
     .split(' ')
     .map((n) => n[0])
     .join('');
-  const isTruncated = testimonial.text.length > truncateLength;
-  const displayText = isTruncated ? truncateText(testimonial.text, truncateLength) : testimonial.text;
+  const text = language === 'es' ? testimonial.textEs : testimonial.textEn;
+  const isTruncated = text.length > truncateLength;
+  const displayText = isTruncated ? truncateText(text, truncateLength) : text;
 
   return (
     <div className="bg-card rounded-2xl p-6 border border-border/50 hover:shadow-[var(--shadow-card)] transition-shadow duration-300 flex flex-col h-full">
@@ -90,9 +92,10 @@ interface TestimonialModalProps {
   testimonial: Testimonial | null;
   onClose: () => void;
   closeLabel: string;
+  language: 'es' | 'en';
 }
 
-const TestimonialModal = ({ testimonial, onClose, closeLabel }: TestimonialModalProps) => {
+const TestimonialModal = ({ testimonial, onClose, closeLabel, language }: TestimonialModalProps) => {
   const overlayRef = useRef<HTMLDivElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
 
@@ -174,7 +177,7 @@ const TestimonialModal = ({ testimonial, onClose, closeLabel }: TestimonialModal
 
         {/* Full text */}
         <p className="text-muted-foreground leading-relaxed mb-6">
-          &ldquo;{testimonial.text}&rdquo;
+          &ldquo;{language === 'es' ? testimonial.textEs : testimonial.textEn}&rdquo;
         </p>
 
         {/* Author */}
@@ -194,7 +197,7 @@ const TestimonialModal = ({ testimonial, onClose, closeLabel }: TestimonialModal
 // --- Main Carousel Section ---
 
 const TestimonialsSection = () => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
 
   const [currentPage, setCurrentPage] = useState(0);
   const [itemsPerView, setItemsPerView] = useState(3);
@@ -379,6 +382,7 @@ const TestimonialsSection = () => {
                         testimonial={testimonial}
                         truncateLength={truncateLength}
                         readMoreLabel={t('testimonials.readMore')}
+                        language={language}
                         onReadMore={setModalTestimonial}
                       />
                     </div>
@@ -453,6 +457,7 @@ const TestimonialsSection = () => {
         testimonial={modalTestimonial}
         onClose={handleCloseModal}
         closeLabel={t('testimonials.close')}
+        language={language}
       />
     </section>
   );
