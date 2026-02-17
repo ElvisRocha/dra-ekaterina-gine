@@ -438,12 +438,12 @@ const TestimonialsSection = () => {
             <h3 className="font-display text-xl text-foreground mb-4 text-center">
               {t('testimonials.follow')}
             </h3>
-            <div className="flex flex-col md:flex-row items-center justify-center gap-4">
+            <div className="flex flex-row flex-wrap items-center justify-center gap-4 md:gap-6">
               <a
                 href="https://www.instagram.com/dra_ekaterina_gine"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group flex items-center gap-3 px-4 py-2 rounded-xl hover:bg-primary/5 transition-colors"
+                className="group flex flex-col md:flex-row items-center gap-2 md:gap-3 px-4 py-2 rounded-xl hover:bg-primary/5 transition-colors"
               >
                 <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-coral to-magenta flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                   <Instagram className="w-6 h-6 text-white" />
@@ -454,7 +454,7 @@ const TestimonialsSection = () => {
                 href="https://www.facebook.com/dra.ekaterina.malaspina.riazanova"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group flex items-center gap-3 px-4 py-2 rounded-xl hover:bg-primary/5 transition-colors"
+                className="group flex flex-col md:flex-row items-center gap-2 md:gap-3 px-4 py-2 rounded-xl hover:bg-primary/5 transition-colors"
               >
                 <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-coral to-magenta flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                   <Facebook className="w-6 h-6 text-white" />
@@ -465,7 +465,7 @@ const TestimonialsSection = () => {
                 href="https://www.tiktok.com/@dra.ekaterina.gine"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group flex items-center gap-3 px-4 py-2 rounded-xl hover:bg-primary/5 transition-colors"
+                className="group flex flex-col md:flex-row items-center gap-2 md:gap-3 px-4 py-2 rounded-xl hover:bg-primary/5 transition-colors"
               >
                 <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-coral to-magenta flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                   <TikTokIcon className="w-6 h-6 text-white" />
