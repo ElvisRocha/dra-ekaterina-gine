@@ -19,7 +19,7 @@ const HeroSection = ({ onBookClick }: HeroSectionProps) => {
           src="https://res.cloudinary.com/dcvipikha/image/upload/w_auto,dpr_auto,f_auto,q_auto/v1770786749/hero-background_nnxouv.jpg"
           alt="Hero background"
           className="w-full h-full object-cover"
-          fetchpriority="high"
+          fetchPriority="high"
           decoding="async"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-background/60 to-background" />
@@ -41,7 +41,7 @@ const HeroSection = ({ onBookClick }: HeroSectionProps) => {
             {/* Decorative Line */}
             <div className="flex items-center justify-center gap-4 mb-8">
               <div className="h-px w-16 bg-gradient-to-r from-transparent to-coral" />
-              <img src={IsotipoImg} alt="" class="h-40 w-auto mb-1"></img>
+              <img src={IsotipoImg} alt="" className="h-40 w-auto mb-1" />
               <div className="h-px w-16 bg-gradient-to-l from-transparent to-coral" />
             </div>
 

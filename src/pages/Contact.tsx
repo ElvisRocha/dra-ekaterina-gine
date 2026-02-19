@@ -171,7 +171,8 @@ const ContactContent = () => {
                     value={formData.message}
                     onChange={(e) => updateField('message', e.target.value)}
                     placeholder={language === 'es' ? 'Cuéntanos tus dudas o lo que necesitas, estamos aquí para ti...' : "Tell us your questions or what you need, we're here for you..."}
-                    rows={5}
+                    rows={7}
+                    className="min-h-[160px]"
                     required
                   />
                 </div>
@@ -283,7 +284,7 @@ const ContactContent = () => {
               </div>
 
               {/* WhatsApp CTA */}
-              <div className="mt-auto pt-6 border-t border-border">
+              <div className="mt-auto pt-8 border-t border-border">
                 <p className="text-sm text-muted-foreground mb-4 text-center">
                   {language === 'es' 
                     ? '¿Necesitas una respuesta rápida? ¡Escríbenos por WhatsApp!' 
