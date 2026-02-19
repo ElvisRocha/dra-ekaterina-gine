@@ -4,7 +4,7 @@ import TikTokIcon from '@/components/icons/TikTokIcon';
 import logo from '@/assets/logo.png';
 
 const Footer = () => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
 
   return (
     <footer className="border-t border-gray-200 bg-chocolate text-cream py-16">
@@ -73,15 +73,29 @@ const Footer = () => {
               <li className="flex items-start gap-2">
                 <Clock className="w-4 h-4 text-coral-light mt-0.5" />
                 <div>
-                  <p>Lunes - Viernes</p>
+                  <p>{language === 'es' ? 'Lunes y Miércoles' : 'Mon & Wed'}</p>
                   <p>8:00 AM - 5:00 PM</p>
                 </div>
               </li>
               <li className="flex items-start gap-2">
                 <Clock className="w-4 h-4 text-coral-light mt-0.5" />
                 <div>
-                  <p>Sábados</p>
-                  <p>8:00 AM - 12:00 PM</p>
+                  <p>{language === 'es' ? 'Martes y Jueves' : 'Tue & Thu'}</p>
+                  <p>12:00 PM - 5:00 PM</p>
+                </div>
+              </li>
+              <li className="flex items-start gap-2">
+                <Clock className="w-4 h-4 text-coral-light mt-0.5" />
+                <div>
+                  <p>{language === 'es' ? 'Viernes' : 'Friday'}</p>
+                  <p>8:00 AM - 2:00 PM</p>
+                </div>
+              </li>
+              <li className="flex items-start gap-2">
+                <Clock className="w-4 h-4 text-coral-light mt-0.5" />
+                <div>
+                  <p>{language === 'es' ? 'Sábado' : 'Saturday'}</p>
+                  <p>10:00 AM - 3:00 PM</p>
                 </div>
               </li>
             </ul>

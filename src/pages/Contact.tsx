@@ -272,13 +272,12 @@ const ContactContent = () => {
                     <h3 className="font-medium text-foreground mb-1">
                       {language === 'es' ? 'Horario de Atención' : 'Office Hours'}
                     </h3>
-                    {/* TODO: Confirm actual office hours */}
-                    <p className="text-muted-foreground text-sm">
-                      {language === 'es' 
-                        ? 'Lunes a Viernes: 8:00 AM - 6:00 PM' 
-                        : 'Monday to Friday: 8:00 AM - 6:00 PM'}<br />
-                      <span className="text-xs">({language === 'es' ? 'Hora de Costa Rica' : 'Costa Rica Time'})</span>
-                    </p>
+                    <div className="text-muted-foreground text-sm space-y-1">
+                      <p>{language === 'es' ? 'Lunes y Miércoles: 8:00 AM - 5:00 PM' : 'Mon & Wed: 8:00 AM - 5:00 PM'}</p>
+                      <p>{language === 'es' ? 'Martes y Jueves: 12:00 PM - 5:00 PM' : 'Tue & Thu: 12:00 PM - 5:00 PM'}</p>
+                      <p>{language === 'es' ? 'Viernes: 8:00 AM - 2:00 PM' : 'Friday: 8:00 AM - 2:00 PM'}</p>
+                      <p>{language === 'es' ? 'Sábado: 10:00 AM - 3:00 PM' : 'Saturday: 10:00 AM - 3:00 PM'}</p>
+                    </div>
                   </div>
                 </div>
               </div>
