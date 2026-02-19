@@ -101,12 +101,12 @@ const WhyChooseUs = ({ onBookClick }: WhyChooseUsProps) => {
               <div className="flex flex-col items-center text-center">
                 {/* Icon Container */}
                 <div className="relative mb-6">
-                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-coral/20 to-magenta/20 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                  <div className="w-24 h-24 rounded-full bg-gradient-to-br from-coral/20 to-magenta/20 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                     <img
                       src={feature.imgSrc}
                       alt={language === 'es' ? feature.altEs : feature.altEn}
-                      width={40}
-                      height={40}
+                      width={72}
+                      height={72}
                       loading="lazy"
                       className="object-contain"
                     />
