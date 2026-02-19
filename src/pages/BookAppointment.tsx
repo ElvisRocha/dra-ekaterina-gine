@@ -255,7 +255,7 @@ const BookAppointmentContent = () => {
       <footer className="border-t border-gray-300 py-4 mt-auto">
         <div className="container mx-auto px-4 flex flex-col md:flex-row md:justify-between md:items-center gap-2 text-sm text-muted-foreground">
           <p className="text-center md:text-left">
-            © 2025 Dra. Ekaterina Malaspina Riazanova — Clínica Esperanza. {t('footer.rights')}.
+            © {new Date().getFullYear()} Dra. Ekaterina Malaspina Riazanova — Clínica Esperanza. {t('footer.rights')}.
           </p>
           <p className="text-center md:text-right">
             {t('footer.madeBy')}{' '}
