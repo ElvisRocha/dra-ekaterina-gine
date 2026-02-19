@@ -107,7 +107,7 @@ const ServiceStep = ({ selectedService, onSelectService, onNext }: ServiceStepPr
                         <img
                           src={category.img}
                           alt={language === 'es' ? category.altEs : category.altEn}
-                          className="w-7 h-7 flex-shrink-0 object-contain"
+                          className="w-12 h-12 flex-shrink-0 object-contain"
                         />
                         <span className="font-medium text-foreground flex-1 min-w-0 text-left">
                           {t(`cat.${category.key}`)}

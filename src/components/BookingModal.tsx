@@ -235,7 +235,7 @@ const BookingModal = ({ isOpen, onClose, preselectedService }: BookingModalProps
                             <img
                               src={category.img}
                               alt={language === 'es' ? category.altEs : category.altEn}
-                              className="w-7 h-7 flex-shrink-0 object-contain"
+                              className="w-12 h-12 flex-shrink-0 object-contain"
                             />
                             <span className="font-medium">{t(`cat.${category.key}`)}</span>
                           </div>

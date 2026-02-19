@@ -84,7 +84,7 @@ const ServicesSection = ({ onBookService }: ServicesSectionProps) => {
                       <img
                         src={category.img}
                         alt={language === 'es' ? category.altEs : category.altEn}
-                        className="w-8 h-8 flex-shrink-0 object-contain"
+                        className="w-12 h-12 flex-shrink-0 object-contain"
                         aria-hidden="false"
                       />
                       <span className="font-display text-xl text-foreground flex-1 min-w-0 text-left">
