@@ -1,39 +1,46 @@
 import { motion } from 'framer-motion';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
-import { Heart, Scan, Pill, Sparkles } from 'lucide-react';
+import consultaIcon from '@/assets/consulta.png';
+import ecografiaIcon from '@/assets/ecografia.png';
+import dispositivoIcon from '@/assets/dispositivo.png';
+import ecoUteroIcon from '@/assets/eco-utero.png';
 
 interface WhyChooseUsProps {
   onBookClick: () => void;
 }
 
 const WhyChooseUs = ({ onBookClick }: WhyChooseUsProps) => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
 
   const features = [
     {
-      icon: Heart,
+      imgSrc: consultaIcon,
+      altEs: 'Icono de consulta personalizada',
+      altEn: 'Personalized consultation icon',
       titleKey: 'why.personalized.title',
       descKey: 'why.personalized.desc',
-      emoji: '🩺',
     },
     {
-      icon: Scan,
+      imgSrc: ecografiaIcon,
+      altEs: 'Icono de ecografía',
+      altEn: 'Ultrasound icon',
       titleKey: 'why.technology.title',
       descKey: 'why.technology.desc',
-      emoji: '🔬',
     },
     {
-      icon: Pill,
+      imgSrc: dispositivoIcon,
+      altEs: 'Icono de dispositivo anticonceptivo',
+      altEn: 'Contraceptive device icon',
       titleKey: 'why.experience.title',
       descKey: 'why.experience.desc',
-      emoji: '💊',
     },
     {
-      icon: Sparkles,
+      imgSrc: ecoUteroIcon,
+      altEs: 'Icono de salud integral femenina',
+      altEn: 'Comprehensive women\'s health icon',
       titleKey: 'why.integral.title',
       descKey: 'why.integral.desc',
-      emoji: '❤️',
     },
   ];
 
@@ -95,7 +102,14 @@ const WhyChooseUs = ({ onBookClick }: WhyChooseUsProps) => {
                 {/* Icon Container */}
                 <div className="relative mb-6">
                   <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-coral/20 to-magenta/20 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                    <span className="text-3xl">{feature.emoji}</span>
+                    <img
+                      src={feature.imgSrc}
+                      alt={language === 'es' ? feature.altEs : feature.altEn}
+                      width={40}
+                      height={40}
+                      loading="lazy"
+                      className="object-contain"
+                    />
                   </div>
                   <div className="absolute -inset-2 bg-gradient-to-br from-coral/10 to-magenta/10 rounded-3xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 </div>
