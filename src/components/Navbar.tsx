@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, Instagram, Facebook } from 'lucide-react';
 import TikTokIcon from '@/components/icons/TikTokIcon';
@@ -32,7 +32,38 @@ const Navbar = ({ onBookClick }: NavbarProps) => {
     { to: '/contacto', labelEs: 'Contacto', labelEn: 'Contact' },
   ];
 
-  const isActive = (path: string) => location.pathname === path;
+  const [activeSection, setActiveSection] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (location.pathname !== '/') {
+      setActiveSection(null);
+      return;
+    }
+    const sectionIds = ['servicios', 'confia-en-nosotras'];
+    const handleScroll = () => {
+      if (window.scrollY < 100) {
+        setActiveSection(null);
+        return;
+      }
+      let current: string | null = null;
+      for (const id of sectionIds) {
+        const el = document.getElementById(id);
+        if (el && el.getBoundingClientRect().top <= 100) {
+          current = id;
+        }
+      }
+      setActiveSection(current);
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [location.pathname]);
+
+  const isLinkActive = (link: NavLink): boolean => {
+    if (link.sectionId) return activeSection === link.sectionId;
+    if (link.to === '/') return location.pathname === '/' && activeSection === null;
+    return location.pathname === link.to;
+  };
 
   const scrollToSection = (sectionId: string) => {
     if (location.pathname === '/') {
@@ -67,7 +98,7 @@ const Navbar = ({ onBookClick }: NavbarProps) => {
                     key={link.to}
                     to={link.to}
                     className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
-                      isActive(link.to)
+                      isLinkActive(link)
                         ? 'text-primary'
                         : 'text-muted-foreground hover:text-foreground'
                     }`}
@@ -78,7 +109,11 @@ const Navbar = ({ onBookClick }: NavbarProps) => {
                   <button
                     key={link.sectionId}
                     onClick={() => scrollToSection(link.sectionId!)}
-                    className="px-4 py-2 rounded-full text-sm font-medium transition-all text-muted-foreground hover:text-foreground"
+                    className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
+                      isLinkActive(link)
+                        ? 'text-primary'
+                        : 'text-muted-foreground hover:text-foreground'
+                    }`}
                   >
                     {language === 'es' ? link.labelEs : link.labelEn}
                   </button>
@@ -185,7 +220,7 @@ const Navbar = ({ onBookClick }: NavbarProps) => {
                       to={link.to}
                       onClick={() => setIsOpen(false)}
                       className={`px-4 py-3 rounded-lg text-center font-medium transition-all ${
-                        isActive(link.to)
+                        isLinkActive(link)
                           ? 'bg-primary/10 text-primary'
                           : 'text-muted-foreground hover:bg-secondary'
                       }`}
@@ -199,7 +234,11 @@ const Navbar = ({ onBookClick }: NavbarProps) => {
                         scrollToSection(link.sectionId!);
                         setIsOpen(false);
                       }}
-                      className="px-4 py-3 rounded-lg text-center font-medium transition-all text-muted-foreground hover:bg-secondary"
+                      className={`px-4 py-3 rounded-lg text-center font-medium transition-all ${
+                        isLinkActive(link)
+                          ? 'bg-primary/10 text-primary'
+                          : 'text-muted-foreground hover:bg-secondary'
+                      }`}
                     >
                       {language === 'es' ? link.labelEs : link.labelEn}
                     </button>
