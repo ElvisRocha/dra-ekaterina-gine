@@ -63,7 +63,11 @@ const BookAppointmentContent = () => {
     }
   }, [searchParams]);
 
-  const handleSelectService = (service: Service) => {
+  const handleSelectService = (service: Service | null) => {
+    if (!service) {
+      setSelectedService(null);
+      return;
+    }
     const serviceChanged = selectedService?.id !== service.id;
     setSelectedService(service);
     if (serviceChanged) {

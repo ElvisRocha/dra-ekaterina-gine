@@ -1,63 +1,30 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLanguage } from '@/contexts/LanguageContext';
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from '@/components/ui/accordion';
-import {
-  services,
-  formatPrice,
-  getCategoryServices,
-  type Service
-} from '@/data/services';
-import { Clock, ChevronRight } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { type Service } from '@/data/services';
 import { Card } from '@/components/ui/card';
 import ServiceInfoPanel from '@/components/booking/ServiceInfoPanel';
 import ServiceInfoModal from '@/components/booking/ServiceInfoModal';
+import DecisionTreeFlow from '@/components/booking/DecisionTreeFlow';
 import IsotipoImg from '@/assets/Isotipo.png';
-import consultaImg from '@/assets/consulta.png';
-import ecografiaImg from '@/assets/ecografia.png';
-import dispositivoImg from '@/assets/dispositivo.png';
-import lupaImg from '@/assets/lupa.png';
 import { useIsMobile } from '@/hooks/use-mobile';
 
 interface ServiceStepProps {
   selectedService: Service | null;
-  onSelectService: (service: Service) => void;
+  onSelectService: (service: Service | null) => void;
   onNext: () => void;
 }
 
 const ServiceStep = ({ selectedService, onSelectService, onNext }: ServiceStepProps) => {
   const { t, language } = useLanguage();
   const isMobile = useIsMobile();
-  const [expandedCategory, setExpandedCategory] = useState<string>(
-    selectedService?.category ?? ''
-  );
+  const [previewService, setPreviewService] = useState<Service | null>(null);
   const [showMobileInfoModal, setShowMobileInfoModal] = useState(false);
-  const hasAutoExpanded = useRef(false);
 
-  // Auto-expand category when service is pre-selected (e.g., from URL params)
-  useEffect(() => {
-    if (selectedService && !hasAutoExpanded.current) {
-      setExpandedCategory(selectedService.category);
-      hasAutoExpanded.current = true;
-    }
-  }, [selectedService]);
-
-  const categories = [
-    { key: 'consultas' as const, img: consultaImg, altEs: 'Icono de consulta', altEn: 'Consultation icon' },
-    { key: 'ultrasonidos' as const, img: ecografiaImg, altEs: 'Icono de ultrasonido', altEn: 'Ultrasound icon' },
-    { key: 'dispositivos' as const, img: dispositivoImg, altEs: 'Icono de dispositivo anticonceptivo', altEn: 'Contraceptive device icon' },
-    { key: 'colposcopia' as const, img: lupaImg, altEs: 'Icono de colposcopía', altEn: 'Colposcopy icon' },
-  ];
+  const panelService = previewService ?? selectedService;
 
   const handleNextClick = () => {
     if (!selectedService) return;
-
     if (isMobile) {
       setShowMobileInfoModal(true);
     } else {
@@ -83,107 +50,32 @@ const ServiceStep = ({ selectedService, onSelectService, onNext }: ServiceStepPr
         </h2>
         <p className="text-muted-foreground text-sm">
           {language === 'es'
-            ? 'Elige el servicio que necesitas'
-            : 'Choose the service you need'}
+            ? 'Responde las preguntas para encontrar el servicio ideal para ti'
+            : 'Answer the questions to find the ideal service for you'}
         </p>
       </div>
 
       {/* Card principal contenedora con layout 60-40 */}
       <Card className="p-6">
         <div className="flex flex-col lg:flex-row gap-6">
-          {/* Services list - 60% */}
+          {/* Decision tree - 60% */}
           <div className="w-full lg:w-[60%]">
-            <Accordion type="single" collapsible value={expandedCategory} onValueChange={setExpandedCategory} className="space-y-3">
-              {categories.map((category) => {
-                const categoryServices = getCategoryServices(category.key);
-                return (
-                  <AccordionItem
-                    key={category.key}
-                    value={category.key}
-                    className="border border-border rounded-xl overflow-hidden bg-card"
-                  >
-                    <AccordionTrigger className="px-4 py-4 hover:no-underline hover:bg-secondary/50 transition-colors">
-                      <div className="flex items-center gap-3 flex-1 min-w-0">
-                        <img
-                          src={category.img}
-                          alt={language === 'es' ? category.altEs : category.altEn}
-                          className="w-12 h-12 flex-shrink-0 object-contain"
-                        />
-                        <span className="font-medium text-foreground flex-1 min-w-0 text-left">
-                          {t(`cat.${category.key}`)}
-                        </span>
-                        <span className="text-xs text-muted-foreground bg-secondary px-2 py-0.5 rounded-full flex-shrink-0">
-                          {categoryServices.length}
-                        </span>
-                      </div>
-                    </AccordionTrigger>
-                    <AccordionContent className="px-4 pb-4">
-                      <div className="space-y-2 mt-2">
-                        {categoryServices.map((service) => {
-                          const isSelected = selectedService?.id === service.id;
-                          return (
-                            <button
-                              key={service.id}
-                              onClick={() => onSelectService(service)}
-                              className={cn(
-                                'w-full p-4 rounded-lg border text-left transition-all',
-                                isSelected
-                                  ? 'border-primary bg-primary/5 ring-1 ring-primary'
-                                  : 'border-border hover:border-primary/50 hover:bg-secondary/30'
-                              )}
-                            >
-                              <div className="flex items-center justify-between gap-3">
-                                <div className="flex-1 min-w-0">
-                                  <h4 className="font-medium text-foreground text-sm mb-1">
-                                    {language === 'es' ? service.nameEs : service.nameEn}
-                                  </h4>
-                                  <div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
-                                    <span className="flex items-center gap-1">
-                                      <Clock className="w-3 h-3" />
-                                      {service.duration}
-                                    </span>
-                                    <span className="flex items-center gap-1 font-semibold text-primary">
-                                      {formatPrice(service.price)}
-                                    </span>
-                                  </div>
-                                </div>
-                                {isSelected && (
-                                  <motion.div
-                                    initial={{ opacity: 0, scale: 0.9 }}
-                                    animate={{ opacity: 1, scale: 1 }}
-                                    transition={{ duration: 0.2 }}
-                                    className="flex-shrink-0"
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      handleNextClick();
-                                    }}
-                                  >
-                                    <span
-                                      className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-primary text-primary-foreground text-sm font-semibold hover:bg-primary/90 transition-colors shadow-sm"
-                                    >
-                                      {t('booking.next')}
-                                      <ChevronRight className="w-4 h-4" />
-                                    </span>
-                                  </motion.div>
-                                )}
-                              </div>
-                            </button>
-                          );
-                        })}
-                      </div>
-                    </AccordionContent>
-                  </AccordionItem>
-                );
-              })}
-            </Accordion>
+            <DecisionTreeFlow
+              onPreviewService={setPreviewService}
+              onSelectService={onSelectService}
+              selectedService={selectedService}
+              actionLabel={t('booking.next')}
+              onAction={handleNextClick}
+              language={language as 'es' | 'en'}
+            />
           </div>
 
           {/* Service Info Panel - 40% (desktop only) */}
           <div className="hidden lg:block w-full lg:w-[40%]">
             <AnimatePresence mode="wait">
-              {selectedService ? (
+              {panelService ? (
                 <motion.div
-                  key={selectedService.id}
+                  key={panelService.id}
                   initial={{ opacity: 0, scale: 0.95 }}
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.95 }}
@@ -191,7 +83,7 @@ const ServiceStep = ({ selectedService, onSelectService, onNext }: ServiceStepPr
                   className="lg:sticky lg:top-24"
                 >
                   <ServiceInfoPanel
-                    service={selectedService}
+                    service={panelService}
                     className="h-fit"
                   />
                 </motion.div>
