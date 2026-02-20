@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { type Service } from '@/data/services';
+import { type QuestionNode } from '@/data/decisionTree';
 import { Card } from '@/components/ui/card';
 import ServiceInfoPanel from '@/components/booking/ServiceInfoPanel';
 import ServiceInfoModal from '@/components/booking/ServiceInfoModal';
@@ -13,9 +14,22 @@ interface ServiceStepProps {
   selectedService: Service | null;
   onSelectService: (service: Service | null) => void;
   onNext: () => void;
+  // Controlled tree state lifted from BookAppointment
+  treeHistory: QuestionNode[];
+  onTreeHistoryChange: (h: QuestionNode[]) => void;
+  treeChoiceKey: string | null;
+  onTreeChoiceKeyChange: (k: string | null) => void;
 }
 
-const ServiceStep = ({ selectedService, onSelectService, onNext }: ServiceStepProps) => {
+const ServiceStep = ({
+  selectedService,
+  onSelectService,
+  onNext,
+  treeHistory,
+  onTreeHistoryChange,
+  treeChoiceKey,
+  onTreeChoiceKeyChange,
+}: ServiceStepProps) => {
   const { t, language } = useLanguage();
   const isMobile = useIsMobile();
   const [previewService, setPreviewService] = useState<Service | null>(null);
@@ -55,12 +69,15 @@ const ServiceStep = ({ selectedService, onSelectService, onNext }: ServiceStepPr
         </p>
       </div>
 
-      {/* Card principal contenedora con layout 60-40 */}
       <Card className="p-6">
         <div className="flex flex-col lg:flex-row gap-6">
-          {/* Decision tree - 60% */}
+          {/* Decision tree — 60% */}
           <div className="w-full lg:w-[60%]">
             <DecisionTreeFlow
+              treeHistory={treeHistory}
+              onTreeHistoryChange={onTreeHistoryChange}
+              treeChoiceKey={treeChoiceKey}
+              onTreeChoiceKeyChange={onTreeChoiceKeyChange}
               onPreviewService={setPreviewService}
               onSelectService={onSelectService}
               selectedService={selectedService}
@@ -70,7 +87,7 @@ const ServiceStep = ({ selectedService, onSelectService, onNext }: ServiceStepPr
             />
           </div>
 
-          {/* Service Info Panel - 40% (desktop only) */}
+          {/* Service Info Panel — 40% (desktop only) */}
           <div className="hidden lg:block w-full lg:w-[40%]">
             <AnimatePresence mode="wait">
               {panelService ? (
@@ -82,10 +99,7 @@ const ServiceStep = ({ selectedService, onSelectService, onNext }: ServiceStepPr
                   transition={{ duration: 0.2 }}
                   className="lg:sticky lg:top-24"
                 >
-                  <ServiceInfoPanel
-                    service={panelService}
-                    className="h-fit"
-                  />
+                  <ServiceInfoPanel service={panelService} className="h-fit" />
                 </motion.div>
               ) : (
                 <motion.div

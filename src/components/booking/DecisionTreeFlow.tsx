@@ -3,18 +3,29 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight, Clock } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { services, formatPrice, type Service } from '@/data/services';
-import { decisionTree, type QuestionNode, type ChoiceOption, type ServiceNode } from '@/data/decisionTree';
+import { type QuestionNode, type ChoiceOption, type ServiceNode } from '@/data/decisionTree';
 
 interface DecisionTreeFlowProps {
+  // Controlled tree state (lifted to parent so it survives unmount/remount)
+  treeHistory: QuestionNode[];
+  onTreeHistoryChange: (h: QuestionNode[]) => void;
+  treeChoiceKey: string | null;
+  onTreeChoiceKeyChange: (k: string | null) => void;
+  // Service selection
   onPreviewService: (service: Service | null) => void;
   onSelectService: (service: Service | null) => void;
   selectedService: Service | null;
+  // Action button
   actionLabel?: string;
   onAction?: () => void;
   language: 'es' | 'en';
 }
 
 const DecisionTreeFlow = ({
+  treeHistory,
+  onTreeHistoryChange,
+  treeChoiceKey,
+  onTreeChoiceKeyChange,
   onPreviewService,
   onSelectService,
   selectedService,
@@ -22,23 +33,22 @@ const DecisionTreeFlow = ({
   onAction,
   language,
 }: DecisionTreeFlowProps) => {
-  const [history, setHistory] = useState<QuestionNode[]>([decisionTree]);
+  // direction is local-only: it drives the slide animation and doesn't need to persist
   const [direction, setDirection] = useState<1 | -1>(1);
-  const [selectedChoiceKey, setSelectedChoiceKey] = useState<string | null>(null);
 
-  const currentNode = history[history.length - 1];
+  const currentNode = treeHistory[treeHistory.length - 1];
 
   const handleChoice = (choice: ChoiceOption, index: number) => {
     if (choice.next.type === 'question') {
       setDirection(1);
-      setHistory(prev => [...prev, choice.next as QuestionNode]);
-      setSelectedChoiceKey(null);
+      onTreeHistoryChange([...treeHistory, choice.next as QuestionNode]);
+      onTreeChoiceKeyChange(null);
       onPreviewService(null);
       onSelectService(null);
     } else {
       const svc = services.find(s => s.id === (choice.next as ServiceNode).serviceId) ?? null;
       if (svc) {
-        setSelectedChoiceKey(`${currentNode.id}-${index}`);
+        onTreeChoiceKeyChange(`${currentNode.id}-${index}`);
         onPreviewService(svc);
         onSelectService(svc);
       }
@@ -46,17 +56,17 @@ const DecisionTreeFlow = ({
   };
 
   const handleBack = () => {
-    if (history.length > 1) {
+    if (treeHistory.length > 1) {
       setDirection(-1);
-      setHistory(prev => prev.slice(0, -1));
-      setSelectedChoiceKey(null);
+      onTreeHistoryChange(treeHistory.slice(0, -1));
+      onTreeChoiceKeyChange(null);
       onPreviewService(null);
       onSelectService(null);
     }
   };
 
   const isChoiceSelected = (index: number): boolean =>
-    selectedChoiceKey === `${currentNode.id}-${index}`;
+    treeChoiceKey === `${currentNode.id}-${index}`;
 
   const resolveService = (choice: ChoiceOption): Service | null => {
     if (choice.next.type !== 'service') return null;
@@ -67,7 +77,7 @@ const DecisionTreeFlow = ({
     <div className="space-y-4">
       {/* Back button */}
       <AnimatePresence>
-        {history.length > 1 && (
+        {treeHistory.length > 1 && (
           <motion.button
             key="back-btn"
             initial={{ opacity: 0, x: -10 }}
@@ -99,7 +109,7 @@ const DecisionTreeFlow = ({
           transition={{ duration: 0.22, ease: 'easeInOut' }}
           className="space-y-4"
         >
-          {/* Icon (shown on question nodes that have one) */}
+          {/* Icon */}
           {currentNode.icon && (
             <div className="flex justify-center">
               <img
@@ -141,7 +151,6 @@ const DecisionTreeFlow = ({
                   )}
                 >
                   <div className="flex items-center gap-3">
-                    {/* Option icon */}
                     {choice.icon && (
                       <img
                         src={choice.icon}
@@ -151,7 +160,6 @@ const DecisionTreeFlow = ({
                       />
                     )}
 
-                    {/* Label + metadata */}
                     <div className="flex-1 min-w-0">
                       <span className="font-medium text-foreground text-sm block">
                         {language === 'es' ? choice.labelEs : choice.labelEn}
@@ -167,12 +175,10 @@ const DecisionTreeFlow = ({
                       )}
                     </div>
 
-                    {/* Arrow for non-terminal choices */}
                     {!isTerminal && (
                       <ChevronRight className="w-4 h-4 text-muted-foreground flex-shrink-0" />
                     )}
 
-                    {/* Action button on selected terminal choice */}
                     {isSelected && actionLabel && onAction && (
                       <motion.span
                         initial={{ opacity: 0, scale: 0.9 }}

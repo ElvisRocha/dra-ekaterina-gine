@@ -431,6 +431,35 @@ const consulta_motivo: QuestionNode = {
 
 // ─── ROOT ─────────────────────────────────────────────────────────────────────
 
+// ─── Tree state (for controlled/lifted usage) ────────────────────────────────
+
+export interface TreeState {
+  history: QuestionNode[];
+  choiceKey: string | null;
+}
+
+export function findServicePath(serviceId: string): TreeState | null {
+  function dfs(node: QuestionNode, historyPath: QuestionNode[]): TreeState | null {
+    for (let i = 0; i < node.choices.length; i++) {
+      const choice = node.choices[i];
+      if (choice.next.type === 'service') {
+        if ((choice.next as ServiceNode).serviceId === serviceId)
+          return { history: historyPath, choiceKey: `${node.id}-${i}` };
+      } else {
+        const result = dfs(choice.next as QuestionNode, [
+          ...historyPath,
+          choice.next as QuestionNode,
+        ]);
+        if (result) return result;
+      }
+    }
+    return null;
+  }
+  return dfs(decisionTree, [decisionTree]);
+}
+
+// ─── ROOT ─────────────────────────────────────────────────────────────────────
+
 export const decisionTree: QuestionNode = {
   type: 'question',
   id: 'root',
@@ -451,3 +480,5 @@ export const decisionTree: QuestionNode = {
     },
   ],
 };
+
+export const initialTreeState: TreeState = { history: [decisionTree], choiceKey: null };

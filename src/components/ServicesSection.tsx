@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { type Service } from '@/data/services';
+import { initialTreeState, type QuestionNode } from '@/data/decisionTree';
 import ServiceInfoPanel from '@/components/booking/ServiceInfoPanel';
 import DecisionTreeFlow from '@/components/booking/DecisionTreeFlow';
 import IsotipoImg from '@/assets/Isotipo.png';
@@ -12,6 +13,8 @@ interface ServicesSectionProps {
 
 const ServicesSection = ({ onBookService }: ServicesSectionProps) => {
   const { t, language } = useLanguage();
+  const [treeHistory, setTreeHistory] = useState<QuestionNode[]>(initialTreeState.history);
+  const [treeChoiceKey, setTreeChoiceKey] = useState<string | null>(null);
   const [previewService, setPreviewService] = useState<Service | null>(null);
   const [confirmedService, setConfirmedService] = useState<Service | null>(null);
 
@@ -59,6 +62,10 @@ const ServicesSection = ({ onBookService }: ServicesSectionProps) => {
             {/* Decision tree - 60% */}
             <div className="w-full lg:w-[60%]">
               <DecisionTreeFlow
+                treeHistory={treeHistory}
+                onTreeHistoryChange={setTreeHistory}
+                treeChoiceKey={treeChoiceKey}
+                onTreeChoiceKeyChange={setTreeChoiceKey}
                 onPreviewService={setPreviewService}
                 onSelectService={handleSelectService}
                 selectedService={confirmedService}

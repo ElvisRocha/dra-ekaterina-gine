@@ -4,6 +4,7 @@ import { AnimatePresence } from 'framer-motion';
 import { format } from 'date-fns';
 import { LanguageProvider, useLanguage } from '@/contexts/LanguageContext';
 import { services, type Service } from '@/data/services';
+import { initialTreeState, findServicePath, type QuestionNode } from '@/data/decisionTree';
 
 import Navbar from '@/components/Navbar';
 import StepIndicator from '@/components/booking/StepIndicator';
@@ -30,6 +31,10 @@ const BookAppointmentContent = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [completedSteps, setCompletedSteps] = useState<number[]>([]);
 
+  // Tree state — lives here so it survives step changes (ServiceStep unmounts/remounts)
+  const [treeHistory, setTreeHistory] = useState<QuestionNode[]>(initialTreeState.history);
+  const [treeChoiceKey, setTreeChoiceKey] = useState<string | null>(null);
+
   // Form data
   const [selectedService, setSelectedService] = useState<Service | null>(null);
   const [patientData, setPatientData] = useState<PatientData>({
@@ -53,6 +58,13 @@ const BookAppointmentContent = () => {
       const service = services.find(s => s.id === serviceId);
       if (service) {
         setSelectedService(service);
+        // Restore the tree to the node that contains this service so
+        // going "Atrás" from step 2 shows the correct state
+        const path = findServicePath(serviceId);
+        if (path) {
+          setTreeHistory(path.history);
+          setTreeChoiceKey(path.choiceKey);
+        }
         setCompletedSteps(prev => {
           const newCompleted = new Set(prev);
           newCompleted.add(1);
@@ -212,6 +224,10 @@ const BookAppointmentContent = () => {
                   selectedService={selectedService}
                   onSelectService={handleSelectService}
                   onNext={() => goToStep(2)}
+                  treeHistory={treeHistory}
+                  onTreeHistoryChange={setTreeHistory}
+                  treeChoiceKey={treeChoiceKey}
+                  onTreeChoiceKeyChange={setTreeChoiceKey}
                 />
               )}
               
