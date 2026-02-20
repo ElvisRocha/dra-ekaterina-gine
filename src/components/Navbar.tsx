@@ -65,6 +65,10 @@ const Navbar = ({ onBookClick }: NavbarProps) => {
     return location.pathname === link.to;
   };
 
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   const scrollToSection = (sectionId: string) => {
     if (location.pathname === '/') {
       const element = document.getElementById(sectionId);
@@ -97,6 +101,12 @@ const Navbar = ({ onBookClick }: NavbarProps) => {
                   <Link
                     key={link.to}
                     to={link.to}
+                    onClick={(e) => {
+                      if (link.to === '/' && location.pathname === '/') {
+                        e.preventDefault();
+                        scrollToTop();
+                      }
+                    }}
                     className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
                       isLinkActive(link)
                         ? 'text-primary'
@@ -218,7 +228,13 @@ const Navbar = ({ onBookClick }: NavbarProps) => {
                     <Link
                       key={link.to}
                       to={link.to}
-                      onClick={() => setIsOpen(false)}
+                      onClick={(e) => {
+                        setIsOpen(false);
+                        if (link.to === '/' && location.pathname === '/') {
+                          e.preventDefault();
+                          setTimeout(scrollToTop, 350);
+                        }
+                      }}
                       className={`px-4 py-3 rounded-lg text-center font-medium transition-all ${
                         isLinkActive(link)
                           ? 'bg-primary/10 text-primary'
