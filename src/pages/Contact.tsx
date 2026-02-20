@@ -171,8 +171,8 @@ const ContactContent = () => {
                     value={formData.message}
                     onChange={(e) => updateField('message', e.target.value)}
                     placeholder={language === 'es' ? 'Cuéntanos tus dudas o lo que necesitas, estamos aquí para ti...' : "Tell us your questions or what you need, we're here for you..."}
-                    rows={7}
-                    className="min-h-[160px]"
+                    rows={9}
+                    className="min-h-[200px]"
                     required
                   />
                 </div>
