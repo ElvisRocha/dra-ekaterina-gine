@@ -24,18 +24,21 @@ const DecisionTreeFlow = ({
 }: DecisionTreeFlowProps) => {
   const [history, setHistory] = useState<QuestionNode[]>([decisionTree]);
   const [direction, setDirection] = useState<1 | -1>(1);
+  const [selectedChoiceKey, setSelectedChoiceKey] = useState<string | null>(null);
 
   const currentNode = history[history.length - 1];
 
-  const handleChoice = (choice: ChoiceOption) => {
+  const handleChoice = (choice: ChoiceOption, index: number) => {
     if (choice.next.type === 'question') {
       setDirection(1);
       setHistory(prev => [...prev, choice.next as QuestionNode]);
+      setSelectedChoiceKey(null);
       onPreviewService(null);
       onSelectService(null);
     } else {
       const svc = services.find(s => s.id === (choice.next as ServiceNode).serviceId) ?? null;
       if (svc) {
+        setSelectedChoiceKey(`${currentNode.id}-${index}`);
         onPreviewService(svc);
         onSelectService(svc);
       }
@@ -46,15 +49,14 @@ const DecisionTreeFlow = ({
     if (history.length > 1) {
       setDirection(-1);
       setHistory(prev => prev.slice(0, -1));
+      setSelectedChoiceKey(null);
       onPreviewService(null);
       onSelectService(null);
     }
   };
 
-  const isChoiceSelected = (choice: ChoiceOption): boolean => {
-    if (choice.next.type !== 'service') return false;
-    return selectedService?.id === (choice.next as ServiceNode).serviceId;
-  };
+  const isChoiceSelected = (index: number): boolean =>
+    selectedChoiceKey === `${currentNode.id}-${index}`;
 
   const resolveService = (choice: ChoiceOption): Service | null => {
     if (choice.next.type !== 'service') return null;
@@ -119,12 +121,12 @@ const DecisionTreeFlow = ({
             {currentNode.choices.map((choice, i) => {
               const isTerminal = choice.next.type === 'service';
               const resolvedService = isTerminal ? resolveService(choice) : null;
-              const isSelected = isTerminal && isChoiceSelected(choice);
+              const isSelected = isTerminal && isChoiceSelected(i);
 
               return (
                 <button
                   key={i}
-                  onClick={() => handleChoice(choice)}
+                  onClick={() => handleChoice(choice, i)}
                   onMouseEnter={() => {
                     if (resolvedService) onPreviewService(resolvedService);
                   }}
