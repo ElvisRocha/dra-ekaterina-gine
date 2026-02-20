@@ -63,7 +63,7 @@ const ContactContent = () => {
   };
 
   // TODO: Replace with real clinic phone number
-  const whatsappNumber = '50687094181';
+  const whatsappNumber = '50662450393';
   const whatsappLink = `https://wa.me/${whatsappNumber}`;
 
   return (
@@ -237,10 +237,16 @@ const ContactContent = () => {
                     </h3>
                     {/* TODO: Replace with real phone number */}
                     <a 
-                      href="tel:+50687094181" 
+                      href="tel:+50662450393" 
                       className="text-primary hover:underline text-sm"
                     >
-                      +506 8709-4181
+                      +506 6245-0393
+                    </a><br />
+                    <a 
+                      href="tel:+50624604325" 
+                      className="text-primary hover:underline text-sm"
+                    >
+                      +506 2460-4325
                     </a>
                   </div>
                 </div>
