@@ -20,7 +20,7 @@ import { Clock, ChevronRight, Info, X } from 'lucide-react';
 import consultaImg from '@/assets/consulta.png';
 import ecografiaImg from '@/assets/ecografia.png';
 import dispositivoImg from '@/assets/dispositivo.png';
-import citologiaImg from '@/assets/citologia.png';
+import lupaImg from '@/assets/lupa.png';
 
 interface ServicesSectionProps {
   onBookService: (service: Service) => void;
@@ -34,7 +34,7 @@ const ServicesSection = ({ onBookService }: ServicesSectionProps) => {
     { key: 'consultas' as const, img: consultaImg, altEs: 'Icono de consulta', altEn: 'Consultation icon' },
     { key: 'ultrasonidos' as const, img: ecografiaImg, altEs: 'Icono de ultrasonido', altEn: 'Ultrasound icon' },
     { key: 'dispositivos' as const, img: dispositivoImg, altEs: 'Icono de dispositivo anticonceptivo', altEn: 'Contraceptive device icon' },
-    { key: 'colposcopia' as const, img: citologiaImg, altEs: 'Icono de colposcopía', altEn: 'Colposcopy icon' },
+    { key: 'colposcopia' as const, img: lupaImg, altEs: 'Icono de colposcopía', altEn: 'Colposcopy icon' },
   ];
 
   const getServiceInfo = (infoKey: string | undefined) => {

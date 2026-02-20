@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import consultaIcon from '@/assets/consulta.png';
 import ecografiaIcon from '@/assets/ecografia.png';
 import dispositivoIcon from '@/assets/dispositivo.png';
-import ecoUteroIcon from '@/assets/eco-utero.png';
+import ecoUteroIcon from '@/assets/matrioshka.png';
 
 interface WhyChooseUsProps {
   onBookClick: () => void;
