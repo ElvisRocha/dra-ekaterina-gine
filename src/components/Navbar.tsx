@@ -231,8 +231,8 @@ const Navbar = ({ onBookClick }: NavbarProps) => {
                     <button
                       key={link.sectionId}
                       onClick={() => {
-                        scrollToSection(link.sectionId!);
                         setIsOpen(false);
+                        setTimeout(() => scrollToSection(link.sectionId!), 350);
                       }}
                       className={`px-4 py-3 rounded-lg text-center font-medium transition-all ${
                         isLinkActive(link)
