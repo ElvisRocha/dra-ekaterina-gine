@@ -324,29 +324,36 @@ const GalleryPreviewSection = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-foreground/90 flex items-center justify-center p-4"
+            className="fixed inset-0 z-50 bg-foreground/90 flex flex-col items-center justify-center gap-4 p-4"
             onClick={closeLightbox}
             onTouchStart={handleLightboxTouchStart}
             onTouchEnd={handleLightboxTouchEnd}
           >
+            {/* Close */}
             <button
               className="absolute top-4 right-4 text-background hover:text-background/80 transition-colors z-10"
               onClick={closeLightbox}
             >
               <X className="w-8 h-8" />
             </button>
+
+            {/* Prev arrow */}
             <button
-              className="absolute left-4 text-background hover:text-background/80 transition-colors z-10"
+              className="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 text-background hover:text-background/80 transition-colors z-10"
               onClick={(e) => { e.stopPropagation(); goPrev(); }}
             >
               <ChevronLeft className="w-10 h-10" />
             </button>
+
+            {/* Next arrow */}
             <button
-              className="absolute right-4 text-background hover:text-background/80 transition-colors z-10"
+              className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 text-background hover:text-background/80 transition-colors z-10"
               onClick={(e) => { e.stopPropagation(); goNext(); }}
             >
               <ChevronRight className="w-10 h-10" />
             </button>
+
+            {/* Image */}
             <motion.img
               key={lightboxIndex}
               initial={{ opacity: 0, scale: 0.9 }}
@@ -354,12 +361,33 @@ const GalleryPreviewSection = () => {
               exit={{ opacity: 0, scale: 0.9 }}
               src={featuredCards[lightboxIndex].src}
               alt={featuredCards[lightboxIndex].alt}
-              className="max-w-full max-h-[85vh] object-contain rounded-lg"
+              className="max-w-full max-h-[58vh] object-contain rounded-lg"
               onClick={(e) => e.stopPropagation()}
             />
-            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-background text-sm">
-              {lightboxIndex + 1} / {featuredCards.length}
-            </div>
+
+            {/* Description — fades when navigating */}
+            <AnimatePresence mode="wait">
+              <motion.p
+                key={`desc-${lightboxIndex}`}
+                initial={{ opacity: 0, y: 4 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -4 }}
+                transition={{ duration: 0.2 }}
+                className="text-background/80 text-sm text-center leading-relaxed max-w-xs md:max-w-md px-6"
+                onClick={(e) => e.stopPropagation()}
+              >
+                {featuredCards[lightboxIndex].description}
+              </motion.p>
+            </AnimatePresence>
+
+            {/* "Ver toda la galería" — replaces the X / Y counter */}
+            <Link
+              to="/galeria"
+              className="btn-gradient"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {ctaLabel}
+            </Link>
           </motion.div>
         )}
       </AnimatePresence>
