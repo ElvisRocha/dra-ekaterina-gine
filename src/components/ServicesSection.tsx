@@ -221,32 +221,51 @@ const ServicesSection = ({ onBookService }: ServicesSectionProps) => {
         {/* Photography Cards */}
         <div className="max-w-5xl mx-auto mt-16">
 
-          {/* Desktop Grid — 2×2 on md, 4 columns on lg+ — hidden on mobile */}
-          <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {/* Desktop Grid — 2 columns — hidden on mobile */}
+          <div className="hidden md:grid md:grid-cols-2 gap-6">
             {photographyCards.map((card, index) => (
               <motion.div
                 key={card.id}
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 28 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.4, delay: index * 0.1 }}
-                className="relative overflow-hidden rounded-2xl cursor-pointer group aspect-[4/3] shadow-card"
+                transition={{ duration: 0.5, delay: index * 0.12 }}
+                className="group rounded-2xl overflow-hidden shadow-card hover:shadow-elevated transition-all duration-500 hover:-translate-y-2 cursor-pointer"
                 onClick={() => setPhotoLightboxIndex(index)}
               >
-                <img
-                  src={card.src}
-                  alt={card.alt}
-                  loading="lazy"
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                />
-                {/* Hover overlay with description + zoom icon */}
-                <div className="absolute inset-0 bg-gradient-to-t from-magenta/85 via-fuchsia/50 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 flex flex-col p-4">
-                  <div className="flex-1 flex items-center justify-center">
-                    <ZoomIn className="w-9 h-9 text-white drop-shadow-lg" />
+                {/* Image */}
+                <div className="aspect-[3/2] overflow-hidden relative">
+                  <img
+                    src={card.src}
+                    alt={card.alt}
+                    loading="lazy"
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  />
+                  {/* Number badge */}
+                  <div className="absolute top-3 left-3 w-9 h-9 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-soft">
+                    <span className="text-primary font-bold text-xs leading-none">
+                      {String(index + 1).padStart(2, '0')}
+                    </span>
                   </div>
-                  <p className="text-white text-xs leading-relaxed font-body">
+                  {/* Zoom circle — appears on hover */}
+                  <div className="absolute inset-0 flex items-center justify-center bg-foreground/0 group-hover:bg-foreground/10 transition-colors duration-300">
+                    <div className="w-14 h-14 rounded-full bg-white/0 group-hover:bg-white/90 transition-all duration-300 flex items-center justify-center scale-50 group-hover:scale-100">
+                      <ZoomIn className="w-6 h-6 text-primary opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Text content — always visible */}
+                <div className="relative bg-card px-5 pt-5 pb-4">
+                  {/* Gradient separator */}
+                  <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-coral via-fuchsia to-magenta opacity-50 group-hover:opacity-100 transition-opacity duration-300" />
+                  <p className="text-foreground/70 text-sm leading-relaxed mb-3">
                     {card.description}
                   </p>
+                  <div className="flex items-center gap-1.5 text-primary text-xs font-semibold tracking-wider uppercase">
+                    <ZoomIn className="w-3.5 h-3.5 flex-shrink-0" />
+                    <span>Ampliar imagen</span>
+                  </div>
                 </div>
               </motion.div>
             ))}
@@ -254,19 +273,11 @@ const ServicesSection = ({ onBookService }: ServicesSectionProps) => {
 
           {/* Mobile Carousel — visible only on mobile */}
           <div className="md:hidden">
+            {/* Image slider */}
             <div className="relative">
-              {/* Prev arrow */}
-              <button
-                onClick={goCarouselPrev}
-                aria-label="Imagen anterior"
-                className="absolute top-1/2 left-2 -translate-y-1/2 z-10 w-9 h-9 flex items-center justify-center rounded-full bg-card/80 border border-border/50 text-foreground/70 hover:text-foreground transition-colors shadow-soft"
-              >
-                <ChevronLeft className="w-5 h-5" />
-              </button>
-
-              {/* Carousel viewport */}
               <div
-                className="overflow-hidden rounded-2xl shadow-card"
+                className="overflow-hidden rounded-t-2xl cursor-pointer"
+                onClick={() => setPhotoLightboxIndex(carouselIndex)}
                 onTouchStart={handleCarouselTouchStart}
                 onTouchEnd={handleCarouselTouchEnd}
               >
@@ -278,39 +289,64 @@ const ServicesSection = ({ onBookService }: ServicesSectionProps) => {
                   }}
                 >
                   {photographyCards.map((card, index) => (
-                    <div
-                      key={card.id}
-                      className="w-full flex-shrink-0 relative aspect-[4/3] cursor-pointer"
-                      onClick={() => setPhotoLightboxIndex(index)}
-                    >
+                    <div key={card.id} className="w-full flex-shrink-0 relative aspect-[3/2]">
                       <img
                         src={card.src}
                         alt={card.alt}
                         loading="lazy"
                         className="absolute inset-0 w-full h-full object-cover"
                       />
-                      {/* Always-visible overlay on mobile */}
-                      <div className="absolute inset-0 bg-gradient-to-t from-magenta/85 via-fuchsia/50 to-transparent flex flex-col p-4">
-                        <div className="flex-1 flex items-center justify-center">
-                          <ZoomIn className="w-9 h-9 text-white/80 drop-shadow-lg" />
-                        </div>
-                        <p className="text-white text-xs leading-relaxed font-body">
-                          {card.description}
-                        </p>
+                      {/* Number badge */}
+                      <div className="absolute top-3 left-3 w-9 h-9 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-soft">
+                        <span className="text-primary font-bold text-xs leading-none">
+                          {String(index + 1).padStart(2, '0')}
+                        </span>
+                      </div>
+                      {/* Zoom hint */}
+                      <div className="absolute bottom-3 right-3 w-9 h-9 rounded-full bg-white/80 backdrop-blur-sm flex items-center justify-center shadow-soft">
+                        <ZoomIn className="w-4 h-4 text-primary" />
                       </div>
                     </div>
                   ))}
                 </div>
               </div>
-
+              {/* Prev arrow */}
+              <button
+                onClick={(e) => { e.stopPropagation(); goCarouselPrev(); }}
+                aria-label="Imagen anterior"
+                className="absolute top-1/2 left-2 -translate-y-1/2 z-10 w-9 h-9 flex items-center justify-center rounded-full bg-white/80 backdrop-blur-sm border border-border/30 text-foreground/70 hover:text-foreground transition-colors shadow-soft"
+              >
+                <ChevronLeft className="w-5 h-5" />
+              </button>
               {/* Next arrow */}
               <button
-                onClick={goCarouselNext}
+                onClick={(e) => { e.stopPropagation(); goCarouselNext(); }}
                 aria-label="Imagen siguiente"
-                className="absolute top-1/2 right-2 -translate-y-1/2 z-10 w-9 h-9 flex items-center justify-center rounded-full bg-card/80 border border-border/50 text-foreground/70 hover:text-foreground transition-colors shadow-soft"
+                className="absolute top-1/2 right-2 -translate-y-1/2 z-10 w-9 h-9 flex items-center justify-center rounded-full bg-white/80 backdrop-blur-sm border border-border/30 text-foreground/70 hover:text-foreground transition-colors shadow-soft"
               >
                 <ChevronRight className="w-5 h-5" />
               </button>
+            </div>
+
+            {/* Description — stays in place, animates on card change */}
+            <div className="bg-card rounded-b-2xl shadow-card px-5 pt-4 pb-4">
+              <div className="h-px bg-gradient-to-r from-coral via-fuchsia to-magenta mb-4" />
+              <AnimatePresence mode="wait">
+                <motion.p
+                  key={carouselIndex}
+                  initial={{ opacity: 0, y: 4 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -4 }}
+                  transition={{ duration: 0.2 }}
+                  className="text-foreground/70 text-sm leading-relaxed mb-3"
+                >
+                  {photographyCards[carouselIndex].description}
+                </motion.p>
+              </AnimatePresence>
+              <div className="flex items-center gap-1.5 text-primary text-xs font-semibold tracking-wider uppercase">
+                <ZoomIn className="w-3.5 h-3.5 flex-shrink-0" />
+                <span>Ampliar imagen</span>
+              </div>
             </div>
 
             {/* Dot indicators */}
@@ -332,7 +368,7 @@ const ServicesSection = ({ onBookService }: ServicesSectionProps) => {
             </div>
           </div>
 
-          {/* "Ver galería" button */}
+          {/* CTA button */}
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -341,7 +377,7 @@ const ServicesSection = ({ onBookService }: ServicesSectionProps) => {
             className="flex justify-center mt-10"
           >
             <Link to="/galeria" className="btn-gradient">
-              {language === 'es' ? 'Ver galería' : 'View gallery'}
+              {language === 'es' ? 'Ver toda la galería' : 'View full gallery'}
             </Link>
           </motion.div>
         </div>
