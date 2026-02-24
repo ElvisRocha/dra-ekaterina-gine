@@ -181,12 +181,6 @@ const GalleryContent = () => {
                     alt={image.alt}
                     className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
                   />
-                  {/* Number badge */}
-                  <div className="absolute top-3 left-3 w-8 h-8 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-[0_4px_20px_-4px_rgba(0,0,0,0.15)] z-10">
-                    <span className="text-primary font-bold text-xs leading-none">
-                      {String(image.id).padStart(2, '0')}
-                    </span>
-                  </div>
                   {/* Hover: darken + expand icon */}
                   <div className="absolute inset-0 bg-foreground/0 group-hover:bg-foreground/30 transition-colors duration-300 flex items-center justify-center">
                     <ZoomIn className="w-8 h-8 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 drop-shadow-lg" />

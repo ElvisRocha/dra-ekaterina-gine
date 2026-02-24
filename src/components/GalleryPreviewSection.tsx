@@ -56,14 +56,6 @@ const previewImages = [
   },
 ];
 
-const NumBadge = ({ n }: { n: number }) => (
-  <div className="absolute top-3 left-3 w-8 h-8 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-soft z-10">
-    <span className="text-primary font-bold text-xs leading-none">
-      {String(n).padStart(2, '0')}
-    </span>
-  </div>
-);
-
 const GalleryPreviewSection = () => {
   const { language } = useLanguage();
 
@@ -178,7 +170,6 @@ const GalleryPreviewSection = () => {
                   loading="lazy"
                   className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                 />
-                <NumBadge n={index + 1} />
                 {/* Zoom icon on hover */}
                 <div className="absolute inset-0 bg-foreground/0 group-hover:bg-foreground/20 transition-colors duration-300 flex items-center justify-center">
                   <ZoomIn className="w-8 h-8 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 drop-shadow-lg" />
@@ -220,7 +211,6 @@ const GalleryPreviewSection = () => {
                       loading="lazy"
                       className="absolute inset-0 w-full h-full object-cover"
                     />
-                    <NumBadge n={index + 1} />
                     <div className="absolute bottom-3 right-3 w-8 h-8 rounded-full bg-white/80 backdrop-blur-sm flex items-center justify-center shadow-soft">
                       <ZoomIn className="w-4 h-4 text-primary" />
                     </div>
@@ -270,7 +260,7 @@ const GalleryPreviewSection = () => {
         </div>
 
         {/* ── ROW 2: Preview images — same card shape, no text, fades out ── */}
-        <div className="relative mt-6">
+        <div className="relative mt-6 hidden md:block">
           <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {previewImages.map((img, index) => (
               <motion.div
@@ -289,7 +279,6 @@ const GalleryPreviewSection = () => {
                     loading="lazy"
                     className="w-full h-full object-cover"
                   />
-                  <NumBadge n={index + 5} />
                 </div>
                 {/* Empty card bottom — mirrors row 1 structure */}
                 <div className="relative bg-card px-4 py-4">
