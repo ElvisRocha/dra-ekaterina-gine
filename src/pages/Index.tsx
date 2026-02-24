@@ -5,6 +5,7 @@ import Navbar from '@/components/Navbar';
 import HeroSection from '@/components/HeroSection';
 import WhyChooseUs from '@/components/WhyChooseUs';
 import ServicesSection from '@/components/ServicesSection';
+import GalleryPreviewSection from '@/components/GalleryPreviewSection';
 import TestimonialsSection from '@/components/TestimonialsSection';
 import FAQ from '@/components/FAQ';
 import FinalCTA from '@/components/FinalCTA';
@@ -45,6 +46,7 @@ const IndexContent = () => {
       <HeroSection onBookClick={handleBookClick} />
       <WhyChooseUs onBookClick={handleBookClick} />
       <ServicesSection onBookService={handleBookService} />
+      <GalleryPreviewSection />
       <TestimonialsSection />
       <FAQ onBookClick={handleBookClick} />
       <FinalCTA onBookClick={handleBookClick} />

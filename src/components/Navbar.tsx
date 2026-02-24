@@ -27,8 +27,8 @@ const Navbar = ({ onBookClick }: NavbarProps) => {
   const navLinks: NavLink[] = [
     { to: '/', labelEs: 'Inicio', labelEn: 'Home' },
     { sectionId: 'servicios', labelEs: 'Servicios', labelEn: 'Services' },
+    { sectionId: 'galeria', labelEs: 'Galería', labelEn: 'Gallery' },
     { sectionId: 'confia-en-nosotras', labelEs: 'Testimonios', labelEn: 'Testimonials' },
-    { to: '/galeria', labelEs: 'Galería', labelEn: 'Gallery' },
     { to: '/contacto', labelEs: 'Contacto', labelEn: 'Contact' },
   ];
 
@@ -39,7 +39,7 @@ const Navbar = ({ onBookClick }: NavbarProps) => {
       setActiveSection(null);
       return;
     }
-    const sectionIds = ['servicios', 'confia-en-nosotras'];
+    const sectionIds = ['servicios', 'galeria', 'confia-en-nosotras'];
     const handleScroll = () => {
       if (window.scrollY < 100) {
         setActiveSection(null);
