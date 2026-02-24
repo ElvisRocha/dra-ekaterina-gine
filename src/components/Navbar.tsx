@@ -29,6 +29,7 @@ const Navbar = ({ onBookClick }: NavbarProps) => {
     { sectionId: 'servicios', labelEs: 'Servicios', labelEn: 'Services' },
     { sectionId: 'galeria', labelEs: 'Galería', labelEn: 'Gallery' },
     { sectionId: 'confia-en-nosotras', labelEs: 'Testimonios', labelEn: 'Testimonials' },
+    { to: '/acerca-de-mi', labelEs: 'Acerca de mí', labelEn: 'About Me' },
     { to: '/contacto', labelEs: 'Contacto', labelEn: 'Contact' },
   ];
 
