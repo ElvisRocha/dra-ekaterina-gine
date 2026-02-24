@@ -109,7 +109,7 @@ const AboutMeContent = () => {
         </div>
       </section>
 
-      {/* SU HISTORIA */}
+      {/* MI HISTORIA */}
       <section className="py-20 px-4">
         <div className="container mx-auto max-w-5xl">
           <motion.div

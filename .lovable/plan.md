@@ -10,7 +10,7 @@ Todos los textos de la pagina estan escritos directamente en espanol. Se necesit
 - "Ginecologa y Obstetra" / "Gynecologist and Obstetrician"
 - Cita (blockquote) con version en ingles
 
-**Seccion "Su historia" / "Her story":**
+**Seccion "Mi historia" / "My story":**
 - Titulo de seccion
 - 4 bloques narrativos (titulos + parrafos) con versiones en ingles
 

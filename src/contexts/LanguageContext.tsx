@@ -306,7 +306,7 @@ const translations: Translations = {
     es: '"Mi objetivo es que mi consulta sea un espacio seguro, donde cada mujer pueda aclarar sus dudas sin temor a ser juzgada, sintiéndose acompañada, comprendida y orientada en cada etapa de su vida."',
     en: '"My goal is for my practice to be a safe space, where every woman can have her questions answered without fear of judgment, feeling supported, understood, and guided at every stage of her life."',
   },
-  'about.storyTitle': { es: 'Su historia', en: 'Her story' },
+  'about.storyTitle': { es: 'Mi historia', en: 'My story' },
   'about.story1.title': { es: 'Los inicios', en: 'The beginnings' },
   'about.story1.p1': {
     es: 'Nací en Moscú, Rusia. Desde niña soñaba con ser doctora, pintora, y bailarina de ballet. El hecho de que mi mamá fuera partera, influyó profundamente en mi decisión de estudiar medicina, ya que muchas veces fui a la maternidad donde ella trabajaba y sentía una gran admiración y también curiosidad por su labor. Así mismo la certeza de querer ser madre desde joven orientó mi vocación hacia la obstetricia.',
