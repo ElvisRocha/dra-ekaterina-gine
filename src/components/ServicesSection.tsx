@@ -1,11 +1,40 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Link } from 'react-router-dom';
+import { X, ChevronLeft, ChevronRight, ZoomIn } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { type Service } from '@/data/services';
 import { initialTreeState, type QuestionNode } from '@/data/decisionTree';
 import ServiceInfoPanel from '@/components/booking/ServiceInfoPanel';
 import DecisionTreeFlow from '@/components/booking/DecisionTreeFlow';
 import IsotipoImg from '@/assets/Isotipo.png';
+
+const photographyCards = [
+  {
+    id: 1,
+    src: 'https://res.cloudinary.com/dcvipikha/image/upload/f_auto,q_auto/v1770786745/atencion_en_camilla_f5gwim.jpg',
+    alt: 'Atención en camilla',
+    description: 'Atención con equipo de última tecnología 3D y 4D, para que experimentes el realismo de ver a tu bebé como nunca antes. Te ofrecemos imágenes detalladas con una claridad excepcional en un ambiente cálido y profesional.',
+  },
+  {
+    id: 2,
+    src: 'https://res.cloudinary.com/dcvipikha/image/upload/f_auto,q_auto/v1771469858/ultrasonido3_jnws6f.jpg',
+    alt: 'Ultrasonido 3D',
+    description: 'Ultrasonidos realizados con calidad y esmero para que puedas disfrutar plenamente del vínculo con tu bebé. Cada sesión es un momento único, capturado con precisión y amor.',
+  },
+  {
+    id: 3,
+    src: 'https://res.cloudinary.com/dcvipikha/image/upload/f_auto,q_auto/v1771898892/consultorio_gx8i9x.jpg',
+    alt: 'Consultorio',
+    description: 'Un lugar seguro, confiable y con todas las comodidades para que te sientas como en casa. Nuestro consultorio está diseñado pensando en tu bienestar y tranquilidad durante cada visita.',
+  },
+  {
+    id: 4,
+    src: 'https://res.cloudinary.com/dcvipikha/image/upload/f_auto,q_auto/v1771469858/ultrasonido6_rqrwvg.jpg',
+    alt: 'Ultrasonido bebé',
+    description: 'Desde las primeras etapas de tu embarazo puedes disfrutar de estas hermosas escenas. Escucharás el latido de tu bebé y vivirás momentos que atesorarás para siempre.',
+  },
+];
 
 interface ServicesSectionProps {
   onBookService: (service: Service) => void;
@@ -18,6 +47,14 @@ const ServicesSection = ({ onBookService }: ServicesSectionProps) => {
   const [previewService, setPreviewService] = useState<Service | null>(null);
   const [confirmedService, setConfirmedService] = useState<Service | null>(null);
 
+  // Photo lightbox state
+  const [photoLightboxIndex, setPhotoLightboxIndex] = useState<number | null>(null);
+
+  // Mobile carousel state
+  const [carouselIndex, setCarouselIndex] = useState(0);
+  const carouselTouchStartX = useRef<number | null>(null);
+  const lightboxTouchStartX = useRef<number | null>(null);
+
   const panelService = previewService ?? confirmedService;
 
   const handleSelectService = (service: Service | null) => {
@@ -28,6 +65,69 @@ const ServicesSection = ({ onBookService }: ServicesSectionProps) => {
     if (confirmedService) {
       onBookService(confirmedService);
     }
+  };
+
+  // Lightbox navigation
+  const closePhotoLightbox = useCallback(() => setPhotoLightboxIndex(null), []);
+
+  const goPhotoNext = useCallback(() => {
+    setPhotoLightboxIndex((prev) =>
+      prev !== null ? (prev + 1) % photographyCards.length : null,
+    );
+  }, []);
+
+  const goPhotoPrev = useCallback(() => {
+    setPhotoLightboxIndex((prev) =>
+      prev !== null ? (prev - 1 + photographyCards.length) % photographyCards.length : null,
+    );
+  }, []);
+
+  // Keyboard navigation for lightbox
+  useEffect(() => {
+    if (photoLightboxIndex === null) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') closePhotoLightbox();
+      else if (e.key === 'ArrowLeft') goPhotoPrev();
+      else if (e.key === 'ArrowRight') goPhotoNext();
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [photoLightboxIndex, closePhotoLightbox, goPhotoPrev, goPhotoNext]);
+
+  // Lightbox touch/swipe handlers
+  const handleLightboxTouchStart = (e: React.TouchEvent) => {
+    lightboxTouchStartX.current = e.touches[0].clientX;
+  };
+
+  const handleLightboxTouchEnd = (e: React.TouchEvent) => {
+    if (lightboxTouchStartX.current === null) return;
+    const delta = e.changedTouches[0].clientX - lightboxTouchStartX.current;
+    if (Math.abs(delta) > 50) {
+      delta < 0 ? goPhotoNext() : goPhotoPrev();
+    }
+    lightboxTouchStartX.current = null;
+  };
+
+  // Mobile carousel navigation
+  const goCarouselNext = useCallback(() => {
+    setCarouselIndex((prev) => (prev + 1) % photographyCards.length);
+  }, []);
+
+  const goCarouselPrev = useCallback(() => {
+    setCarouselIndex((prev) => (prev - 1 + photographyCards.length) % photographyCards.length);
+  }, []);
+
+  const handleCarouselTouchStart = (e: React.TouchEvent) => {
+    carouselTouchStartX.current = e.touches[0].clientX;
+  };
+
+  const handleCarouselTouchEnd = (e: React.TouchEvent) => {
+    if (carouselTouchStartX.current === null) return;
+    const delta = e.changedTouches[0].clientX - carouselTouchStartX.current;
+    if (Math.abs(delta) > 50) {
+      delta < 0 ? goCarouselNext() : goCarouselPrev();
+    }
+    carouselTouchStartX.current = null;
   };
 
   return (
@@ -117,7 +217,191 @@ const ServicesSection = ({ onBookService }: ServicesSectionProps) => {
             </div>
           </div>
         </motion.div>
+
+        {/* Photography Cards */}
+        <div className="max-w-5xl mx-auto mt-16">
+
+          {/* Desktop Grid — 2×2 on md, 4 columns on lg+ — hidden on mobile */}
+          <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {photographyCards.map((card, index) => (
+              <motion.div
+                key={card.id}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4, delay: index * 0.1 }}
+                className="relative overflow-hidden rounded-2xl cursor-pointer group aspect-[4/3] shadow-card"
+                onClick={() => setPhotoLightboxIndex(index)}
+              >
+                <img
+                  src={card.src}
+                  alt={card.alt}
+                  loading="lazy"
+                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                />
+                {/* Hover overlay with description + zoom icon */}
+                <div className="absolute inset-0 bg-gradient-to-t from-magenta/85 via-fuchsia/50 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 flex flex-col p-4">
+                  <div className="flex-1 flex items-center justify-center">
+                    <ZoomIn className="w-9 h-9 text-white drop-shadow-lg" />
+                  </div>
+                  <p className="text-white text-xs leading-relaxed font-body">
+                    {card.description}
+                  </p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+
+          {/* Mobile Carousel — visible only on mobile */}
+          <div className="md:hidden">
+            <div className="relative">
+              {/* Prev arrow */}
+              <button
+                onClick={goCarouselPrev}
+                aria-label="Imagen anterior"
+                className="absolute top-1/2 left-2 -translate-y-1/2 z-10 w-9 h-9 flex items-center justify-center rounded-full bg-card/80 border border-border/50 text-foreground/70 hover:text-foreground transition-colors shadow-soft"
+              >
+                <ChevronLeft className="w-5 h-5" />
+              </button>
+
+              {/* Carousel viewport */}
+              <div
+                className="overflow-hidden rounded-2xl shadow-card"
+                onTouchStart={handleCarouselTouchStart}
+                onTouchEnd={handleCarouselTouchEnd}
+              >
+                <div
+                  className="flex"
+                  style={{
+                    transform: `translateX(-${carouselIndex * 100}%)`,
+                    transition: 'transform 400ms ease-in-out',
+                  }}
+                >
+                  {photographyCards.map((card, index) => (
+                    <div
+                      key={card.id}
+                      className="w-full flex-shrink-0 relative aspect-[4/3] cursor-pointer"
+                      onClick={() => setPhotoLightboxIndex(index)}
+                    >
+                      <img
+                        src={card.src}
+                        alt={card.alt}
+                        loading="lazy"
+                        className="absolute inset-0 w-full h-full object-cover"
+                      />
+                      {/* Always-visible overlay on mobile */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-magenta/85 via-fuchsia/50 to-transparent flex flex-col p-4">
+                        <div className="flex-1 flex items-center justify-center">
+                          <ZoomIn className="w-9 h-9 text-white/80 drop-shadow-lg" />
+                        </div>
+                        <p className="text-white text-xs leading-relaxed font-body">
+                          {card.description}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Next arrow */}
+              <button
+                onClick={goCarouselNext}
+                aria-label="Imagen siguiente"
+                className="absolute top-1/2 right-2 -translate-y-1/2 z-10 w-9 h-9 flex items-center justify-center rounded-full bg-card/80 border border-border/50 text-foreground/70 hover:text-foreground transition-colors shadow-soft"
+              >
+                <ChevronRight className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Dot indicators */}
+            <div className="flex items-center justify-center gap-2 mt-4" role="tablist">
+              {photographyCards.map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => setCarouselIndex(i)}
+                  role="tab"
+                  aria-selected={i === carouselIndex}
+                  aria-label={`Ir a imagen ${i + 1}`}
+                  className={`rounded-full transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 ${
+                    i === carouselIndex
+                      ? 'w-8 h-3 bg-gradient-to-r from-coral to-magenta'
+                      : 'w-3 h-3 bg-border hover:bg-muted-foreground/40'
+                  }`}
+                />
+              ))}
+            </div>
+          </div>
+
+          {/* "Ver galería" button */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.4, delay: 0.4 }}
+            className="flex justify-center mt-10"
+          >
+            <Link to="/galeria" className="btn-gradient">
+              {language === 'es' ? 'Ver galería' : 'View gallery'}
+            </Link>
+          </motion.div>
+        </div>
       </div>
+
+      {/* Photo Lightbox Modal */}
+      <AnimatePresence>
+        {photoLightboxIndex !== null && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 bg-foreground/90 flex items-center justify-center p-4"
+            onClick={closePhotoLightbox}
+            onTouchStart={handleLightboxTouchStart}
+            onTouchEnd={handleLightboxTouchEnd}
+          >
+            {/* Close button */}
+            <button
+              className="absolute top-4 right-4 text-background hover:text-background/80 transition-colors z-10"
+              onClick={closePhotoLightbox}
+            >
+              <X className="w-8 h-8" />
+            </button>
+
+            {/* Prev button */}
+            <button
+              className="absolute left-4 text-background hover:text-background/80 transition-colors z-10"
+              onClick={(e) => { e.stopPropagation(); goPhotoPrev(); }}
+            >
+              <ChevronLeft className="w-10 h-10" />
+            </button>
+
+            {/* Next button */}
+            <button
+              className="absolute right-4 text-background hover:text-background/80 transition-colors z-10"
+              onClick={(e) => { e.stopPropagation(); goPhotoNext(); }}
+            >
+              <ChevronRight className="w-10 h-10" />
+            </button>
+
+            {/* Image */}
+            <motion.img
+              key={photoLightboxIndex}
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              src={photographyCards[photoLightboxIndex].src}
+              alt={photographyCards[photoLightboxIndex].alt}
+              className="max-w-full max-h-[85vh] object-contain rounded-lg"
+              onClick={(e) => e.stopPropagation()}
+            />
+
+            {/* Image counter */}
+            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-background text-sm">
+              {photoLightboxIndex + 1} / {photographyCards.length}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </section>
   );
 };
