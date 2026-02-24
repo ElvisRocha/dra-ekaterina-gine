@@ -99,8 +99,8 @@ const AboutMeContent = () => {
               transition={{ duration: 0.6 }}
               className="flex-shrink-0"
             >
-              <div className="w-52 h-52 md:w-64 md:h-64 rounded-full bg-secondary/30 border-2 border-dashed border-primary/30 flex flex-col items-center justify-center">
-                <img src={EkaterinaImg} alt="" className="h-40 w-auto mb-1" />
+              <div className="w-52 h-52 md:w-64 md:h-64 rounded-full overflow-hidden shadow-lg border-4 border-white">
+                <img src={EkaterinaImg} alt="Dra. Ekaterina Malaspina" className="w-full h-full object-cover" />
               </div>
             </motion.div>
 
