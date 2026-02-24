@@ -5,6 +5,7 @@ import { LanguageProvider, useLanguage } from '@/contexts/LanguageContext';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
+import EkaterinaImg from '@/assets/ekaterina.jpeg';
 
 // ─── Photo Placeholder ────────────────────────────────────────────────────────
 const PhotoPlaceholder = ({ className = '' }: { className?: string }) => (
@@ -99,8 +100,7 @@ const AboutMeContent = () => {
               className="flex-shrink-0"
             >
               <div className="w-52 h-52 md:w-64 md:h-64 rounded-full bg-secondary/30 border-2 border-dashed border-primary/30 flex flex-col items-center justify-center">
-                <span className="text-4xl mb-1" role="img" aria-label="foto">📷</span>
-                <span className="text-sm text-muted-foreground font-medium">Foto</span>
+                <img src={EkaterinaImg} alt="" className="h-40 w-auto mb-1" />
               </div>
             </motion.div>
 
