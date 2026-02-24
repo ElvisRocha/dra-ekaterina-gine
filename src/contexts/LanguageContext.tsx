@@ -299,6 +299,63 @@ const translations: Translations = {
     es: 'Agendar mi consulta',
     en: 'Book my consultation',
   },
+
+  // About Me page
+  'about.specialty': { es: 'Ginecóloga y Obstetra', en: 'Gynecologist and Obstetrician' },
+  'about.quote': {
+    es: '"Mi objetivo es que mi consulta sea un espacio seguro, donde cada mujer pueda aclarar sus dudas sin temor a ser juzgada, sintiéndose acompañada, comprendida y orientada en cada etapa de su vida."',
+    en: '"My goal is for my practice to be a safe space, where every woman can have her questions answered without fear of judgment, feeling supported, understood, and guided at every stage of her life."',
+  },
+  'about.storyTitle': { es: 'Su historia', en: 'Her story' },
+  'about.story1.title': { es: 'Los inicios', en: 'The beginnings' },
+  'about.story1.p1': {
+    es: 'Nací en Moscú, Rusia. Desde niña soñaba con ser doctora, pintora, y bailarina de ballet. El hecho de que mi mamá fuera partera, influyó profundamente en mi decisión de estudiar medicina, ya que muchas veces fui a la maternidad donde ella trabajaba y sentía una gran admiración y también curiosidad por su labor. Así mismo la certeza de querer ser madre desde joven orientó mi vocación hacia la obstetricia.',
+    en: 'I was born in Moscow, Russia. Since childhood, I dreamed of becoming a doctor, a painter, and a ballet dancer. The fact that my mother was a midwife profoundly influenced my decision to study medicine, as I often visited the maternity ward where she worked and felt great admiration and curiosity for her work. Likewise, the certainty of wanting to be a mother from a young age guided my vocation toward obstetrics.',
+  },
+  'about.story2.title': { es: 'Formación médica', en: 'Medical training' },
+  'about.story2.p1': {
+    es: 'Estudié Medicina en la Universidad Central de Venezuela, en Caracas, donde obtuve el título de Médico Cirujano en el año 2005. Este logro tuvo un significado muy especial, ya que fui a mi graduación acompañada por mis 2 hijos mayores, de 5 y 6 años, así es, primero obtuve el título de "madre" antes del de médico, y esa experiencia transformó para siempre mi forma de entender y acompañar a cada paciente.',
+    en: 'I studied Medicine at the Central University of Venezuela in Caracas, where I earned my Medical Doctor degree in 2005. This achievement held a very special meaning, as I attended my graduation accompanied by my two eldest children, aged 5 and 6. That\'s right — I earned the title of "mother" before that of doctor, and that experience forever transformed my way of understanding and supporting each patient.',
+  },
+  'about.story2.p2': {
+    es: 'Posteriormente, después de una pausa académica y el nacimiento de mi tercer y último hijo, realicé mis estudios de Ginecología y Obstetricia, en el Hospital Rafael Ángel Ranuarez Balza, en Venezuela donde consolidé mi formación profesional, obteniendo el Título de Especialista en Ginecología y Obstetricia en el año 2015.',
+    en: 'Subsequently, after an academic break and the birth of my third and last child, I completed my Gynecology and Obstetrics residency at Hospital Rafael Ángel Ranuarez Balza in Venezuela, where I consolidated my professional training, earning my Specialist degree in Gynecology and Obstetrics in 2015.',
+  },
+  'about.story3.title': { es: 'Costa Rica: un nuevo hogar', en: 'Costa Rica: a new home' },
+  'about.story3.p1': {
+    es: 'Desde el año 2017, resido en Costa Rica, país que me recibió con mi familia, y en el que revalidé mis títulos profesionales, lo que me ha permitido ejercer con responsabilidad y compromiso bajo los estándares médicos establecidos por el Colegio de Médicos y Cirujanos de Costa Rica.',
+    en: 'Since 2017, I have been living in Costa Rica, a country that welcomed me and my family, where I revalidated my professional degrees, allowing me to practice with responsibility and commitment under the medical standards established by the College of Physicians and Surgeons of Costa Rica.',
+  },
+  'about.story3.p2': {
+    es: 'Durante unos 7 años formé parte del equipo del Hospital de San Carlos, principalmente a cargo de la consulta de Embarazos de Alto Riesgo, brindando atención a pacientes con necesidades obstétricas complejas, una experiencia que fortaleció mi compromiso con una medicina responsable, humana y basada en evidencia científica.',
+    en: 'For about 7 years, I was part of the team at Hospital de San Carlos, mainly in charge of the High-Risk Pregnancy clinic, providing care to patients with complex obstetric needs — an experience that strengthened my commitment to responsible, humane, evidence-based medicine.',
+  },
+  'about.story4.title': { es: 'Práctica actual', en: 'Current practice' },
+  'about.story4.p1': {
+    es: 'Actualmente me dedico de forma exclusiva a mi consulta privada en la Clínica Esperanza, en Ciudad Quesada, donde atiendo a mujeres en todas las etapas de su vida: desde la adolescencia hasta después de la menopausia, incluyendo control ginecológico, planificación familiar, control prenatal y prevención del cáncer ginecológico.',
+    en: 'I currently dedicate myself exclusively to my private practice at Clínica Esperanza in Ciudad Quesada, where I care for women at all stages of life: from adolescence through post-menopause, including gynecological check-ups, family planning, prenatal care, and gynecological cancer prevention.',
+  },
+  'about.story4.p2': {
+    es: 'Mi práctica se basa en una atención cercana, ética y sustentada en evidencia científica. Creo profundamente en la importancia de acompañar a cada paciente con empatía, respeto y claridad, brindando información que les permita tomar decisiones informadas sobre su salud. Mantengo una formación continua mediante la participación en cursos, diplomados y congresos para ofrecer tratamientos actualizados y seguros.',
+    en: 'My practice is based on close, ethical care grounded in scientific evidence. I deeply believe in the importance of accompanying each patient with empathy, respect, and clarity, providing information that allows them to make informed decisions about their health. I maintain continuous education through courses, diplomas, and conferences to offer updated and safe treatments.',
+  },
+  'about.story4.p3': {
+    es: 'Además, promuevo activamente la educación en salud femenina a través de mis redes sociales, donde comparto contenido de manera periódica, fomentando el acceso a la información clara y confiable.',
+    en: 'Additionally, I actively promote women\'s health education through my social media, where I periodically share content, fostering access to clear and reliable information.',
+  },
+  'about.outsideTitle': { es: 'Fuera del consultorio', en: 'Outside the office' },
+  'about.outsideDesc': {
+    es: 'Fuera del consultorio disfruto pintar, tejer y conectar con la naturaleza. Me encanta recorrer Costa Rica, descubrir nuevos lugares, escuchar el mar, caminar por el bosque, la montaña y practicar ejercicio, especialmente Pilates. Estas actividades me permiten expresar mi creatividad y encontrar el equilibrio personal que considero fundamental para el bienestar integral.',
+    en: 'Outside the office, I enjoy painting, knitting, and connecting with nature. I love exploring Costa Rica, discovering new places, listening to the sea, walking through the forest and mountains, and exercising, especially Pilates. These activities allow me to express my creativity and find the personal balance I consider essential for overall well-being.',
+  },
+  'about.hobby1': { es: 'Pintura / Arte', en: 'Painting / Art' },
+  'about.hobby2': { es: 'Tejer / Artesanía', en: 'Knitting / Crafts' },
+  'about.hobby3': { es: 'Naturaleza / Senderismo', en: 'Nature / Hiking' },
+  'about.hobby4': { es: 'Pilates / Ejercicio', en: 'Pilates / Exercise' },
+  'about.ctaHeading': {
+    es: '¿Lista para comenzar tu cuidado con una especialista que te acompaña en cada etapa?',
+    en: 'Ready to start your care with a specialist who supports you at every stage?',
+  },
 };
 
 interface LanguageContextType {
