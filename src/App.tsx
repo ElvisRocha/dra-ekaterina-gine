@@ -8,6 +8,7 @@ import BookAppointment from "./pages/BookAppointment";
 import Gallery from "./pages/Gallery";
 import Contact from "./pages/Contact";
 import NotFound from "./pages/NotFound";
+import AboutMe from "./pages/AboutMe";
 import ScrollToTop from "./components/ScrollToTop";
 
 const queryClient = new QueryClient();
@@ -24,6 +25,7 @@ const App = () => (
           <Route path="/galeria" element={<Gallery />} />
           <Route path="/contacto" element={<Contact />} />
           <Route path="/BookAppointment" element={<BookAppointment />} />
+          <Route path="/acerca-de-mi" element={<AboutMe />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
