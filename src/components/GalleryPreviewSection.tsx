@@ -32,29 +32,6 @@ const featuredCards = [
   },
 ];
 
-// Row 2 — extra preview images, same card shape, no text, with fade
-const previewImages = [
-  {
-    id: 5,
-    src: 'https://res.cloudinary.com/dcvipikha/image/upload/f_auto,q_auto/v1771107568/doctora_computadora_lhpazz.jpg',
-    alt: 'Doctora en consultorio',
-  },
-  {
-    id: 6,
-    src: 'https://res.cloudinary.com/dcvipikha/image/upload/w_550,h_450,c_fill,g_face,f_auto,q_auto/v1770786745/doctora_ekaterina_sjbvon.jpg',
-    alt: 'Doctora Ekaterina',
-  },
-  {
-    id: 7,
-    src: 'https://res.cloudinary.com/dcvipikha/image/upload/f_auto,q_auto/v1771106361/equipo_medico_abij92.jpg',
-    alt: 'Equipo médico',
-  },
-  {
-    id: 8,
-    src: 'https://res.cloudinary.com/dcvipikha/image/upload/f_auto,q_auto/v1771251714/ultrasounds_zwqznm.jpg',
-    alt: 'Ecografía 4D',
-  },
-];
 
 const GalleryPreviewSection = () => {
   const { language } = useLanguage();
@@ -259,40 +236,7 @@ const GalleryPreviewSection = () => {
           </div>
         </div>
 
-        {/* ── ROW 2: Preview images — same card shape, no text, fades out ── */}
-        <div className="relative mt-6 hidden md:block">
-          <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {previewImages.map((img, index) => (
-              <motion.div
-                key={img.id}
-                initial={{ opacity: 0, y: 16 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.4, delay: index * 0.08 }}
-                className="rounded-2xl overflow-hidden shadow-card"
-              >
-                {/* Image — same aspect & shape as row 1 */}
-                <div className="aspect-[4/3] overflow-hidden relative">
-                  <img
-                    src={img.src}
-                    alt={img.alt}
-                    loading="lazy"
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                {/* Empty card bottom — mirrors row 1 structure */}
-                <div className="relative bg-card px-4 py-4">
-                  <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-coral via-fuchsia to-magenta opacity-40" />
-                </div>
-              </motion.div>
-            ))}
-          </div>
-
-          {/* Gradient fade — dissolves row 2 into background */}
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent via-20% to-background pointer-events-none" />
-        </div>
-
-        {/* CTA button — desktop (below row 2) */}
+        {/* CTA button — desktop */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           whileInView={{ opacity: 1, y: 0 }}
