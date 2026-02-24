@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { X, ChevronLeft, ChevronRight, ZoomIn } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 
-// Row 1 — featured cards with descriptions (lightbox + carousel on mobile)
+// Row 1 — featured cards with descriptions + lightbox
 const featuredCards = [
   {
     id: 1,
@@ -32,7 +32,7 @@ const featuredCards = [
   },
 ];
 
-// Row 2 — extra preview images, no duplicates with row 1, shown with fade
+// Row 2 — extra preview images, same card shape, no text, with fade
 const previewImages = [
   {
     id: 5,
@@ -56,13 +56,18 @@ const previewImages = [
   },
 ];
 
+const NumBadge = ({ n }: { n: number }) => (
+  <div className="absolute top-3 left-3 w-8 h-8 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-soft z-10">
+    <span className="text-primary font-bold text-xs leading-none">
+      {String(n).padStart(2, '0')}
+    </span>
+  </div>
+);
+
 const GalleryPreviewSection = () => {
   const { language } = useLanguage();
 
-  // Lightbox state (featured cards only)
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
-
-  // Mobile carousel state
   const [carouselIndex, setCarouselIndex] = useState(0);
   const carouselTouchStartX = useRef<number | null>(null);
   const lightboxTouchStartX = useRef<number | null>(null);
@@ -126,6 +131,8 @@ const GalleryPreviewSection = () => {
     carouselTouchStartX.current = null;
   };
 
+  const ctaLabel = language === 'es' ? 'Ver toda la galería' : 'View full gallery';
+
   return (
     <section id="galeria" className="py-24 bg-background relative">
       <div className="container mx-auto px-4">
@@ -149,178 +156,165 @@ const GalleryPreviewSection = () => {
           <div className="w-24 h-1 bg-gradient-to-r from-coral via-fuchsia to-magenta mx-auto rounded-full mt-6" />
         </motion.div>
 
-        <div className="max-w-5xl mx-auto">
+        {/* ── ROW 1: Featured cards ── */}
 
-          {/* ── ROW 1: Featured cards ── */}
-
-          {/* Desktop: 4-column grid */}
-          <div className="hidden md:grid md:grid-cols-4 gap-4">
-            {featuredCards.map((card, index) => (
-              <motion.div
-                key={card.id}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.4, delay: index * 0.1 }}
-                className="relative overflow-hidden rounded-2xl cursor-pointer group aspect-[4/3] shadow-card hover:shadow-elevated transition-all duration-300"
-                onClick={() => setLightboxIndex(index)}
-              >
+        {/* Desktop: 4-column grid, text always visible */}
+        <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {featuredCards.map((card, index) => (
+            <motion.div
+              key={card.id}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.4, delay: index * 0.1 }}
+              className="group rounded-2xl overflow-hidden shadow-card hover:shadow-elevated transition-all duration-300 hover:-translate-y-1 cursor-pointer"
+              onClick={() => setLightboxIndex(index)}
+            >
+              {/* Image */}
+              <div className="aspect-[4/3] overflow-hidden relative">
                 <img
                   src={card.src}
                   alt={card.alt}
                   loading="lazy"
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                 />
-                {/* Number badge */}
-                <div className="absolute top-3 left-3 w-8 h-8 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-soft">
-                  <span className="text-primary font-bold text-xs leading-none">
-                    {String(index + 1).padStart(2, '0')}
-                  </span>
+                <NumBadge n={index + 1} />
+                {/* Zoom icon on hover */}
+                <div className="absolute inset-0 bg-foreground/0 group-hover:bg-foreground/20 transition-colors duration-300 flex items-center justify-center">
+                  <ZoomIn className="w-8 h-8 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 drop-shadow-lg" />
                 </div>
-                {/* Hover overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-magenta/90 via-fuchsia/60 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 flex flex-col p-4">
-                  <div className="flex-1 flex items-center justify-center">
-                    <ZoomIn className="w-8 h-8 text-white drop-shadow-lg" />
-                  </div>
-                  <p className="text-white text-xs leading-relaxed">
-                    {card.description}
-                  </p>
-                </div>
-              </motion.div>
-            ))}
-          </div>
+              </div>
+              {/* Always-visible description */}
+              <div className="relative bg-card px-4 py-4">
+                <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-coral via-fuchsia to-magenta" />
+                <p className="text-foreground/70 text-sm leading-relaxed">
+                  {card.description}
+                </p>
+              </div>
+            </motion.div>
+          ))}
+        </div>
 
-          {/* Mobile: carousel */}
-          <div className="md:hidden">
-            <div className="relative">
+        {/* Mobile: image carousel + fixed description panel + CTA button (no dots) */}
+        <div className="md:hidden">
+          {/* Image slider with arrows */}
+          <div className="relative">
+            <div
+              className="overflow-hidden rounded-t-2xl cursor-pointer"
+              onClick={() => setLightboxIndex(carouselIndex)}
+              onTouchStart={handleCarouselTouchStart}
+              onTouchEnd={handleCarouselTouchEnd}
+            >
               <div
-                className="overflow-hidden rounded-t-2xl cursor-pointer"
-                onClick={() => setLightboxIndex(carouselIndex)}
-                onTouchStart={handleCarouselTouchStart}
-                onTouchEnd={handleCarouselTouchEnd}
+                className="flex"
+                style={{
+                  transform: `translateX(-${carouselIndex * 100}%)`,
+                  transition: 'transform 400ms ease-in-out',
+                }}
               >
-                <div
-                  className="flex"
-                  style={{
-                    transform: `translateX(-${carouselIndex * 100}%)`,
-                    transition: 'transform 400ms ease-in-out',
-                  }}
-                >
-                  {featuredCards.map((card, index) => (
-                    <div key={card.id} className="w-full flex-shrink-0 relative aspect-[4/3]">
-                      <img
-                        src={card.src}
-                        alt={card.alt}
-                        loading="lazy"
-                        className="absolute inset-0 w-full h-full object-cover"
-                      />
-                      <div className="absolute top-3 left-3 w-8 h-8 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-soft">
-                        <span className="text-primary font-bold text-xs leading-none">
-                          {String(index + 1).padStart(2, '0')}
-                        </span>
-                      </div>
-                      <div className="absolute bottom-3 right-3 w-8 h-8 rounded-full bg-white/80 backdrop-blur-sm flex items-center justify-center shadow-soft">
-                        <ZoomIn className="w-4 h-4 text-primary" />
-                      </div>
+                {featuredCards.map((card, index) => (
+                  <div key={card.id} className="w-full flex-shrink-0 relative aspect-[4/3]">
+                    <img
+                      src={card.src}
+                      alt={card.alt}
+                      loading="lazy"
+                      className="absolute inset-0 w-full h-full object-cover"
+                    />
+                    <NumBadge n={index + 1} />
+                    <div className="absolute bottom-3 right-3 w-8 h-8 rounded-full bg-white/80 backdrop-blur-sm flex items-center justify-center shadow-soft">
+                      <ZoomIn className="w-4 h-4 text-primary" />
                     </div>
-                  ))}
-                </div>
-              </div>
-
-              <button
-                onClick={(e) => { e.stopPropagation(); goCarouselPrev(); }}
-                aria-label="Imagen anterior"
-                className="absolute top-1/2 left-2 -translate-y-1/2 z-10 w-9 h-9 flex items-center justify-center rounded-full bg-white/80 backdrop-blur-sm border border-border/30 text-foreground/70 hover:text-foreground transition-colors shadow-soft"
-              >
-                <ChevronLeft className="w-5 h-5" />
-              </button>
-              <button
-                onClick={(e) => { e.stopPropagation(); goCarouselNext(); }}
-                aria-label="Imagen siguiente"
-                className="absolute top-1/2 right-2 -translate-y-1/2 z-10 w-9 h-9 flex items-center justify-center rounded-full bg-white/80 backdrop-blur-sm border border-border/30 text-foreground/70 hover:text-foreground transition-colors shadow-soft"
-              >
-                <ChevronRight className="w-5 h-5" />
-              </button>
-            </div>
-
-            {/* Description panel — fixed, animates on change */}
-            <div className="bg-card rounded-b-2xl shadow-card px-5 pt-4 pb-4">
-              <div className="h-px bg-gradient-to-r from-coral via-fuchsia to-magenta mb-4" />
-              <AnimatePresence mode="wait">
-                <motion.p
-                  key={carouselIndex}
-                  initial={{ opacity: 0, y: 4 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -4 }}
-                  transition={{ duration: 0.2 }}
-                  className="text-foreground/70 text-sm leading-relaxed mb-3"
-                >
-                  {featuredCards[carouselIndex].description}
-                </motion.p>
-              </AnimatePresence>
-              <div className="flex items-center gap-1.5 text-primary text-xs font-semibold tracking-wider uppercase">
-                <ZoomIn className="w-3.5 h-3.5 flex-shrink-0" />
-                <span>Ampliar imagen</span>
+                  </div>
+                ))}
               </div>
             </div>
-
-            {/* Dot indicators */}
-            <div className="flex items-center justify-center gap-2 mt-4" role="tablist">
-              {featuredCards.map((_, i) => (
-                <button
-                  key={i}
-                  onClick={() => setCarouselIndex(i)}
-                  role="tab"
-                  aria-selected={i === carouselIndex}
-                  aria-label={`Ir a imagen ${i + 1}`}
-                  className={`rounded-full transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 ${
-                    i === carouselIndex
-                      ? 'w-8 h-3 bg-gradient-to-r from-coral to-magenta'
-                      : 'w-3 h-3 bg-border hover:bg-muted-foreground/40'
-                  }`}
-                />
-              ))}
-            </div>
+            <button
+              onClick={(e) => { e.stopPropagation(); goCarouselPrev(); }}
+              aria-label="Imagen anterior"
+              className="absolute top-1/2 left-2 -translate-y-1/2 z-10 w-9 h-9 flex items-center justify-center rounded-full bg-white/80 backdrop-blur-sm border border-border/30 text-foreground/70 hover:text-foreground transition-colors shadow-soft"
+            >
+              <ChevronLeft className="w-5 h-5" />
+            </button>
+            <button
+              onClick={(e) => { e.stopPropagation(); goCarouselNext(); }}
+              aria-label="Imagen siguiente"
+              className="absolute top-1/2 right-2 -translate-y-1/2 z-10 w-9 h-9 flex items-center justify-center rounded-full bg-white/80 backdrop-blur-sm border border-border/30 text-foreground/70 hover:text-foreground transition-colors shadow-soft"
+            >
+              <ChevronRight className="w-5 h-5" />
+            </button>
           </div>
 
-          {/* ── ROW 2: Extra preview images with fade ── */}
-          <div className="relative mt-4">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {previewImages.map((img, index) => (
-                <motion.div
-                  key={img.id}
-                  initial={{ opacity: 0, y: 16 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.4, delay: index * 0.08 }}
-                  className="aspect-[4/3] rounded-xl overflow-hidden"
-                >
+          {/* Fixed description — fades between cards */}
+          <div className="bg-card rounded-b-2xl shadow-card px-4 pt-4 pb-5">
+            <div className="h-px bg-gradient-to-r from-coral via-fuchsia to-magenta mb-3" />
+            <AnimatePresence mode="wait">
+              <motion.p
+                key={carouselIndex}
+                initial={{ opacity: 0, y: 4 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -4 }}
+                transition={{ duration: 0.2 }}
+                className="text-foreground/70 text-sm leading-relaxed"
+              >
+                {featuredCards[carouselIndex].description}
+              </motion.p>
+            </AnimatePresence>
+          </div>
+
+          {/* CTA button — replaces dot indicators */}
+          <div className="flex justify-center mt-6">
+            <Link to="/galeria" className="btn-gradient">
+              {ctaLabel}
+            </Link>
+          </div>
+        </div>
+
+        {/* ── ROW 2: Preview images — same card shape, no text, fades out ── */}
+        <div className="relative mt-6">
+          <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {previewImages.map((img, index) => (
+              <motion.div
+                key={img.id}
+                initial={{ opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4, delay: index * 0.08 }}
+                className="rounded-2xl overflow-hidden shadow-card"
+              >
+                {/* Image — same aspect & shape as row 1 */}
+                <div className="aspect-[4/3] overflow-hidden relative">
                   <img
                     src={img.src}
                     alt={img.alt}
                     loading="lazy"
                     className="w-full h-full object-cover"
                   />
-                </motion.div>
-              ))}
-            </div>
-            {/* Gradient fade — blends the row into the background */}
-            <div className="absolute inset-0 bg-gradient-to-b from-transparent from-[10%] to-background pointer-events-none" />
+                  <NumBadge n={index + 5} />
+                </div>
+                {/* Empty card bottom — mirrors row 1 structure */}
+                <div className="relative bg-card px-4 py-4">
+                  <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-coral via-fuchsia to-magenta opacity-40" />
+                </div>
+              </motion.div>
+            ))}
           </div>
 
-          {/* CTA */}
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.4, delay: 0.2 }}
-            className="flex justify-center mt-8"
-          >
-            <Link to="/galeria" className="btn-gradient">
-              {language === 'es' ? 'Ver toda la galería' : 'View full gallery'}
-            </Link>
-          </motion.div>
+          {/* Gradient fade — dissolves row 2 into background */}
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent via-20% to-background pointer-events-none" />
         </div>
+
+        {/* CTA button — desktop (below row 2) */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.4, delay: 0.2 }}
+          className="hidden md:flex justify-center mt-8"
+        >
+          <Link to="/galeria" className="btn-gradient">
+            {ctaLabel}
+          </Link>
+        </motion.div>
       </div>
 
       {/* Lightbox Modal */}
