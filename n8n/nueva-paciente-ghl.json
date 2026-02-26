@@ -14,7 +14,10 @@
       "name": "Recibir Datos Paciente",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
-      "position": [200, 300],
+      "position": [
+        200,
+        300
+      ],
       "webhookId": "clinica-esperanza-nueva-paciente"
     },
     {
@@ -25,7 +28,51 @@
       "name": "Transformar Datos",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [460, 300]
+      "position": [
+        460,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "=https://services.leadconnectorhq.com/contacts/customFields?locationId={{ $('Transformar Datos').first().json.ghlContact.locationId }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer REEMPLAZAR_CON_TU_GHL_PRIVATE_API_KEY"
+            },
+            {
+              "name": "Version",
+              "value": "2021-07-28"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "h8i9j0k1-0008-0008-0008-h8i9j0k10008",
+      "name": "GHL - Obtener IDs de Campos",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        720,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Definiciones de campos GHL con sus IDs reales\nconst fieldDefs = $input.first().json.customFields || [];\n\n// Construir mapa: fieldKey → id\nconst fieldIdMap = {};\nfor (const f of fieldDefs) {\n  const key = f.fieldKey || f.key || '';\n  if (key && f.id) fieldIdMap[key] = f.id;\n}\n\n// Datos del formulario ya transformados\nconst formData = $('Transformar Datos').first().json;\nconst rawCustomFields = formData.ghlContact.customFields || [];\n\n// Reconstruir customFields con IDs reales en lugar de keys\nconst customFields = [];\nfor (const cf of rawCustomFields) {\n  const id = fieldIdMap[cf.key];\n  if (id !== undefined) {\n    customFields.push({ id, field_value: cf.field_value });\n  }\n}\n\n// Payload final: mismo contacto pero customFields con IDs reales\nconst ghlContact = { ...formData.ghlContact, customFields };\n\nreturn [{ json: { ghlContact, medicalNote: formData.medicalNote } }];"
+      },
+      "id": "i9j0k1l2-0009-0009-0009-i9j0k1l20009",
+      "name": "Resolver IDs y Construir Payload",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        980,
+        300
+      ]
     },
     {
       "parameters": {
@@ -53,7 +100,10 @@
       "name": "GHL - Crear Contacto",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.1,
-      "position": [720, 300]
+      "position": [
+        1240,
+        300
+      ]
     },
     {
       "parameters": {
@@ -81,7 +131,10 @@
       "name": "GHL - Agregar Historial Medico",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.1,
-      "position": [980, 300]
+      "position": [
+        1500,
+        380
+      ]
     },
     {
       "parameters": {
@@ -95,7 +148,10 @@
       "name": "Responder Exito",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1,
-      "position": [1240, 220]
+      "position": [
+        1760,
+        380
+      ]
     },
     {
       "parameters": {
@@ -109,7 +165,10 @@
       "name": "Responder Error",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1,
-      "position": [980, 500]
+      "position": [
+        1500,
+        580
+      ]
     },
     {
       "parameters": {
@@ -138,7 +197,10 @@
       "name": "Contacto Creado?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
-      "position": [720, 500]
+      "position": [
+        1240,
+        520
+      ]
     }
   ],
   "connections": {
@@ -154,6 +216,28 @@
       ]
     },
     "Transformar Datos": {
+      "main": [
+        [
+          {
+            "node": "GHL - Obtener IDs de Campos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GHL - Obtener IDs de Campos": {
+      "main": [
+        [
+          {
+            "node": "Resolver IDs y Construir Payload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Resolver IDs y Construir Payload": {
       "main": [
         [
           {
@@ -212,7 +296,7 @@
     "callerPolicy": "workflowsFromSameOwner",
     "errorWorkflow": ""
   },
-  "versionId": "1.0.0",
+  "versionId": "3.0.0",
   "meta": {
     "templateCredsSetupCompleted": false,
     "instanceId": "clinica-esperanza"
