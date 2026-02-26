@@ -138,17 +138,19 @@ const BookAppointmentContent = () => {
       createdAt: new Date().toISOString(),
     };
 
-    // TODO: Send to n8n webhook
-    // await fetch('https://tu-n8n-url/webhook/book-appointment', {
-    //   method: 'POST',
-    //   headers: { 'Content-Type': 'application/json' },
-    //   body: JSON.stringify(appointmentData)
-    // });
-
-    console.log('Appointment data:', appointmentData);
-
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 800));
+    try {
+      const webhookUrl = import.meta.env.VITE_N8N_CITA_WEBHOOK_URL;
+      if (webhookUrl) {
+        await fetch(webhookUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(appointmentData),
+        });
+      }
+    } catch (error) {
+      console.error('Error enviando cita al webhook de n8n:', error);
+      // Continúa de todas formas — la cita se registrará manualmente si es necesario
+    }
 
     setIsLoading(false);
 

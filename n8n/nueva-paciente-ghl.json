@@ -1,0 +1,229 @@
+{
+  "name": "Clínica Esperanza - Nueva Paciente → GHL CRM",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "nueva-paciente",
+        "responseMode": "responseNode",
+        "options": {
+          "allowedOrigins": "*"
+        }
+      },
+      "id": "a1b2c3d4-0001-0001-0001-a1b2c3d40001",
+      "name": "Recibir Datos Paciente",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [200, 300],
+      "webhookId": "clinica-esperanza-nueva-paciente"
+    },
+    {
+      "parameters": {
+        "jsCode": "// ──────────────────────────────────────────────────────\n// TRANSFORMAR datos del formulario al formato de GHL CRM\n// ──────────────────────────────────────────────────────\nconst body = $input.first().json.body;\n\n// Separar nombre y apellidos\nconst nameParts = (body.fullName || '').trim().split(' ');\nconst firstName = nameParts[0] || '';\nconst lastName = nameParts.slice(1).join(' ') || '';\n\n// Formatear teléfono para GHL (formato internacional +506XXXXXXXX)\nlet phone = (body.phone || '').replace(/\\D/g, '');\nif (phone.startsWith('506')) {\n  phone = '+' + phone;\n} else if (phone.length === 8) {\n  phone = '+506' + phone;\n} else {\n  phone = '+' + phone;\n}\n\n// ──────────────────────────────────────────────────────\n// Construir nota de historial médico para GHL\n// ──────────────────────────────────────────────────────\nconst ts = body.timestamp\n  ? new Date(body.timestamp).toLocaleString('es-CR', { timeZone: 'America/Costa_Rica' })\n  : new Date().toLocaleString('es-CR', { timeZone: 'America/Costa_Rica' });\n\nconst lines = [\n  '======================================',\n  '   HISTORIAL MÉDICA - PRIMERA CITA    ',\n  '======================================',\n  '',\n  '[ DATOS BÁSICOS ]',\n  `Nombre completo : ${body.fullName}`,\n  `Cédula / ID     : ${body.idNumber}`,\n  `Edad            : ${body.age} años`,\n  `Fecha nac.      : ${body.dob}`,\n  `Email           : ${body.email}`,\n  `Teléfono        : ${body.phone}`,\n  `Fecha registro  : ${ts}`,\n  '',\n  '[ HISTORIAL MÉDICO ]',\n  `Enfermedades crónicas : ${body.hasDisease ? 'SÍ — ' + body.diseaseDetails : 'No'}`,\n  `Medicamentos actuales : ${body.takesMedication ? 'SÍ — ' + body.medicationDetails : 'No'}`,\n  `Cirugías previas      : ${body.hadSurgery ? 'SÍ — ' + body.surgeryDetails : 'No'}`,\n  '',\n  '[ HISTORIAL MENSTRUAL ]',\n  `Primera menstruación  : ${body.firstPeriodAge} años`,\n  `Última menstruación   : ${body.lastPeriodDate}`,\n  `Anticonceptivos       : ${body.usesContraceptive ? 'SÍ — ' + body.contraceptiveDetails : 'No'}`,\n];\n\nif (body.hasBeenPregnant) {\n  lines.push('');\n  lines.push('[ HISTORIAL OBSTÉTRICO ]');\n  lines.push(`Total embarazos  : ${body.pregnancyCount}`);\n  lines.push(`Partos vaginales : ${body.vaginalBirths || 0}`);\n  lines.push(`Cesáreas         : ${body.cesareans || 0}`);\n  lines.push(`Abortos          : ${body.abortions || 0}`);\n  if (body.otherPregnancies) {\n    lines.push(`Otros            : ${body.otherPregnancies}`);\n  }\n} else {\n  lines.push('');\n  lines.push('[ HISTORIAL OBSTÉTRICO ]');\n  lines.push('Sin embarazos previos');\n}\n\nlines.push('');\nlines.push('[ CITOLOGÍA / PAP SMEAR ]');\nif (body.hadPapSmear) {\n  lines.push('Ha tenido PAP : Sí');\n  lines.push(`Último PAP    : ${body.lastPapSmear}`);\n} else {\n  lines.push('Ha tenido PAP : No');\n}\n\nlines.push('');\nlines.push('[ ANTECEDENTES FAMILIARES ]');\nlines.push(body.familyHistory || 'Sin información proporcionada');\nlines.push('');\nlines.push('======================================');\n\nconst medicalNote = lines.join('\\n');\n\n// ──────────────────────────────────────────────────────\n// Objeto de contacto para la API de GHL (v2)\n// ⚠️  Reemplaza LOCATION_ID con el ID de tu sub-cuenta GHL\n// ──────────────────────────────────────────────────────\nconst ghlContact = {\n  firstName,\n  lastName,\n  name: body.fullName,\n  email: body.email,\n  phone,\n  locationId: 'REEMPLAZAR_CON_TU_GHL_LOCATION_ID',\n  tags: ['nueva-paciente', 'clinica-esperanza', 'primera-cita'],\n  source: 'Formulario Web - Primera Visita',\n  country: 'CR',\n  timezone: 'America/Costa_Rica',\n};\n\nreturn [{ json: { ghlContact, medicalNote, rawData: body } }];"
+      },
+      "id": "b2c3d4e5-0002-0002-0002-b2c3d4e50002",
+      "name": "Transformar Datos",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://services.leadconnectorhq.com/contacts/",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer REEMPLAZAR_CON_TU_GHL_PRIVATE_API_KEY"
+            },
+            {
+              "name": "Version",
+              "value": "2021-07-28"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json.ghlContact) }}",
+        "options": {}
+      },
+      "id": "c3d4e5f6-0003-0003-0003-c3d4e5f60003",
+      "name": "GHL - Crear Contacto",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [720, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://services.leadconnectorhq.com/contacts/{{ $json.contact.id }}/notes",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer REEMPLAZAR_CON_TU_GHL_PRIVATE_API_KEY"
+            },
+            {
+              "name": "Version",
+              "value": "2021-07-28"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ body: $('Transformar Datos').first().json.medicalNote }) }}",
+        "options": {}
+      },
+      "id": "d4e5f6a7-0004-0004-0004-d4e5f6a70004",
+      "name": "GHL - Agregar Historial Medico",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [980, 300]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ success: true, message: 'Paciente registrada exitosamente en GHL', contactId: $('GHL - Crear Contacto').first().json.contact.id }) }}",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "id": "e5f6a7b8-0005-0005-0005-e5f6a7b80005",
+      "name": "Responder Exito",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [1240, 220]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ success: false, message: 'Error al registrar la paciente en GHL', error: $json.message }) }}",
+        "options": {
+          "responseCode": 500
+        }
+      },
+      "id": "f6a7b8c9-0006-0006-0006-f6a7b8c90006",
+      "name": "Responder Error",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [980, 500]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "check-contact-id",
+              "leftValue": "={{ $json.contact.id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "g7h8i9j0-0007-0007-0007-g7h8i9j00007",
+      "name": "Contacto Creado?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [720, 500]
+    }
+  ],
+  "connections": {
+    "Recibir Datos Paciente": {
+      "main": [
+        [
+          {
+            "node": "Transformar Datos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Transformar Datos": {
+      "main": [
+        [
+          {
+            "node": "GHL - Crear Contacto",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GHL - Crear Contacto": {
+      "main": [
+        [
+          {
+            "node": "Contacto Creado?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Contacto Creado?": {
+      "main": [
+        [
+          {
+            "node": "GHL - Agregar Historial Medico",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Responder Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GHL - Agregar Historial Medico": {
+      "main": [
+        [
+          {
+            "node": "Responder Exito",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": true,
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": ""
+  },
+  "versionId": "1.0.0",
+  "meta": {
+    "templateCredsSetupCompleted": false,
+    "instanceId": "clinica-esperanza"
+  },
+  "id": "clinica-esperanza-nueva-paciente-ghl",
+  "tags": [
+    {
+      "createdAt": "2026-02-26T00:00:00.000Z",
+      "updatedAt": "2026-02-26T00:00:00.000Z",
+      "id": "tag-clinica",
+      "name": "clinica-esperanza"
+    }
+  ]
+}

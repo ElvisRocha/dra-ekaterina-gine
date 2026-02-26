@@ -62,6 +62,7 @@ const FirstTimeForm = ({ isOpen, onComplete, initialData }: FirstTimeFormProps) 
   });
 
   const [errors, setErrors] = useState<FormErrors>({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Sync initialData to formData when dialog opens
   useEffect(() => {
@@ -140,7 +141,7 @@ const FirstTimeForm = ({ isOpen, onComplete, initialData }: FirstTimeFormProps) 
     return newErrors;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     const validationErrors = validate();
@@ -157,18 +158,28 @@ const FirstTimeForm = ({ isOpen, onComplete, initialData }: FirstTimeFormProps) 
       if (!finalData.abortions.trim()) finalData.abortions = '0';
     }
 
-    // Collect all data (for future n8n integration)
     const patientData = {
       ...finalData,
       timestamp: new Date().toISOString(),
     };
 
-    console.log('First Time Patient Data:', patientData);
-    // TODO: Send to n8n/GHL webhook
-    // const response = await fetch('https://tu-n8n-url/webhook/new-patient', {
-    //   method: 'POST',
-    //   body: JSON.stringify(patientData)
-    // });
+    setIsSubmitting(true);
+
+    try {
+      const webhookUrl = import.meta.env.VITE_N8N_NUEVA_PACIENTE_WEBHOOK_URL;
+      if (webhookUrl) {
+        await fetch(webhookUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(patientData),
+        });
+      }
+    } catch (error) {
+      console.error('Error enviando datos al webhook de n8n:', error);
+      // Continúa de todas formas — la paciente no debería verse bloqueada
+    } finally {
+      setIsSubmitting(false);
+    }
 
     toast({
       title: t('form.success'),
@@ -498,8 +509,8 @@ const FirstTimeForm = ({ isOpen, onComplete, initialData }: FirstTimeFormProps) 
             </div>
 
             <div className="pt-4 pb-6">
-              <Button type="submit" className="w-full btn-gradient">
-                <span>{t('form.submit')}</span>
+              <Button type="submit" className="w-full btn-gradient" disabled={isSubmitting}>
+                <span>{isSubmitting ? '⏳ Enviando...' : t('form.submit')}</span>
               </Button>
             </div>
           </form>
