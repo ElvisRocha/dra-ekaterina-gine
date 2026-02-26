@@ -30,7 +30,7 @@
     {
       "parameters": {
         "method": "POST",
-        "url": "https://services.leadconnectorhq.com/contacts/",
+        "url": "https://services.leadconnectorhq.com/contacts/upsert",
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
