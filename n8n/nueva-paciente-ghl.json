@@ -36,7 +36,7 @@
     {
       "parameters": {
         "method": "GET",
-        "url": "=https://services.leadconnectorhq.com/contacts/customFields?locationId={{ $('Transformar Datos').first().json.ghlContact.locationId }}",
+        "url": "=https://services.leadconnectorhq.com/locations/{{ $('Transformar Datos').first().json.ghlContact.locationId }}/customFields",
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
@@ -296,7 +296,7 @@
     "callerPolicy": "workflowsFromSameOwner",
     "errorWorkflow": ""
   },
-  "versionId": "3.0.0",
+  "versionId": "3.1.0",
   "meta": {
     "templateCredsSetupCompleted": false,
     "instanceId": "clinica-esperanza"
