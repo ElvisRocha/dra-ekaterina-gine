@@ -73,7 +73,7 @@ const AboutMeContent = () => {
       <Navbar onBookClick={handleBookClick} />
 
       {/* HERO */}
-      <section className="pt-32 pb-20 px-4 section-gradient">
+      <section className="pt-32 pb-20 px-4 section-gradient" >
         <div className="container mx-auto max-w-5xl">
           <div className="flex flex-col md:flex-row items-center gap-10 md:gap-16">
             <motion.div
