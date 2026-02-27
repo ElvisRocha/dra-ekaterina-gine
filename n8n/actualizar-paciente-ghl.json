@@ -25,6 +25,7 @@
       "name": "Transformar Datos",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
+      "onError": "continueErrorOutput",
       "position": [460, 300]
     },
     {
@@ -50,6 +51,7 @@
       "name": "GHL - Obtener IDs de Campos",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.1,
+      "onError": "continueErrorOutput",
       "position": [720, 300]
     },
     {
@@ -60,6 +62,7 @@
       "name": "Resolver IDs y Construir Payload",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
+      "onError": "continueErrorOutput",
       "position": [980, 300]
     },
     {
@@ -92,6 +95,7 @@
       "name": "GHL - Actualizar Contacto",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.1,
+      "onError": "continueErrorOutput",
       "position": [1240, 300]
     },
     {
@@ -124,6 +128,7 @@
       "name": "GHL - Agregar Historial Medico",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.1,
+      "onError": "continueErrorOutput",
       "position": [1500, 300]
     },
     {
@@ -179,27 +184,32 @@
     },
     "Transformar Datos": {
       "main": [
-        [{ "node": "GHL - Obtener IDs de Campos", "type": "main", "index": 0 }]
+        [{ "node": "GHL - Obtener IDs de Campos", "type": "main", "index": 0 }],
+        [{ "node": "Responder Error", "type": "main", "index": 0 }]
       ]
     },
     "GHL - Obtener IDs de Campos": {
       "main": [
-        [{ "node": "Resolver IDs y Construir Payload", "type": "main", "index": 0 }]
+        [{ "node": "Resolver IDs y Construir Payload", "type": "main", "index": 0 }],
+        [{ "node": "Responder Error", "type": "main", "index": 0 }]
       ]
     },
     "Resolver IDs y Construir Payload": {
       "main": [
-        [{ "node": "GHL - Actualizar Contacto", "type": "main", "index": 0 }]
+        [{ "node": "GHL - Actualizar Contacto", "type": "main", "index": 0 }],
+        [{ "node": "Responder Error", "type": "main", "index": 0 }]
       ]
     },
     "GHL - Actualizar Contacto": {
       "main": [
-        [{ "node": "GHL - Agregar Historial Medico", "type": "main", "index": 0 }]
+        [{ "node": "GHL - Agregar Historial Medico", "type": "main", "index": 0 }],
+        [{ "node": "Responder Error", "type": "main", "index": 0 }]
       ]
     },
     "GHL - Agregar Historial Medico": {
       "main": [
-        [{ "node": "Responder Exito", "type": "main", "index": 0 }]
+        [{ "node": "Responder Exito", "type": "main", "index": 0 }],
+        [{ "node": "Responder Error", "type": "main", "index": 0 }]
       ]
     }
   },
