@@ -420,8 +420,10 @@
     "executionOrder": "v1"
   },
   "staticData": null,
-  "tags": ["clinica-esperanza", "ghl", "citas"],
+  "tags": [],
   "triggerCount": 0,
   "updatedAt": "2026-02-27T00:00:00.000Z",
-  "versionId": "46faa6a8-5cf6-4f80-acb7-36605abb0894"
+  "versionId": "46faa6a8-5cf6-4f80-acb7-36605abb0894",
+  "id": "22bfbec5-59f8-4af0-92a1-4bfd508a6033",
+  "active": false
 }

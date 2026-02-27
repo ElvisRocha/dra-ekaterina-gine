@@ -128,8 +128,10 @@
     "executionOrder": "v1"
   },
   "staticData": null,
-  "tags": ["clinica-esperanza", "ghl", "seguimiento"],
+  "tags": [],
   "triggerCount": 0,
   "updatedAt": "2026-02-27T00:00:00.000Z",
-  "versionId": "434602a6-47fb-4b45-bc40-6a21ad8961e5"
+  "versionId": "434602a6-47fb-4b45-bc40-6a21ad8961e5",
+  "id": "7672c204-221b-43a4-850f-eb625de05b01",
+  "active": false
 }
