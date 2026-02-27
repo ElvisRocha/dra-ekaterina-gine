@@ -7,18 +7,6 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
 
-// ─── Photo Placeholder ────────────────────────────────────────────────────────
-const PhotoPlaceholder = ({ className = '' }: { className?: string }) => (
-  <div
-    className={`flex flex-col items-center justify-center bg-secondary/30 border-2 border-dashed border-primary/30 rounded-2xl ${className}`}
-  >
-    <span className="text-3xl mb-2" role="img" aria-label="foto">
-      📷
-    </span>
-    <span className="text-sm text-muted-foreground font-medium">Foto</span>
-  </div>
-);
-
 // ─── Section Title with Gradient Separator ────────────────────────────────────
 const SectionTitle = ({ title }: { title: string }) => (
   <div className="text-center mb-12">
@@ -47,18 +35,21 @@ const AboutMeContent = () => {
       paragraphs: [t('about.story1.p1')],
       photoRight: true,
       hasPhoto: true,
+      photoUrl: 'https://res.cloudinary.com/dcvipikha/image/upload/f_auto,q_auto/v1772223650/universidad_xhvkx4.jpg',
     },
     {
       title: t('about.story2.title'),
       paragraphs: [t('about.story2.p1'), t('about.story2.p2')],
       photoRight: false,
       hasPhoto: true,
+      photoUrl: 'https://res.cloudinary.com/dcvipikha/image/upload/f_auto,q_auto/v1772223651/grado-foto_b74mv2.jpg',
     },
     {
       title: t('about.story3.title'),
       paragraphs: [t('about.story3.p1'), t('about.story3.p2')],
       photoRight: true,
       hasPhoto: true,
+      photoUrl: 'https://res.cloudinary.com/dcvipikha/image/upload/f_auto,q_auto/v1772223651/hijos_m9hrkm.jpg',
     },
     {
       title: t('about.story4.title'),
@@ -135,7 +126,11 @@ const AboutMeContent = () => {
                     }`}
                   >
                     <div className="w-full md:w-1/2">
-                      <PhotoPlaceholder className="w-full h-56 md:h-72" />
+                      <img
+                        src={block.photoUrl}
+                        alt={block.title}
+                        className="w-full h-56 md:h-72 object-cover rounded-2xl shadow-md"
+                      />
                     </div>
                     <div className="w-full md:w-1/2 space-y-4">
                       <h3 className="font-display text-2xl md:text-3xl text-primary">{block.title}</h3>
@@ -199,14 +194,6 @@ const AboutMeContent = () => {
             ))}
           </motion.div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.3 }}
-          >
-            <PhotoPlaceholder className="w-full h-48 md:h-64" />
-          </motion.div>
         </div>
       </section>
 
