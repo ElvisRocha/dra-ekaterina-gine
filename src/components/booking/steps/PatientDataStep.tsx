@@ -85,6 +85,19 @@ const PatientDataStep = ({ patientData, onUpdatePatientData, onNext, onBack }: P
           </div>
         </div>
 
+        {/* Cédula */}
+        <div className="space-y-2">
+          <Label htmlFor="identification">{t('booking.id')} *</Label>
+          <Input
+            id="identification"
+            type="text"
+            value={patientData.identification}
+            onChange={(e) => handleChange('identification', e.target.value)}
+            placeholder={language === 'es' ? 'Cédula o pasaporte' : 'ID or passport'}
+            className="h-12"
+          />
+        </div>
+
         {/* Email */}
         <div className="space-y-2">
           <Label htmlFor="email">
@@ -96,19 +109,6 @@ const PatientDataStep = ({ patientData, onUpdatePatientData, onNext, onBack }: P
             value={patientData.email}
             onChange={(e) => handleChange('email', e.target.value)}
             placeholder="correo@ejemplo.com"
-            className="h-12"
-          />
-        </div>
-
-        {/* Cédula */}
-        <div className="space-y-2">
-          <Label htmlFor="identification">{t('booking.id')} *</Label>
-          <Input
-            id="identification"
-            type="text"
-            value={patientData.identification}
-            onChange={(e) => handleChange('identification', e.target.value)}
-            placeholder={language === 'es' ? 'Cédula o pasaporte' : 'ID or passport'}
             className="h-12"
           />
         </div>
