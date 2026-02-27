@@ -66,7 +66,7 @@ const PatientDataStep = ({ patientData, onUpdatePatientData, onNext, onBack }: P
               type="text"
               value={patientData.firstName}
               onChange={(e) => handleChange('firstName', e.target.value)}
-              placeholder={language === 'es' ? 'Ana' : 'Ana'}
+              placeholder={language === 'es' ? 'Tu Nombre' : 'Your Name'}
               className="h-12"
             />
           </div>
@@ -79,7 +79,7 @@ const PatientDataStep = ({ patientData, onUpdatePatientData, onNext, onBack }: P
               type="text"
               value={patientData.lastName}
               onChange={(e) => handleChange('lastName', e.target.value)}
-              placeholder={language === 'es' ? 'García López' : 'García López'}
+              placeholder={language === 'es' ? 'Tus Apellidos' : 'Your Lastname'}
               className="h-12"
             />
           </div>
