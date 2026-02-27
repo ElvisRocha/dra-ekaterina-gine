@@ -1,72 +1,84 @@
-import { startOfMonth, endOfMonth, eachDayOfInterval, isWeekend, isBefore, startOfDay, format, addDays } from 'date-fns';
+import {
+  startOfMonth,
+  endOfMonth,
+  eachDayOfInterval,
+  isWeekend,
+  isBefore,
+  startOfDay,
+  format,
+} from 'date-fns';
 
-/**
- * Get available days for a given month
- * TODO: Replace with n8n webhook call
- * 
- * Expected endpoint: POST https://tu-n8n-url/webhook/get-available-days
- * Request body: { month: 'YYYY-MM', serviceId: string }
- * Response: { availableDays: ['2026-02-09', '2026-02-10', ...] }
- */
-export const getAvailableDays = (year: number, month: number): string[] => {
-  // TODO: Replace with actual API call
-  // const response = await fetch('https://tu-n8n-url/webhook/get-available-days', {
-  //   method: 'POST',
-  //   headers: { 'Content-Type': 'application/json' },
-  //   body: JSON.stringify({ 
-  //     month: `${year}-${String(month + 1).padStart(2, '0')}`,
-  //     serviceId: selectedService.id
-  //   })
-  // });
-  // const { availableDays } = await response.json();
-  // return availableDays;
+export interface MonthAvailability {
+  availableDays: string[];
+  slotsByDay: Record<string, string[]>;
+}
 
-  // Mock: all weekdays (Mon-Fri) from today onwards
+const DEFAULT_SLOTS = [
+  '08:00', '08:30', '09:00', '09:30', '10:00', '10:30', '11:00', '11:30',
+  '14:00', '14:30', '15:00', '15:30', '16:00', '16:30', '17:00', '17:30',
+];
+
+const getMockAvailability = (year: number, month: number): MonthAvailability => {
   const today = startOfDay(new Date());
   const monthStart = startOfMonth(new Date(year, month));
   const monthEnd = endOfMonth(new Date(year, month));
-  
   const startDate = isBefore(monthStart, today) ? today : monthStart;
-  
+
   if (isBefore(monthEnd, startDate)) {
-    return [];
+    return { availableDays: [], slotsByDay: {} };
   }
 
-  const days = eachDayOfInterval({ start: startDate, end: monthEnd });
-  
-  return days
-    .filter(day => !isWeekend(day))
-    .map(day => format(day, 'yyyy-MM-dd'));
+  const days = eachDayOfInterval({ start: startDate, end: monthEnd })
+    .filter((d) => !isWeekend(d))
+    .map((d) => format(d, 'yyyy-MM-dd'));
+
+  const slotsByDay: Record<string, string[]> = {};
+  for (const day of days) {
+    slotsByDay[day] = DEFAULT_SLOTS;
+  }
+
+  return { availableDays: days, slotsByDay };
 };
 
 /**
- * Get available time slots for a specific date
- * TODO: Replace with n8n webhook call
- * 
- * Expected endpoint: POST https://tu-n8n-url/webhook/get-availability
- * Request body: { date: 'YYYY-MM-DD', serviceId: string, duration: number }
- * Response: { availableSlots: ['14:00', '14:30', '15:00', ...] }
+ * Fetches available days and time slots for a given month from GHL via n8n.
+ *
+ * Expected endpoint: POST VITE_N8N_DISPONIBILIDAD_WEBHOOK_URL
+ * Request:  { month: 'YYYY-MM' }
+ * Response: { availableDays: string[], slotsByDay: Record<string, string[]> }
+ *
+ * Falls back to mock data if the env var is not set or the request fails.
  */
-export const getAvailableSlots = (date: string): string[] => {
-  // TODO: Replace with actual API call
-  // const response = await fetch('https://tu-n8n-url/webhook/get-availability', {
-  //   method: 'POST',
-  //   headers: { 'Content-Type': 'application/json' },
-  //   body: JSON.stringify({ 
-  //     date: selectedDate,
-  //     serviceId: selectedService.id,
-  //     duration: selectedService.duration
-  //   })
-  // });
-  // const { availableSlots } = await response.json();
-  // return availableSlots;
+export const getMonthAvailability = async (
+  year: number,
+  month: number
+): Promise<MonthAvailability> => {
+  const webhookUrl = import.meta.env.VITE_N8N_DISPONIBILIDAD_WEBHOOK_URL;
 
-  // Mock data for development
-  // Returns times in 'HH:mm' format (24h)
-  return [
-    '08:00', '08:30', '09:00', '09:30', '10:00', '10:30', '11:00', '11:30',
-    '14:00', '14:30', '15:00', '15:30', '16:00', '16:30', '17:00', '17:30'
-  ];
+  if (!webhookUrl) {
+    return getMockAvailability(year, month);
+  }
+
+  const monthStr = `${year}-${String(month + 1).padStart(2, '0')}`;
+
+  try {
+    const response = await fetch(webhookUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ month: monthStr }),
+    });
+
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+    const data = await response.json();
+    return {
+      availableDays: data.availableDays ?? [],
+      slotsByDay: data.slotsByDay ?? {},
+    };
+  } catch (error) {
+    console.error('Error fetching availability from n8n:', error);
+    return getMockAvailability(year, month);
+  }
 };
 
 /**

@@ -10,7 +10,9 @@ import { formatTime12h } from '@/utils/availability';
 interface ConfirmStepProps {
   service: Service;
   patientData: {
-    fullName: string;
+    firstName: string;
+    lastName: string;
+    email: string;
     identification: string;
     phone: string;
   };
@@ -113,7 +115,7 @@ const ConfirmStep = ({
               <p className="text-xs text-muted-foreground uppercase tracking-wider">
                 {t('booking.patient')}
               </p>
-              <p className="font-medium text-foreground">{patientData.fullName}</p>
+              <p className="font-medium text-foreground">{patientData.firstName} {patientData.lastName}</p>
             </div>
           </div>
           <div className="flex items-center gap-3">

@@ -1,0 +1,131 @@
+{
+  "name": "Dra. Ekaterina Malaspina - Seguimiento Paciente GHL",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "seguimiento-paciente",
+        "responseMode": "responseNode",
+        "options": {
+          "allowedOrigins": "*"
+        }
+      },
+      "id": "seg-0001-0001-0001-seg000000001",
+      "name": "Recibir Datos Seguimiento",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [200, 300],
+      "webhookId": "clinica-seguimiento-paciente"
+    },
+    {
+      "parameters": {
+        "jsCode": "// ──────────────────────────────────────────────────────\n// Construir payload de actualización con los 6 campos de seguimiento\n// ──────────────────────────────────────────────────────\nconst body = $input.first().json.body;\n\nif (!body.contactId) {\n  throw new Error('contactId es requerido para actualizar el contacto.');\n}\n\n// Helper: booleano → 'Sí' / 'No'\nconst siNo = (val) => val ? 'Sí' : 'No';\n\nconst customFields = [\n  { key: 'contact.hace_ejercicio',         field_value: siNo(body.doExercise) },\n  { key: 'contact.fuma',                   field_value: siNo(body.smokes) },\n  { key: 'contact.prueba_de_vph_realizada', field_value: siNo(body.hadVPHTest) },\n  { key: 'contact.fecha_ltima_citologa',   field_value: body.lastCytology || '' },\n  { key: 'contact.citologa_alterada',      field_value: siNo(body.alteredCytology) },\n  { key: 'contact.fecha_ltima_menstruacin', field_value: body.lastPeriod || '' },\n];\n\nreturn [{\n  json: {\n    contactId: body.contactId,\n    updatePayload: { customFields },\n  }\n}];"
+      },
+      "id": "seg-0002-0002-0002-seg000000002",
+      "name": "Construir Payload Seguimiento",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "method": "PUT",
+        "url": "=https://services.leadconnectorhq.com/contacts/{{ $json.contactId }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer REEMPLAZAR_CON_TU_GHL_PRIVATE_API_KEY"
+            },
+            {
+              "name": "Version",
+              "value": "2021-07-28"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json.updatePayload) }}"
+      },
+      "id": "seg-0003-0003-0003-seg000000003",
+      "name": "GHL - Actualizar Contacto",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [720, 300]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={ \"success\": true }",
+        "options": {
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Access-Control-Allow-Origin",
+                "value": "*"
+              }
+            ]
+          }
+        }
+      },
+      "id": "seg-0004-0004-0004-seg000000004",
+      "name": "Responder Éxito",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [980, 300]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={ \"success\": false, \"error\": \"{{ $json.message }}\" }",
+        "options": {
+          "responseCode": 500,
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Access-Control-Allow-Origin",
+                "value": "*"
+              }
+            ]
+          }
+        }
+      },
+      "id": "seg-0005-0005-0005-seg000000005",
+      "name": "Responder Error",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [720, 500]
+    }
+  ],
+  "connections": {
+    "Recibir Datos Seguimiento": {
+      "main": [
+        [{ "node": "Construir Payload Seguimiento", "type": "main", "index": 0 }]
+      ]
+    },
+    "Construir Payload Seguimiento": {
+      "main": [
+        [{ "node": "GHL - Actualizar Contacto", "type": "main", "index": 0 }]
+      ]
+    },
+    "GHL - Actualizar Contacto": {
+      "main": [
+        [{ "node": "Responder Éxito", "type": "main", "index": 0 }]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": ["clinica-esperanza", "ghl", "seguimiento"],
+  "triggerCount": 0,
+  "updatedAt": "2026-02-27T00:00:00.000Z",
+  "versionId": "1"
+}

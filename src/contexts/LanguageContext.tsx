@@ -151,13 +151,22 @@ const translations: Translations = {
   },
   'newpatient.now': { es: 'Completar ahora', en: 'Complete now' },
   'newpatient.clinic': { es: 'Llenar en la clínica', en: 'Fill out at the clinic' },
-  'newpatient.clinicConfirm': { 
-    es: 'Perfecto, podrá completar sus datos al llegar a la clínica.', 
-    en: 'Perfect, you can complete your information when you arrive at the clinic.' 
+  'newpatient.clinicConfirm': {
+    es: 'Perfecto, podrá completar sus datos al llegar a la clínica.',
+    en: 'Perfect, you can complete your information when you arrive at the clinic.'
   },
-  
+
+  // Returning patient modal
+  'returning.title': { es: '¡Bienvenida de nuevo!', en: 'Welcome back!' },
+  'returning.message': {
+    es: 'Queremos asegurarnos de que tu historial esté al día. ¿Deseas actualizar algunos datos ahora o prefieres hacerlo en la clínica con ayuda de la secretaria?',
+    en: 'We want to make sure your record is up to date. Would you like to update some information now or prefer to do it at the clinic with the secretary\'s help?',
+  },
+
   // Patient form
   'form.title': { es: 'Formulario de Primera Vez', en: 'First Time Form' },
+  'form.firstName': { es: 'Nombre', en: 'First name' },
+  'form.lastName': { es: 'Apellidos', en: 'Last name' },
   'form.age': { es: 'Edad (años)', en: 'Age (years)' },
   'form.dob': { es: 'Fecha de nacimiento', en: 'Date of birth' },
   'form.email': { es: 'Correo electrónico', en: 'Email' },

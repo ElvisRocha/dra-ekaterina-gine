@@ -15,9 +15,12 @@ import ConfirmStep from '@/components/booking/steps/ConfirmStep';
 import ConfirmationPopup from '@/components/ConfirmationPopup';
 import NewPatientModal from '@/components/NewPatientModal';
 import FirstTimeForm from '@/components/FirstTimeForm';
+import ReturningPatientForm from '@/components/ReturningPatientForm';
 
 interface PatientData {
-  fullName: string;
+  firstName: string;
+  lastName: string;
+  email: string;
   identification: string;
   phone: string;
 }
@@ -26,7 +29,7 @@ const BookAppointmentContent = () => {
   const [searchParams] = useSearchParams();
   const { language, t } = useLanguage();
   const navigate = useNavigate();
-  
+
   // Step state
   const [currentStep, setCurrentStep] = useState(1);
   const [completedSteps, setCompletedSteps] = useState<number[]>([]);
@@ -38,18 +41,25 @@ const BookAppointmentContent = () => {
   // Form data
   const [selectedService, setSelectedService] = useState<Service | null>(null);
   const [patientData, setPatientData] = useState<PatientData>({
-    fullName: '',
+    firstName: '',
+    lastName: '',
+    email: '',
     identification: '',
     phone: '',
   });
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
-  
+
   // Post-confirmation state
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [showNewPatientModal, setShowNewPatientModal] = useState(false);
+  const [showReturningPatientModal, setShowReturningPatientModal] = useState(false);
   const [showFirstTimeForm, setShowFirstTimeForm] = useState(false);
+  const [showReturningPatientForm, setShowReturningPatientForm] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+
+  // GHL contact state — populated after handleConfirm
+  const [ghlContactId, setGhlContactId] = useState('');
 
   // Pre-select service from URL param and skip to step 2
   useEffect(() => {
@@ -58,8 +68,6 @@ const BookAppointmentContent = () => {
       const service = services.find(s => s.id === serviceId);
       if (service) {
         setSelectedService(service);
-        // Restore the tree to the node that contains this service so
-        // going "Atrás" from step 2 shows the correct state
         const path = findServicePath(serviceId);
         if (path) {
           setTreeHistory(path.history);
@@ -83,15 +91,12 @@ const BookAppointmentContent = () => {
     const serviceChanged = selectedService?.id !== service.id;
     setSelectedService(service);
     if (serviceChanged) {
-      // Reset date/time when service changes
       setSelectedDate(null);
       setSelectedTime(null);
-      // Remove steps 3+ from completed since date/time are reset
       setCompletedSteps(prev => prev.filter(s => s < 3));
     }
   };
 
-  // Mark current step as completed and advance to next step
   const goToStep = (nextStep: number) => {
     setCompletedSteps(prev => {
       const newCompleted = new Set(prev);
@@ -101,7 +106,6 @@ const BookAppointmentContent = () => {
     setCurrentStep(nextStep);
   };
 
-  // Handle stepper click navigation
   const handleStepClick = (stepNumber: number) => {
     if (stepNumber === currentStep) return;
     const maxCompleted = completedSteps.length > 0 ? Math.max(...completedSteps) : 0;
@@ -115,19 +119,25 @@ const BookAppointmentContent = () => {
 
     setIsLoading(true);
 
-    // Build appointment data object
-    const appointmentData = {
+    // Parse duration minutes from service.duration string (e.g. "30 min" → 30)
+    const durationMatch = selectedService.duration?.match(/\d+/);
+    const durationMinutes = durationMatch ? parseInt(durationMatch[0], 10) : 30;
+
+    const appointmentPayload = {
+      patient: {
+        firstName: patientData.firstName,
+        lastName: patientData.lastName,
+        email: patientData.email,
+        identification: patientData.identification,
+        phone: patientData.phone,
+      },
       service: {
         id: selectedService.id,
         name: language === 'es' ? selectedService.nameEs : selectedService.nameEn,
         category: selectedService.category,
         duration: selectedService.duration,
+        durationMinutes,
         price: selectedService.price,
-      },
-      patient: {
-        fullName: patientData.fullName,
-        identification: patientData.identification,
-        phone: patientData.phone,
       },
       appointment: {
         date: format(selectedDate, 'yyyy-MM-dd'),
@@ -139,59 +149,77 @@ const BookAppointmentContent = () => {
     };
 
     try {
-      const webhookUrl = import.meta.env.VITE_N8N_CITA_WEBHOOK_URL;
+      const webhookUrl = import.meta.env.VITE_N8N_AGENDAR_CITA_WEBHOOK_URL;
       if (webhookUrl) {
-        await fetch(webhookUrl, {
+        const res = await fetch(webhookUrl, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(appointmentData),
+          body: JSON.stringify(appointmentPayload),
         });
+        if (res.ok) {
+          const data = await res.json();
+          // Save to state and localStorage for post-confirmation modals
+          const contactId = data.contactId ?? '';
+          const contactExisted = Boolean(data.contactExisted);
+          setGhlContactId(contactId);
+          localStorage.setItem('ghl_contact_id', contactId);
+          localStorage.setItem('ghl_contact_existed', String(contactExisted));
+        }
       }
     } catch (error) {
       console.error('Error enviando cita al webhook de n8n:', error);
-      // Continúa de todas formas — la cita se registrará manualmente si es necesario
     }
 
     setIsLoading(false);
-
-    // Show confirmation popup (no toast)
     setShowConfirmation(true);
   };
 
   const handleCloseConfirmation = () => {
     setShowConfirmation(false);
 
-    // Check if patient exists (mock)
-    // TODO: Replace with n8n webhook call
-    // const response = await fetch('https://tu-n8n-url/webhook/check-patient', {
-    //   method: 'POST',
-    //   body: JSON.stringify({ identificacion: patientData.identification })
-    // });
-    // const { isFirstTimeUser } = await response.json();
-    const isFirstTimeUser = true; // Mock: change to false to simulate existing patient
+    // Read flag set during handleConfirm
+    const contactExisted = localStorage.getItem('ghl_contact_existed') === 'true';
+    const storedContactId = localStorage.getItem('ghl_contact_id') ?? ghlContactId;
+    setGhlContactId(storedContactId);
 
-    if (isFirstTimeUser) {
-      setShowNewPatientModal(true);
+    if (contactExisted) {
+      // Returning patient → show modal with same design but different text
+      setShowReturningPatientModal(true);
     } else {
-      // Existing patient → redirect to landing page
-      navigate('/');
+      // New patient → show "Primera vez con nosotros" modal
+      setShowNewPatientModal(true);
     }
   };
 
-  const handleCompleteNow = () => {
+  // --- New patient handlers ---
+  const handleNewCompleteNow = () => {
     setShowNewPatientModal(false);
     setShowFirstTimeForm(true);
   };
 
-  const handleFillAtClinic = () => {
+  const handleNewFillAtClinic = () => {
     setShowNewPatientModal(false);
-    // Redirect to landing page
+    navigate('/');
+  };
+
+  // --- Returning patient handlers ---
+  const handleReturningCompleteNow = () => {
+    setShowReturningPatientModal(false);
+    setShowReturningPatientForm(true);
+  };
+
+  const handleReturningFillAtClinic = () => {
+    setShowReturningPatientModal(false);
     navigate('/');
   };
 
   const handleFirstTimeFormComplete = () => {
     setShowFirstTimeForm(false);
-    // Redirect to landing page
+    navigate('/');
+  };
+
+  const handleReturningFormComplete = () => {
+    setShowReturningPatientForm(false);
     navigate('/');
   };
 
@@ -217,7 +245,6 @@ const BookAppointmentContent = () => {
 
         {/* Main Content */}
         <div className="container mx-auto px-4 py-8">
-          {/* Main Stepper Content */}
           <div className="max-w-5xl mx-auto">
             <AnimatePresence mode="wait">
               {currentStep === 1 && (
@@ -232,7 +259,7 @@ const BookAppointmentContent = () => {
                   onTreeChoiceKeyChange={setTreeChoiceKey}
                 />
               )}
-              
+
               {currentStep === 2 && (
                 <PatientDataStep
                   key="patient"
@@ -242,7 +269,7 @@ const BookAppointmentContent = () => {
                   onBack={() => setCurrentStep(1)}
                 />
               )}
-              
+
               {currentStep === 3 && selectedService && (
                 <DateTimeStep
                   key="datetime"
@@ -255,7 +282,7 @@ const BookAppointmentContent = () => {
                   onBack={() => setCurrentStep(2)}
                 />
               )}
-              
+
               {currentStep === 4 && selectedService && selectedDate && selectedTime && (
                 <ConfirmStep
                   key="confirm"
@@ -295,31 +322,55 @@ const BookAppointmentContent = () => {
         </div>
       </footer>
 
-      {/* Modals */}
+      {/* ── Modals ─────────────────────────────────────────── */}
+
+      {/* Step 4 confirmation popup */}
       <ConfirmationPopup
         isOpen={showConfirmation}
         onClose={handleCloseConfirmation}
       />
 
+      {/* New patient modal */}
       <NewPatientModal
         isOpen={showNewPatientModal}
+        titleKey="newpatient.title"
+        messageKey="newpatient.message"
         onChoice={(fillNow) => {
-          if (fillNow) {
-            handleCompleteNow();
-          } else {
-            handleFillAtClinic();
-          }
+          if (fillNow) handleNewCompleteNow();
+          else handleNewFillAtClinic();
         }}
       />
 
+      {/* Returning patient modal (same design, different copy) */}
+      <NewPatientModal
+        isOpen={showReturningPatientModal}
+        titleKey="returning.title"
+        messageKey="returning.message"
+        onChoice={(fillNow) => {
+          if (fillNow) handleReturningCompleteNow();
+          else handleReturningFillAtClinic();
+        }}
+      />
+
+      {/* Full medical history form — new patients */}
       <FirstTimeForm
         isOpen={showFirstTimeForm}
         onComplete={handleFirstTimeFormComplete}
         initialData={{
-          fullName: patientData.fullName,
+          firstName: patientData.firstName,
+          lastName: patientData.lastName,
+          email: patientData.email,
           idNumber: patientData.identification,
           phone: patientData.phone,
+          contactId: ghlContactId,
         }}
+      />
+
+      {/* Follow-up form — returning patients */}
+      <ReturningPatientForm
+        isOpen={showReturningPatientForm}
+        onComplete={handleReturningFormComplete}
+        contactId={ghlContactId}
       />
     </div>
   );

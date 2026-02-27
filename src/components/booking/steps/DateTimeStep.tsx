@@ -4,7 +4,7 @@ import { format } from 'date-fns';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
 import { type Service } from '@/data/services';
-import { getAvailableDays, getAvailableSlots } from '@/utils/availability';
+import { getMonthAvailability } from '@/utils/availability';
 import ServiceSummary from '../calendar/ServiceSummary';
 import MonthCalendar from '../calendar/MonthCalendar';
 import TimeSlots from '../calendar/TimeSlots';
@@ -31,24 +31,37 @@ const DateTimeStep = ({
   const { t, language } = useLanguage();
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [availableDays, setAvailableDays] = useState<string[]>([]);
+  const [slotsByDay, setSlotsByDay] = useState<Record<string, string[]>>({});
   const [availableSlots, setAvailableSlots] = useState<string[]>([]);
+  const [loadingDays, setLoadingDays] = useState(false);
 
-  // Fetch available days when month changes
+  // Fetch available days and slots for the whole month when month changes
   useEffect(() => {
-    const days = getAvailableDays(currentMonth.getFullYear(), currentMonth.getMonth());
-    setAvailableDays(days);
+    let cancelled = false;
+    setLoadingDays(true);
+    setAvailableDays([]);
+    setSlotsByDay({});
+    setAvailableSlots([]);
+
+    getMonthAvailability(currentMonth.getFullYear(), currentMonth.getMonth()).then((data) => {
+      if (cancelled) return;
+      setAvailableDays(data.availableDays);
+      setSlotsByDay(data.slotsByDay);
+      setLoadingDays(false);
+    });
+
+    return () => { cancelled = true; };
   }, [currentMonth]);
 
-  // Fetch available slots when date changes
+  // Update slots when date changes (read from cached slotsByDay)
   useEffect(() => {
     if (selectedDate) {
       const dateStr = format(selectedDate, 'yyyy-MM-dd');
-      const slots = getAvailableSlots(dateStr);
-      setAvailableSlots(slots);
+      setAvailableSlots(slotsByDay[dateStr] ?? []);
     } else {
       setAvailableSlots([]);
     }
-  }, [selectedDate]);
+  }, [selectedDate, slotsByDay]);
 
   const isValid = selectedDate && selectedTime;
 
@@ -64,8 +77,8 @@ const DateTimeStep = ({
           {language === 'es' ? 'Selecciona fecha y hora' : 'Select date and time'}
         </h2>
         <p className="text-muted-foreground text-sm">
-          {language === 'es' 
-            ? 'Elige el día y horario que mejor te convenga' 
+          {language === 'es'
+            ? 'Elige el día y horario que mejor te convenga'
             : 'Choose the day and time that works best for you'}
         </p>
       </div>
@@ -84,13 +97,19 @@ const DateTimeStep = ({
 
         {/* Center: Calendar */}
         <div className="bg-card rounded-xl border border-border p-4">
-          <MonthCalendar
-            currentMonth={currentMonth}
-            selectedDate={selectedDate}
-            availableDays={availableDays}
-            onSelectDate={onSelectDate}
-            onMonthChange={setCurrentMonth}
-          />
+          {loadingDays ? (
+            <div className="flex items-center justify-center h-48 text-muted-foreground text-sm">
+              {language === 'es' ? 'Cargando disponibilidad...' : 'Loading availability...'}
+            </div>
+          ) : (
+            <MonthCalendar
+              currentMonth={currentMonth}
+              selectedDate={selectedDate}
+              availableDays={availableDays}
+              onSelectDate={onSelectDate}
+              onMonthChange={setCurrentMonth}
+            />
+          )}
         </div>
 
         {/* Right: Time Slots */}

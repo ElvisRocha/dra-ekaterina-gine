@@ -1,0 +1,180 @@
+{
+  "name": "Dra. Ekaterina Malaspina - Disponibilidad Calendario GHL",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "get-availability",
+        "responseMode": "responseNode",
+        "options": {
+          "allowedOrigins": "*"
+        }
+      },
+      "id": "avail-0001-0001-0001-avail00000001",
+      "name": "Recibir Solicitud Disponibilidad",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [200, 300],
+      "webhookId": "clinica-get-availability"
+    },
+    {
+      "parameters": {
+        "jsCode": "// ──────────────────────────────────────────────────────\n// Calcular rango de fechas (inicio y fin del mes solicitado)\n// ──────────────────────────────────────────────────────\nconst body = $input.first().json.body;\n\n// month esperado: 'YYYY-MM'\nconst monthStr = body.month;\nif (!monthStr || !/^\\d{4}-\\d{2}$/.test(monthStr)) {\n  throw new Error('Parámetro \"month\" requerido en formato YYYY-MM');\n}\n\nconst [year, month] = monthStr.split('-').map(Number);\n\n// Primer y último día del mes en UTC (epoch ms)\nconst startDate = new Date(Date.UTC(year, month - 1, 1));\nconst endDate   = new Date(Date.UTC(year, month,     0, 23, 59, 59));\n\nconst calendarId = 'REEMPLAZAR_CON_TU_CALENDAR_ID';\n\nreturn [{\n  json: {\n    calendarId,\n    startDate: startDate.getTime(),\n    endDate:   endDate.getTime(),\n    timezone:  'America/Costa_Rica',\n  }\n}];"
+      },
+      "id": "avail-0002-0002-0002-avail00000002",
+      "name": "Calcular Rango del Mes",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "=https://services.leadconnectorhq.com/calendars/{{ $json.calendarId }}/free-slots",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer REEMPLAZAR_CON_TU_GHL_PRIVATE_API_KEY"
+            },
+            {
+              "name": "Version",
+              "value": "2021-04-15"
+            }
+          ]
+        },
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "startDate",
+              "value": "={{ $json.startDate }}"
+            },
+            {
+              "name": "endDate",
+              "value": "={{ $json.endDate }}"
+            },
+            {
+              "name": "timezone",
+              "value": "={{ $json.timezone }}"
+            }
+          ]
+        }
+      },
+      "id": "avail-0003-0003-0003-avail00000003",
+      "name": "GHL - Obtener Slots Disponibles",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [720, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// ──────────────────────────────────────────────────────\n// Transformar respuesta de GHL al formato esperado por el frontend\n//\n// GHL responde algo como:\n// {\n//   \"_dates_\": [\"2026-02-09\", \"2026-02-10\"],\n//   \"2026-02-09\": { \"slots\": [\"2026-02-09T08:00:00-06:00\", ...] },\n//   ...\n// }\n//\n// Frontend espera:\n// { availableDays: string[], slotsByDay: Record<string, string[]> }\n// ──────────────────────────────────────────────────────\nconst ghlData = $input.first().json;\n\nconst dates = Array.isArray(ghlData._dates_)\n  ? ghlData._dates_\n  : Object.keys(ghlData).filter(k => k !== '_dates_' && /^\\d{4}-\\d{2}-\\d{2}$/.test(k));\n\nconst availableDays = [];\nconst slotsByDay = {};\n\nfor (const date of dates) {\n  const dayData = ghlData[date];\n  if (!dayData || !Array.isArray(dayData.slots) || dayData.slots.length === 0) continue;\n\n  // Extraer HH:mm en hora local (Costa Rica = UTC-6)\n  const times = dayData.slots.map(isoStr => {\n    const d = new Date(isoStr);\n    // toLocaleTimeString en zona CR\n    return d.toLocaleTimeString('en-CR', {\n      timeZone: 'America/Costa_Rica',\n      hour: '2-digit',\n      minute: '2-digit',\n      hour12: false,\n    });\n  });\n\n  availableDays.push(date);\n  slotsByDay[date] = times;\n}\n\nreturn [{ json: { availableDays, slotsByDay } }];"
+      },
+      "id": "avail-0004-0004-0004-avail00000004",
+      "name": "Transformar Disponibilidad",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [980, 300]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify($json) }}",
+        "options": {
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Access-Control-Allow-Origin",
+                "value": "*"
+              }
+            ]
+          }
+        }
+      },
+      "id": "avail-0005-0005-0005-avail00000005",
+      "name": "Responder Disponibilidad",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [1240, 300]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={ \"error\": true, \"message\": \"{{ $json.message }}\" }",
+        "options": {
+          "responseCode": 500,
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Access-Control-Allow-Origin",
+                "value": "*"
+              }
+            ]
+          }
+        }
+      },
+      "id": "avail-0006-0006-0006-avail00000006",
+      "name": "Responder Error",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [980, 500]
+    }
+  ],
+  "connections": {
+    "Recibir Solicitud Disponibilidad": {
+      "main": [
+        [
+          {
+            "node": "Calcular Rango del Mes",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Calcular Rango del Mes": {
+      "main": [
+        [
+          {
+            "node": "GHL - Obtener Slots Disponibles",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GHL - Obtener Slots Disponibles": {
+      "main": [
+        [
+          {
+            "node": "Transformar Disponibilidad",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Transformar Disponibilidad": {
+      "main": [
+        [
+          {
+            "node": "Responder Disponibilidad",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": ["clinica-esperanza", "ghl", "calendario"],
+  "triggerCount": 0,
+  "updatedAt": "2026-02-27T00:00:00.000Z",
+  "versionId": "1"
+}

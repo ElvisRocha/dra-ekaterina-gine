@@ -21,9 +21,12 @@ interface FirstTimeFormProps {
   isOpen: boolean;
   onComplete: () => void;
   initialData: {
-    fullName: string;
+    firstName: string;
+    lastName: string;
+    email: string;
     idNumber: string;
     phone: string;
+    contactId: string;
   };
 }
 
@@ -34,12 +37,13 @@ interface FormErrors {
 const FirstTimeForm = ({ isOpen, onComplete, initialData }: FirstTimeFormProps) => {
   const { t } = useLanguage();
   const [formData, setFormData] = useState({
-    fullName: initialData.fullName,
+    firstName: initialData.firstName,
+    lastName: initialData.lastName,
     age: '',
     idNumber: initialData.idNumber,
     phone: initialData.phone,
     dob: '',
-    email: '',
+    email: initialData.email,
     hasDisease: false,
     diseaseDetails: '',
     takesMedication: false,
@@ -69,13 +73,15 @@ const FirstTimeForm = ({ isOpen, onComplete, initialData }: FirstTimeFormProps) 
     if (isOpen) {
       setFormData(prev => ({
         ...prev,
-        fullName: initialData.fullName,
+        firstName: initialData.firstName,
+        lastName: initialData.lastName,
+        email: initialData.email,
         idNumber: initialData.idNumber,
         phone: initialData.phone,
       }));
       setErrors({});
     }
-  }, [isOpen, initialData.fullName, initialData.idNumber, initialData.phone]);
+  }, [isOpen, initialData.firstName, initialData.lastName, initialData.email, initialData.idNumber, initialData.phone]);
 
   const updateField = (field: string, value: string | boolean) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -96,11 +102,6 @@ const FirstTimeForm = ({ isOpen, onComplete, initialData }: FirstTimeFormProps) 
     // Always-required fields
     if (!formData.age.trim()) newErrors.age = required;
     if (!formData.dob.trim()) newErrors.dob = required;
-    if (!formData.email.trim()) {
-      newErrors.email = required;
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email.trim())) {
-      newErrors.email = t('form.invalidEmail');
-    }
     if (!formData.firstPeriodAge.trim()) newErrors.firstPeriodAge = required;
     if (!formData.lastPeriodDate.trim()) newErrors.lastPeriodDate = required;
     if (!formData.familyHistory.trim()) newErrors.familyHistory = required;
@@ -160,6 +161,7 @@ const FirstTimeForm = ({ isOpen, onComplete, initialData }: FirstTimeFormProps) 
 
     const patientData = {
       ...finalData,
+      contactId: initialData.contactId,
       timestamp: new Date().toISOString(),
     };
 
@@ -245,34 +247,49 @@ const FirstTimeForm = ({ isOpen, onComplete, initialData }: FirstTimeFormProps) 
 
         <ScrollArea className="max-h-[calc(90vh-120px)] px-6">
           <form onSubmit={handleSubmit} className="space-y-4 py-4">
-            {/* Basic Info - Row 1: Nombre Completo | Número de Identificación */}
+            {/* Basic Info - Row 1: Nombre | Apellidos */}
             <div className="grid md:grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="fullName" className="flex items-center gap-1">
-                  {t('booking.fullName')}
+                <Label htmlFor="firstName" className="flex items-center gap-1">
+                  {t('form.firstName') || 'Nombre'}
                   <Lock className="h-3 w-3 text-muted-foreground" />
                 </Label>
                 <Input
-                  id="fullName"
-                  value={formData.fullName}
+                  id="firstName"
+                  value={formData.firstName}
                   disabled
                   className="mt-1 bg-muted text-muted-foreground cursor-not-allowed"
                   title={t('form.lockedField')}
                 />
               </div>
               <div>
-                <Label htmlFor="idNumber" className="flex items-center gap-1">
-                  {t('booking.id')}
+                <Label htmlFor="lastName" className="flex items-center gap-1">
+                  {t('form.lastName') || 'Apellidos'}
                   <Lock className="h-3 w-3 text-muted-foreground" />
                 </Label>
                 <Input
-                  id="idNumber"
-                  value={formData.idNumber}
+                  id="lastName"
+                  value={formData.lastName}
                   disabled
                   className="mt-1 bg-muted text-muted-foreground cursor-not-allowed"
                   title={t('form.lockedField')}
                 />
               </div>
+            </div>
+
+            {/* Row 1b: Número de Identificación */}
+            <div>
+              <Label htmlFor="idNumber" className="flex items-center gap-1">
+                {t('booking.id')}
+                <Lock className="h-3 w-3 text-muted-foreground" />
+              </Label>
+              <Input
+                id="idNumber"
+                value={formData.idNumber}
+                disabled
+                className="mt-1 bg-muted text-muted-foreground cursor-not-allowed"
+                title={t('form.lockedField')}
+              />
             </div>
 
             {/* Row 2: Teléfono | Edad */}
@@ -319,15 +336,18 @@ const FirstTimeForm = ({ isOpen, onComplete, initialData }: FirstTimeFormProps) 
                 {renderError('dob')}
               </div>
               <div>
-                <Label htmlFor="email">{t('form.email')} *</Label>
+                <Label htmlFor="email" className="flex items-center gap-1">
+                  {t('form.email')}
+                  <Lock className="h-3 w-3 text-muted-foreground" />
+                </Label>
                 <Input
                   id="email"
                   type="email"
                   value={formData.email}
-                  onChange={(e) => updateField('email', e.target.value)}
-                  className={`mt-1 ${errorClass('email')}`}
+                  disabled
+                  className="mt-1 bg-muted text-muted-foreground cursor-not-allowed"
+                  title={t('form.lockedField')}
                 />
-                {renderError('email')}
               </div>
             </div>
 
