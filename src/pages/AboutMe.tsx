@@ -129,7 +129,7 @@ const AboutMeContent = () => {
                       <img
                         src={block.photoUrl}
                         alt={block.title}
-                        className="w-full h-auto rounded-2xl shadow-md"
+                        className="w-[70%] h-auto mx-auto block rounded-2xl shadow-md"
                       />
                     </div>
                     <div className="w-full md:w-1/2 space-y-4">
