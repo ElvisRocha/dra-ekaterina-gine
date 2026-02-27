@@ -25,6 +25,7 @@
       "name": "Calcular Rango del Mes",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
+      "onError": "continueErrorOutput",
       "position": [460, 300]
     },
     {
@@ -66,6 +67,7 @@
       "name": "GHL - Obtener Slots Disponibles",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
+      "onError": "continueErrorOutput",
       "position": [720, 300]
     },
     {
@@ -76,6 +78,7 @@
       "name": "Transformar Disponibilidad",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
+      "onError": "continueErrorOutput",
       "position": [980, 300]
     },
     {
@@ -142,6 +145,13 @@
             "type": "main",
             "index": 0
           }
+        ],
+        [
+          {
+            "node": "Responder Error",
+            "type": "main",
+            "index": 0
+          }
         ]
       ]
     },
@@ -153,6 +163,13 @@
             "type": "main",
             "index": 0
           }
+        ],
+        [
+          {
+            "node": "Responder Error",
+            "type": "main",
+            "index": 0
+          }
         ]
       ]
     },
@@ -161,6 +178,13 @@
         [
           {
             "node": "Responder Disponibilidad",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Responder Error",
             "type": "main",
             "index": 0
           }
