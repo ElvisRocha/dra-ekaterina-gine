@@ -15,7 +15,7 @@
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
       "position": [200, 300],
-      "webhookId": "clinica-seguimiento-paciente"
+      "webhookId": "814a9dfe-67ac-47de-943d-e5d57a48d1ab"
     },
     {
       "parameters": {
@@ -131,5 +131,5 @@
   "tags": ["clinica-esperanza", "ghl", "seguimiento"],
   "triggerCount": 0,
   "updatedAt": "2026-02-27T00:00:00.000Z",
-  "versionId": "1"
+  "versionId": "434602a6-47fb-4b45-bc40-6a21ad8961e5"
 }

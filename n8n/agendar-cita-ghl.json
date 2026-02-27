@@ -15,7 +15,7 @@
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
       "position": [200, 300],
-      "webhookId": "clinica-agendar-cita"
+      "webhookId": "d2a98ced-a7c9-4040-96c4-e8d7f14d6f24"
     },
     {
       "parameters": {
@@ -423,5 +423,5 @@
   "tags": ["clinica-esperanza", "ghl", "citas"],
   "triggerCount": 0,
   "updatedAt": "2026-02-27T00:00:00.000Z",
-  "versionId": "2"
+  "versionId": "46faa6a8-5cf6-4f80-acb7-36605abb0894"
 }
