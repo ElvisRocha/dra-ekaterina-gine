@@ -10,7 +10,7 @@
           "allowedOrigins": "*"
         }
       },
-      "id": "cita-0001-0001-0001-cita000000001",
+      "id": "81b0cfd0-86f2-4843-89b4-752c66ea688c",
       "name": "Recibir Datos Cita",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
@@ -21,7 +21,7 @@
       "parameters": {
         "jsCode": "// ──────────────────────────────────────────────────────\n// Preparar datos del contacto y la cita\n// ──────────────────────────────────────────────────────\nconst body = $input.first().json.body;\n\nconst { patient, service, appointment } = body;\n\n// Formatear teléfono para GHL (formato internacional +506XXXXXXXX)\nlet phone = (patient.phone || '').replace(/\\D/g, '');\nif (phone.startsWith('506')) {\n  phone = '+' + phone;\n} else if (phone.length === 8) {\n  phone = '+506' + phone;\n} else {\n  phone = '+' + phone;\n}\n\n// Calcular startTime y endTime en ISO 8601 (zona CR = UTC-6)\nconst [year, month, day] = appointment.date.split('-').map(Number);\nconst [hour, minute]     = appointment.time.split(':').map(Number);\n\n// Offset Costa Rica: -06:00\nconst pad = n => String(n).padStart(2, '0');\nconst crOffset = '-06:00';\nconst startTime = `${appointment.date}T${pad(hour)}:${pad(minute)}:00${crOffset}`;\n\nconst durationMinutes = service.durationMinutes || 30;\nconst endTotalMinutes = hour * 60 + minute + durationMinutes;\nconst endHour   = Math.floor(endTotalMinutes / 60) % 24;\nconst endMinute = endTotalMinutes % 60;\nconst endTime   = `${appointment.date}T${pad(endHour)}:${pad(endMinute)}:00${crOffset}`;\n\nreturn [{\n  json: {\n    locationId: 'REEMPLAZAR_CON_TU_GHL_LOCATION_ID',\n    calendarId: 'DqZ35XwjFseg04ZGRLcu',\n    patient: {\n      firstName:      patient.firstName,\n      lastName:       patient.lastName,\n      email:          patient.email,\n      phone,\n      identification: patient.identification,\n    },\n    appointment: {\n      startTime,\n      endTime,\n      title: `Cita: ${service.name}`,\n      timezone: 'America/Costa_Rica',\n    },\n    service,\n  }\n}];"
       },
-      "id": "cita-0002-0002-0002-cita000000002",
+      "id": "80dc84a1-6d01-4e52-bd08-44bbd8494eea",
       "name": "Preparar Datos",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -63,7 +63,7 @@
           ]
         }
       },
-      "id": "cita-0003-0003-0003-cita000000003",
+      "id": "af87d06d-b27f-4265-bd30-69abc75ff7d7",
       "name": "GHL - Buscar Contacto Duplicado",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
@@ -94,7 +94,7 @@
         },
         "options": {}
       },
-      "id": "cita-0004-0004-0004-cita000000004",
+      "id": "72cdc595-202b-4ef4-8b8a-ad86d34fb7bc",
       "name": "¿Contacto existe?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
@@ -104,7 +104,7 @@
       "parameters": {
         "jsCode": "// Contacto existente — extraer ID y marcar flag\nconst searchResult = $input.first().json;\nconst prevData     = $('Preparar Datos').first().json;\n\nreturn [{\n  json: {\n    ...prevData,\n    contactId:      searchResult.contact.id,\n    contactExisted: true,\n  }\n}];"
       },
-      "id": "cita-0005-0005-0005-cita000000005",
+      "id": "3db3b950-af12-44f8-b46c-52b0540b7e1f",
       "name": "Usar Contacto Existente",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -136,7 +136,7 @@
         "specifyBody": "json",
         "jsonBody": "={\n  \"firstName\": \"{{ $('Preparar Datos').first().json.patient.firstName }}\",\n  \"lastName\":  \"{{ $('Preparar Datos').first().json.patient.lastName }}\",\n  \"email\":     \"{{ $('Preparar Datos').first().json.patient.email }}\",\n  \"phone\":     \"{{ $('Preparar Datos').first().json.patient.phone }}\",\n  \"locationId\":\"{{ $('Preparar Datos').first().json.locationId }}\",\n  \"source\":    \"Formulario Web - Cita\",\n  \"country\":   \"CR\",\n  \"timezone\":  \"America/Costa_Rica\",\n  \"tags\":      [\"nueva-paciente\"],\n  \"customFields\": [\n    { \"key\": \"contact.nmero_de_identificacin\", \"field_value\": \"{{ $('Preparar Datos').first().json.patient.identification }}\" }\n  ]\n}"
       },
-      "id": "cita-0006-0006-0006-cita000000006",
+      "id": "cd18131f-d8c5-4a6a-9618-39eff1510ed9",
       "name": "GHL - Crear Nuevo Contacto",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
@@ -147,7 +147,7 @@
       "parameters": {
         "jsCode": "// Contacto recién creado — extraer ID y marcar flag\nconst createResult = $input.first().json;\nconst prevData     = $('Preparar Datos').first().json;\n\nreturn [{\n  json: {\n    ...prevData,\n    contactId:      createResult.contact?.id ?? createResult.id,\n    contactExisted: false,\n  }\n}];"
       },
-      "id": "cita-0007-0007-0007-cita000000007",
+      "id": "03d0e118-9b35-4a38-9fcb-013af1702b0f",
       "name": "Marcar Contacto Nuevo",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -179,7 +179,7 @@
         "specifyBody": "json",
         "jsonBody": "={\n  \"calendarId\":        \"{{ $json.calendarId }}\",\n  \"locationId\":        \"{{ $json.locationId }}\",\n  \"contactId\":         \"{{ $json.contactId }}\",\n  \"startTime\":         \"{{ $json.appointment.startTime }}\",\n  \"endTime\":           \"{{ $json.appointment.endTime }}\",\n  \"title\":             \"{{ $json.appointment.title }}\",\n  \"appointmentStatus\": \"new\",\n  \"timeZone\":          \"America/Costa_Rica\"\n}"
       },
-      "id": "cita-0009-0009-0009-cita000000009",
+      "id": "89f04fcb-d05b-44d9-b9a7-b5084acdb64c",
       "name": "GHL - Crear Cita en Calendario",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
@@ -190,7 +190,7 @@
       "parameters": {
         "jsCode": "// Armar respuesta final para el frontend\nconst existingItems = $('Usar Contacto Existente').all();\nconst merged = existingItems.length > 0\n  ? existingItems[0].json\n  : $('Marcar Contacto Nuevo').first().json;\nconst citaResp = $input.first().json;\n\nreturn [{\n  json: {\n    success:        true,\n    contactId:      merged.contactId,\n    contactExisted: merged.contactExisted,\n    appointmentId:  citaResp.id ?? citaResp.appointmentId ?? '',\n  }\n}];"
       },
-      "id": "cita-0010-0010-0010-cita000000010",
+      "id": "a02a739e-acbd-46cc-9b97-cbceccb14b50",
       "name": "Construir Respuesta",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -212,7 +212,7 @@
           }
         }
       },
-      "id": "cita-0011-0011-0011-cita000000011",
+      "id": "c1e4a5b7-e6d4-478d-809a-abd98ccda9f0",
       "name": "Responder Éxito",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.1,
@@ -234,7 +234,7 @@
           }
         }
       },
-      "id": "cita-0012-0012-0012-cita000000012",
+      "id": "e69e4345-7187-4e28-9a96-e2420ea5e25c",
       "name": "Responder Error",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.1,
@@ -244,7 +244,7 @@
       "parameters": {
         "jsCode": "// ────────────────────────────────────────────────────────────────\n// Preparar templates de notificación para la paciente\n// ────────────────────────────────────────────────────────────────\nconst existingItems = $('Usar Contacto Existente').all();\nconst merged = existingItems.length > 0\n  ? existingItems[0].json\n  : $('Marcar Contacto Nuevo').first().json;\nconst { patient, appointment, service, contactId, locationId } = merged;\n\n// Parsear fecha y hora desde startTime (YYYY-MM-DDTHH:mm:ss-06:00)\nconst [year, month, day] = appointment.startTime.substring(0, 10).split('-').map(Number);\nconst [hour, minute] = appointment.startTime.substring(11, 16).split(':').map(Number);\n\n// Formatear fecha en español\nconst meses = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];\nconst diasSemana = ['domingo','lunes','martes','miércoles','jueves','viernes','sábado'];\nconst fechaObj = new Date(year, month - 1, day);\nconst dateFormatted = `${diasSemana[fechaObj.getDay()]}, ${day} de ${meses[month - 1]} de ${year}`;\n\n// Formatear hora (12 h con AM/PM)\nconst period = hour >= 12 ? 'PM' : 'AM';\nconst hour12 = hour % 12 || 12;\nconst pad = n => String(n).padStart(2, '0');\nconst timeFormatted = `${hour12}:${pad(minute)} ${period}`;\n\nconst firstName  = patient.firstName;\nconst serviceName = service.name;\nconst duration   = service.durationMinutes || 30;\n\n// ── WhatsApp (texto plano con formato WhatsApp) ─────────────────\nconst whatsappMessage =\n`🌸 *Consultorio Dra. Ekaterina Malaspina*\n\nHola, ${firstName} 😊\n\nTu cita ha sido *confirmada exitosamente*. Aquí tienes el resumen:\n\n📋 *Detalle de tu cita:*\n👩‍⚕️ *Servicio:* ${serviceName}\n📅 *Fecha:* ${dateFormatted}\n⏰ *Hora:* ${timeFormatted}\n⏱ *Duración:* ${duration} minutos\n\n📌 *Recordatorios importantes:*\n• Llega 10 minutos antes de tu cita\n• Si necesitas cancelar, avísanos con al menos 24 horas de anticipación\n• Trae tu documento de identidad\n\n¡Te esperamos con mucho cariño! 💖\n_Dra. Ekaterina Malaspina_\n_Ginecología & Obstetricia_`;\n\n// ── Template Email HTML ──────────────────────────────────────────\nconst emailSubject = `✅ Cita confirmada – ${serviceName} | ${dateFormatted}`;\n\nconst emailHtml =\n`<!DOCTYPE html><html><head><meta charset='UTF-8'><meta name='viewport' content='width=device-width,initial-scale=1.0'><title>Cita Confirmada</title></head><body style='margin:0;padding:0;background-color:#FFF5F0;font-family:Arial,sans-serif;'><table width='100%' cellpadding='0' cellspacing='0' border='0' style='background-color:#FFF5F0;'><tr><td align='center' style='padding:32px 16px;'><table width='600' cellpadding='0' cellspacing='0' border='0' style='max-width:600px;width:100%;background-color:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 4px 30px rgba(160,36,90,0.10);'><!-- HEADER --><tr><td style='background:linear-gradient(135deg,#E05A47 0%,#C4237B 50%,#A0245A 100%);padding:36px 40px 28px;text-align:center;'><p style='margin:0 0 6px;color:rgba(255,255,255,0.85);font-size:12px;letter-spacing:2px;text-transform:uppercase;font-weight:700;font-family:Arial,sans-serif;'>Consultorio</p><h1 style='margin:0;color:#ffffff;font-family:Georgia,serif;font-size:28px;font-weight:400;font-style:italic;'>Dra. Ekaterina Malaspina</h1><p style='margin:6px 0 0;color:rgba(255,255,255,0.80);font-size:13px;font-family:Arial,sans-serif;'>Ginecología &amp; Obstetricia</p></td></tr><!-- BANNER ÉXITO --><tr><td style='background-color:#FBF0F5;padding:22px 40px;text-align:center;border-bottom:1px solid #F0DEE8;'><p style='margin:0;font-size:30px;'>✅</p><h2 style='margin:8px 0 0;color:#A0245A;font-family:Georgia,serif;font-size:21px;font-weight:500;'>¡Tu cita ha sido confirmada!</h2></td></tr><!-- SALUDO --><tr><td style='padding:28px 40px 16px;'><p style='margin:0;color:#3E2723;font-size:15px;line-height:1.8;font-family:Arial,sans-serif;'>Estimada <strong style='color:#A0245A;'>${firstName}</strong>,</p><p style='margin:10px 0 0;color:#3E2723;font-size:15px;line-height:1.8;font-family:Arial,sans-serif;'>Tu cita ha sido agendada exitosamente. A continuación encontrarás el resumen de tu cita:</p></td></tr><!-- TARJETA DE CITA --><tr><td style='padding:0 40px 20px;'><table width='100%' cellpadding='0' cellspacing='0' border='0' style='background-color:#FFF5F8;border:1px solid #F0D0E0;border-radius:12px;overflow:hidden;'><tr><td style='padding:18px 22px;border-bottom:1px solid #F0D0E0;'><p style='margin:0;font-size:10px;color:#A0245A;text-transform:uppercase;letter-spacing:2px;font-weight:700;font-family:Arial,sans-serif;'>Servicio</p><p style='margin:5px 0 0;font-size:17px;color:#3E2723;font-family:Georgia,serif;font-style:italic;'>${serviceName}</p></td></tr><tr><td style='padding:16px 22px;border-bottom:1px solid #F0D0E0;'><table width='100%' border='0' cellpadding='0' cellspacing='0'><tr><td width='50%' style='padding-right:12px;'><p style='margin:0;font-size:10px;color:#A0245A;text-transform:uppercase;letter-spacing:2px;font-weight:700;font-family:Arial,sans-serif;'>Fecha</p><p style='margin:5px 0 0;font-size:15px;color:#3E2723;font-family:Arial,sans-serif;'>📅 ${dateFormatted}</p></td><td width='50%' style='padding-left:12px;border-left:1px solid #F0D0E0;'><p style='margin:0;font-size:10px;color:#A0245A;text-transform:uppercase;letter-spacing:2px;font-weight:700;font-family:Arial,sans-serif;'>Hora</p><p style='margin:5px 0 0;font-size:15px;color:#3E2723;font-family:Arial,sans-serif;'>⏰ ${timeFormatted}</p></td></tr></table></td></tr><tr><td style='padding:16px 22px;'><p style='margin:0;font-size:10px;color:#A0245A;text-transform:uppercase;letter-spacing:2px;font-weight:700;font-family:Arial,sans-serif;'>Duración estimada</p><p style='margin:5px 0 0;font-size:15px;color:#3E2723;font-family:Arial,sans-serif;'>⏱ ${duration} minutos</p></td></tr></table></td></tr><!-- RECORDATORIOS --><tr><td style='padding:0 40px 24px;'><table width='100%' cellpadding='0' cellspacing='0' border='0' style='background-color:#FFF9F0;border-left:3px solid #E05A47;border-radius:0 8px 8px 0;'><tr><td style='padding:16px 20px;'><p style='margin:0 0 8px;font-size:11px;color:#E05A47;text-transform:uppercase;letter-spacing:1px;font-weight:700;font-family:Arial,sans-serif;'>Recordatorios importantes</p><p style='margin:0;font-size:13px;color:#3E2723;line-height:1.9;font-family:Arial,sans-serif;'>• Por favor llega <strong>10 minutos antes</strong> de tu cita.<br>• Si necesitas cancelar o reprogramar, avísanos con <strong>al menos 24 horas</strong> de anticipación.<br>• Trae tu <strong>documento de identidad</strong>.</p></td></tr></table></td></tr><!-- CONTACTO --><tr><td style='padding:0 40px 24px;'><table width='100%' cellpadding='0' cellspacing='0' border='0' style='background-color:#FBF0F5;border-radius:8px;'><tr><td style='padding:16px 20px;text-align:center;'><p style='margin:0 0 8px;font-size:11px;color:#A0245A;text-transform:uppercase;letter-spacing:1px;font-weight:700;font-family:Arial,sans-serif;'>¿Necesitas ayuda?</p><p style='margin:0;font-size:13px;color:#3E2723;font-family:Arial,sans-serif;'>📞 +506 6245-0393 &nbsp;|&nbsp; +506 2460-4325</p><p style='margin:4px 0 0;font-size:13px;color:#3E2723;font-family:Arial,sans-serif;'>📍 Barrio San Roque, Ciudad Quesada, Alajuela</p></td></tr></table></td></tr><!-- CIERRE --><tr><td style='padding:0 40px 28px;'><p style='margin:0;color:#3E2723;font-size:15px;line-height:1.8;font-family:Arial,sans-serif;'>¡Te esperamos con mucho cariño! 🌸</p><p style='margin:14px 0 2px;font-family:Georgia,serif;font-style:italic;color:#A0245A;font-size:18px;'>Dra. Ekaterina Malaspina</p><p style='margin:0;font-size:13px;color:#888888;font-family:Arial,sans-serif;'>Ginecología &amp; Obstetricia</p></td></tr><!-- FOOTER --><tr><td style='background-color:#FBF0F5;padding:18px 40px;text-align:center;border-top:1px solid #F0DEE8;'><p style='margin:0;font-size:11px;color:#aaaaaa;font-family:Arial,sans-serif;'>Este es un mensaje automático, por favor no responder directamente a este correo.</p><p style='margin:6px 0 0;font-size:11px;color:#A0245A;font-family:Arial,sans-serif;'>© 2025 Dra. Ekaterina Malaspina Riazanova · Ginecología &amp; Obstetricia</p></td></tr></table></td></tr></table></body></html>`;\n\nreturn [{\n  json: {\n    contactId,\n    locationId,\n    firstName,\n    email:           patient.email,\n    phone:           patient.phone,\n    whatsappMessage,\n    emailSubject,\n    emailHtml,\n  }\n}];"
       },
-      "id": "cita-0013-0013-0013-cita000000013",
+      "id": "b5cc7ec6-1b33-44d7-9f9d-6096c7f292ba",
       "name": "Preparar Notificaciones",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -275,7 +275,7 @@
         "specifyBody": "json",
         "jsonBody": "={{ JSON.stringify({ contactId: $json.contactId, locationId: $json.locationId }) }}"
       },
-      "id": "cita-0014-0014-0014-cita000000014",
+      "id": "d57b8800-1a23-4c2c-84cd-c6a876565ed1",
       "name": "GHL - Obtener Conversación",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
@@ -306,7 +306,7 @@
         "specifyBody": "json",
         "jsonBody": "={{ JSON.stringify({ type: 'WhatsApp', conversationId: $json.conversation?.id ?? $json.id, message: $('Preparar Notificaciones').first().json.whatsappMessage }) }}"
       },
-      "id": "cita-0015-0015-0015-cita000000015",
+      "id": "c0426608-32c4-4709-90e5-f1bbbaa4b32c",
       "name": "WhatsApp - Confirmar Cita",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
@@ -337,7 +337,7 @@
         "specifyBody": "json",
         "jsonBody": "={{ JSON.stringify({ type: 'Email', conversationId: $json.conversation?.id ?? $json.id, subject: $('Preparar Notificaciones').first().json.emailSubject, html: $('Preparar Notificaciones').first().json.emailHtml }) }}"
       },
-      "id": "cita-0016-0016-0016-cita000000016",
+      "id": "ee739017-0b29-4394-9969-3ceab8457ec4",
       "name": "Email - Confirmar Cita",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
