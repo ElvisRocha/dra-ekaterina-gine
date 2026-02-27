@@ -26,9 +26,9 @@ const featuredCards = [
   },
   {
     id: 4,
-    src: 'https://res.cloudinary.com/dcvipikha/image/upload/f_auto,q_auto/v1771469858/ultrasonido6_rqrwvg.jpg',
-    alt: 'Ultrasonido bebé',
-    description: 'Desde las primeras etapas de tu embarazo puedes disfrutar de estas hermosas escenas. Escucharás el latido de tu bebé y vivirás momentos que atesorarás para siempre.',
+    src: 'https://res.cloudinary.com/dcvipikha/image/upload/f_auto,q_auto/v1772221320/Mirena_in_situ_zng8pz.jpg',
+    alt: 'Mirena In Situ',
+    description: 'Mirena In Situ es un procedimiento que realizamos para verificar la correcta colocación del dispositivo intrauterino mediante ultrasonido, garantizando tu seguridad y bienestar.',
   },
 ];
 
