@@ -1,0 +1,315 @@
+{
+  "name": "Clínica Esperanza - Agendar Cita GHL",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "agendar-cita",
+        "responseMode": "responseNode",
+        "options": {
+          "allowedOrigins": "*"
+        }
+      },
+      "id": "cita-0001-0001-0001-cita000000001",
+      "name": "Recibir Datos Cita",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [200, 300],
+      "webhookId": "clinica-agendar-cita"
+    },
+    {
+      "parameters": {
+        "jsCode": "// ──────────────────────────────────────────────────────\n// Preparar datos del contacto y la cita\n// ──────────────────────────────────────────────────────\nconst body = $input.first().json.body;\n\nconst { patient, service, appointment } = body;\n\n// Formatear teléfono para GHL (formato internacional +506XXXXXXXX)\nlet phone = (patient.phone || '').replace(/\\D/g, '');\nif (phone.startsWith('506')) {\n  phone = '+' + phone;\n} else if (phone.length === 8) {\n  phone = '+506' + phone;\n} else {\n  phone = '+' + phone;\n}\n\n// Calcular startTime y endTime en ISO 8601 (zona CR = UTC-6)\nconst [year, month, day] = appointment.date.split('-').map(Number);\nconst [hour, minute]     = appointment.time.split(':').map(Number);\n\n// Offset Costa Rica: -06:00\nconst pad = n => String(n).padStart(2, '0');\nconst crOffset = '-06:00';\nconst startTime = `${appointment.date}T${pad(hour)}:${pad(minute)}:00${crOffset}`;\n\nconst durationMinutes = service.durationMinutes || 30;\nconst endTotalMinutes = hour * 60 + minute + durationMinutes;\nconst endHour   = Math.floor(endTotalMinutes / 60) % 24;\nconst endMinute = endTotalMinutes % 60;\nconst endTime   = `${appointment.date}T${pad(endHour)}:${pad(endMinute)}:00${crOffset}`;\n\nreturn [{\n  json: {\n    locationId: 'REEMPLAZAR_CON_TU_GHL_LOCATION_ID',\n    calendarId: 'DqZ35XwjFseg04ZGRLcu',\n    patient: {\n      firstName:      patient.firstName,\n      lastName:       patient.lastName,\n      email:          patient.email,\n      phone,\n      identification: patient.identification,\n    },\n    appointment: {\n      startTime,\n      endTime,\n      title: `Cita: ${service.name}`,\n      timezone: 'America/Costa_Rica',\n    },\n    service,\n  }\n}];"
+      },
+      "id": "cita-0002-0002-0002-cita000000002",
+      "name": "Preparar Datos",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://services.leadconnectorhq.com/contacts/search/duplicate",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer REEMPLAZAR_CON_TU_GHL_PRIVATE_API_KEY"
+            },
+            {
+              "name": "Version",
+              "value": "2021-07-28"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "locationId",
+              "value": "={{ $json.locationId }}"
+            },
+            {
+              "name": "email",
+              "value": "={{ $json.patient.email }}"
+            },
+            {
+              "name": "phone",
+              "value": "={{ $json.patient.phone }}"
+            }
+          ]
+        }
+      },
+      "id": "cita-0003-0003-0003-cita000000003",
+      "name": "GHL - Buscar Contacto Duplicado",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [720, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "cond-001",
+              "leftValue": "={{ $json.contact }}",
+              "rightValue": "",
+              "operator": {
+                "type": "object",
+                "operation": "notEmpty",
+                "rightType": "any"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "cita-0004-0004-0004-cita000000004",
+      "name": "¿Contacto existe?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [980, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Contacto existente — extraer ID y marcar flag\nconst searchResult = $input.first().json;\nconst prevData     = $('Preparar Datos').first().json;\n\nreturn [{\n  json: {\n    ...prevData,\n    contactId:      searchResult.contact.id,\n    contactExisted: true,\n  }\n}];"
+      },
+      "id": "cita-0005-0005-0005-cita000000005",
+      "name": "Usar Contacto Existente",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1240, 180]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://services.leadconnectorhq.com/contacts/",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer REEMPLAZAR_CON_TU_GHL_PRIVATE_API_KEY"
+            },
+            {
+              "name": "Version",
+              "value": "2021-07-28"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"firstName\": \"{{ $('Preparar Datos').first().json.patient.firstName }}\",\n  \"lastName\":  \"{{ $('Preparar Datos').first().json.patient.lastName }}\",\n  \"email\":     \"{{ $('Preparar Datos').first().json.patient.email }}\",\n  \"phone\":     \"{{ $('Preparar Datos').first().json.patient.phone }}\",\n  \"locationId\":\"{{ $('Preparar Datos').first().json.locationId }}\",\n  \"source\":    \"Formulario Web - Cita\",\n  \"country\":   \"CR\",\n  \"timezone\":  \"America/Costa_Rica\",\n  \"tags\":      [\"nueva-paciente\"],\n  \"customFields\": [\n    { \"key\": \"contact.nmero_de_identificacin\", \"field_value\": \"{{ $('Preparar Datos').first().json.patient.identification }}\" }\n  ]\n}"
+      },
+      "id": "cita-0006-0006-0006-cita000000006",
+      "name": "GHL - Crear Nuevo Contacto",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1240, 420]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Contacto recién creado — extraer ID y marcar flag\nconst createResult = $input.first().json;\nconst prevData     = $('Preparar Datos').first().json;\n\nreturn [{\n  json: {\n    ...prevData,\n    contactId:      createResult.contact?.id ?? createResult.id,\n    contactExisted: false,\n  }\n}];"
+      },
+      "id": "cita-0007-0007-0007-cita000000007",
+      "name": "Marcar Contacto Nuevo",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1500, 420]
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineAll",
+        "options": {}
+      },
+      "id": "cita-0008-0008-0008-cita000000008",
+      "name": "Unir Ramas",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [1760, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://services.leadconnectorhq.com/calendars/events/appointments",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer REEMPLAZAR_CON_TU_GHL_PRIVATE_API_KEY"
+            },
+            {
+              "name": "Version",
+              "value": "2021-04-15"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"calendarId\":        \"{{ $json.calendarId }}\",\n  \"locationId\":        \"{{ $json.locationId }}\",\n  \"contactId\":         \"{{ $json.contactId }}\",\n  \"startTime\":         \"{{ $json.appointment.startTime }}\",\n  \"endTime\":           \"{{ $json.appointment.endTime }}\",\n  \"title\":             \"{{ $json.appointment.title }}\",\n  \"appointmentStatus\": \"new\",\n  \"timeZone\":          \"America/Costa_Rica\"\n}"
+      },
+      "id": "cita-0009-0009-0009-cita000000009",
+      "name": "GHL - Crear Cita en Calendario",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [2020, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Armar respuesta final para el frontend\nconst merged   = $('Unir Ramas').first().json;\nconst citaResp = $input.first().json;\n\nreturn [{\n  json: {\n    success:        true,\n    contactId:      merged.contactId,\n    contactExisted: merged.contactExisted,\n    appointmentId:  citaResp.id ?? citaResp.appointmentId ?? '',\n  }\n}];"
+      },
+      "id": "cita-0010-0010-0010-cita000000010",
+      "name": "Construir Respuesta",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [2280, 300]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify($json) }}",
+        "options": {
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Access-Control-Allow-Origin",
+                "value": "*"
+              }
+            ]
+          }
+        }
+      },
+      "id": "cita-0011-0011-0011-cita000000011",
+      "name": "Responder Éxito",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [2540, 300]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={ \"success\": false, \"error\": \"{{ $json.message }}\" }",
+        "options": {
+          "responseCode": 500,
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Access-Control-Allow-Origin",
+                "value": "*"
+              }
+            ]
+          }
+        }
+      },
+      "id": "cita-0012-0012-0012-cita000000012",
+      "name": "Responder Error",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [2280, 500]
+    }
+  ],
+  "connections": {
+    "Recibir Datos Cita": {
+      "main": [
+        [{ "node": "Preparar Datos", "type": "main", "index": 0 }]
+      ]
+    },
+    "Preparar Datos": {
+      "main": [
+        [{ "node": "GHL - Buscar Contacto Duplicado", "type": "main", "index": 0 }]
+      ]
+    },
+    "GHL - Buscar Contacto Duplicado": {
+      "main": [
+        [{ "node": "¿Contacto existe?", "type": "main", "index": 0 }]
+      ]
+    },
+    "¿Contacto existe?": {
+      "main": [
+        [{ "node": "Usar Contacto Existente",  "type": "main", "index": 0 }],
+        [{ "node": "GHL - Crear Nuevo Contacto", "type": "main", "index": 0 }]
+      ]
+    },
+    "Usar Contacto Existente": {
+      "main": [
+        [{ "node": "Unir Ramas", "type": "main", "index": 0 }]
+      ]
+    },
+    "GHL - Crear Nuevo Contacto": {
+      "main": [
+        [{ "node": "Marcar Contacto Nuevo", "type": "main", "index": 0 }]
+      ]
+    },
+    "Marcar Contacto Nuevo": {
+      "main": [
+        [{ "node": "Unir Ramas", "type": "main", "index": 1 }]
+      ]
+    },
+    "Unir Ramas": {
+      "main": [
+        [{ "node": "GHL - Crear Cita en Calendario", "type": "main", "index": 0 }]
+      ]
+    },
+    "GHL - Crear Cita en Calendario": {
+      "main": [
+        [{ "node": "Construir Respuesta", "type": "main", "index": 0 }]
+      ]
+    },
+    "Construir Respuesta": {
+      "main": [
+        [{ "node": "Responder Éxito", "type": "main", "index": 0 }]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": ["clinica-esperanza", "ghl", "citas"],
+  "triggerCount": 0,
+  "updatedAt": "2026-02-27T00:00:00.000Z",
+  "versionId": "1"
+}

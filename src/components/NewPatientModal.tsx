@@ -12,9 +12,18 @@ import { FileText, Building2 } from 'lucide-react';
 interface NewPatientModalProps {
   isOpen: boolean;
   onChoice: (fillNow: boolean) => void;
+  /** Translation key for the modal title. Defaults to 'newpatient.title'. */
+  titleKey?: string;
+  /** Translation key for the modal message. Defaults to 'newpatient.message'. */
+  messageKey?: string;
 }
 
-const NewPatientModal = ({ isOpen, onChoice }: NewPatientModalProps) => {
+const NewPatientModal = ({
+  isOpen,
+  onChoice,
+  titleKey = 'newpatient.title',
+  messageKey = 'newpatient.message',
+}: NewPatientModalProps) => {
   const { t } = useLanguage();
 
   return (
@@ -23,7 +32,7 @@ const NewPatientModal = ({ isOpen, onChoice }: NewPatientModalProps) => {
         <DialogHeader>
           <DialogTitle className="font-display text-xl text-foreground flex items-center gap-2">
             <span>📋</span>
-            {t('newpatient.title')}
+            {t(titleKey)}
           </DialogTitle>
         </DialogHeader>
 
@@ -33,7 +42,7 @@ const NewPatientModal = ({ isOpen, onChoice }: NewPatientModalProps) => {
           className="py-4"
         >
           <p className="text-muted-foreground mb-6">
-            {t('newpatient.message')}
+            {t(messageKey)}
           </p>
 
           <div className="grid gap-3">

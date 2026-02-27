@@ -6,7 +6,9 @@ import { PhoneInput } from '@/components/ui/PhoneInput';
 import { Label } from '@/components/ui/label';
 
 interface PatientData {
-  fullName: string;
+  firstName: string;
+  lastName: string;
+  email: string;
   identification: string;
   phone: string;
 }
@@ -22,7 +24,13 @@ const PatientDataStep = ({ patientData, onUpdatePatientData, onNext, onBack }: P
   const { t, language } = useLanguage();
 
   const phoneDigits = patientData.phone.replace(/^\+506/, '').replace(/\D/g, '');
-  const isValid = patientData.fullName.trim() && patientData.identification.trim() && phoneDigits.length === 8;
+  const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(patientData.email.trim());
+  const isValid =
+    patientData.firstName.trim() &&
+    patientData.lastName.trim() &&
+    emailValid &&
+    patientData.identification.trim() &&
+    phoneDigits.length === 8;
 
   const handleChange = (field: keyof PatientData, value: string) => {
     onUpdatePatientData({ ...patientData, [field]: value });
@@ -40,25 +48,59 @@ const PatientDataStep = ({ patientData, onUpdatePatientData, onNext, onBack }: P
           {language === 'es' ? 'Tus datos' : 'Your details'}
         </h2>
         <p className="text-muted-foreground text-sm">
-          {language === 'es' 
-            ? 'Ingresa tu información de contacto' 
+          {language === 'es'
+            ? 'Ingresa tu información de contacto'
             : 'Enter your contact information'}
         </p>
       </div>
 
       <div className="space-y-5 max-w-md mx-auto">
+        {/* Nombre | Apellidos */}
+        <div className="grid grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <Label htmlFor="firstName">
+              {language === 'es' ? 'Nombre' : 'First name'} *
+            </Label>
+            <Input
+              id="firstName"
+              type="text"
+              value={patientData.firstName}
+              onChange={(e) => handleChange('firstName', e.target.value)}
+              placeholder={language === 'es' ? 'Ana' : 'Ana'}
+              className="h-12"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="lastName">
+              {language === 'es' ? 'Apellidos' : 'Last name'} *
+            </Label>
+            <Input
+              id="lastName"
+              type="text"
+              value={patientData.lastName}
+              onChange={(e) => handleChange('lastName', e.target.value)}
+              placeholder={language === 'es' ? 'García López' : 'García López'}
+              className="h-12"
+            />
+          </div>
+        </div>
+
+        {/* Email */}
         <div className="space-y-2">
-          <Label htmlFor="fullName">{t('booking.fullName')} *</Label>
+          <Label htmlFor="email">
+            {language === 'es' ? 'Correo electrónico' : 'Email'} *
+          </Label>
           <Input
-            id="fullName"
-            type="text"
-            value={patientData.fullName}
-            onChange={(e) => handleChange('fullName', e.target.value)}
-            placeholder={language === 'es' ? 'Nombre completo' : 'Full name'}
+            id="email"
+            type="email"
+            value={patientData.email}
+            onChange={(e) => handleChange('email', e.target.value)}
+            placeholder="correo@ejemplo.com"
             className="h-12"
           />
         </div>
 
+        {/* Cédula */}
         <div className="space-y-2">
           <Label htmlFor="identification">{t('booking.id')} *</Label>
           <Input
@@ -71,6 +113,7 @@ const PatientDataStep = ({ patientData, onUpdatePatientData, onNext, onBack }: P
           />
         </div>
 
+        {/* Teléfono */}
         <div className="space-y-2">
           <Label htmlFor="phone">{t('booking.phone')} *</Label>
           <PhoneInput
