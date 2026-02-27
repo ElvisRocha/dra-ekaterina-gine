@@ -25,6 +25,7 @@
       "name": "Construir Payload Seguimiento",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
+      "onError": "continueErrorOutput",
       "position": [460, 300]
     },
     {
@@ -56,6 +57,7 @@
       "name": "GHL - Actualizar Contacto",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
+      "onError": "continueErrorOutput",
       "position": [720, 300]
     },
     {
@@ -110,12 +112,14 @@
     },
     "Construir Payload Seguimiento": {
       "main": [
-        [{ "node": "GHL - Actualizar Contacto", "type": "main", "index": 0 }]
+        [{ "node": "GHL - Actualizar Contacto", "type": "main", "index": 0 }],
+        [{ "node": "Responder Error", "type": "main", "index": 0 }]
       ]
     },
     "GHL - Actualizar Contacto": {
       "main": [
-        [{ "node": "Responder Éxito", "type": "main", "index": 0 }]
+        [{ "node": "Responder Éxito", "type": "main", "index": 0 }],
+        [{ "node": "Responder Error", "type": "main", "index": 0 }]
       ]
     }
   },
