@@ -318,7 +318,7 @@ const translations: Translations = {
     es: 'Tomar las muestras es solo el primer paso.',
     en: 'Taking the samples is just the first step.',
   },
-  'pathology.message': {
+  'pathology.message ': {
     es: 'Las citologías y biopsias son estudios fundamentales para tu salud. Pero tomar la muestra es solo el primer paso; es igual de importante que esas muestras sean analizadas por profesionales especializados. Un diagnóstico preciso depende de manos expertas en cada etapa del proceso.',
     en: 'Cytologies and biopsies are fundamental studies for your health. But collecting the sample is just the first step; it is equally important that these samples are analyzed by specialized professionals. An accurate diagnosis depends on expert hands at every stage of the process.',
   },
