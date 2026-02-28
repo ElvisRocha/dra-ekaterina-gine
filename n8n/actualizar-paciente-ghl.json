@@ -19,14 +19,53 @@
     },
     {
       "parameters": {
-        "jsCode": "// ──────────────────────────────────────────────────────\n// TRANSFORMAR datos del formulario al formato de GHL CRM\n// El contacto YA existe en GHL (creado por agendar-cita-ghl).\n// Este workflow lo actualiza con el historial médico completo.\n// ──────────────────────────────────────────────────────\nconst body = $input.first().json.body;\n\nif (!body.contactId) {\n  throw new Error('contactId es requerido. Debe enviarse desde el frontend (localStorage).');\n}\n\n// Formatear teléfono para GHL (formato internacional +506XXXXXXXX)\nlet phone = (body.phone || '').replace(/\\D/g, '');\nif (phone.startsWith('506')) {\n  phone = '+' + phone;\n} else if (phone.length === 8) {\n  phone = '+506' + phone;\n} else {\n  phone = '+' + phone;\n}\n\n// Helper: booleano → 'Sí' / 'No'\nconst siNo = (val) => val ? 'Sí' : 'No';\n\n// ──────────────────────────────────────────────────────\n// Custom Fields → claves exactas de GHL\n// ──────────────────────────────────────────────────────\nconst customFields = [\n\n  // ── Datos Generales ──────────────────────────────────\n  { key: 'contact.nmero_de_identificacin',   field_value: String(body.idNumber || '') },\n  { key: 'contact.edad',                     field_value: String(body.age || '') },\n\n  // ── Antecedentes Médicos ──────────────────────────────\n  { key: 'contact.padece_enfermedad',        field_value: siNo(body.hasDisease) },\n  { key: 'contact.cul_enfermedad',           field_value: body.hasDisease ? (body.diseaseDetails || '') : '' },\n  { key: 'contact.toma_medicamentos',        field_value: siNo(body.takesMedication) },\n  { key: 'contact.cul_medicamento',          field_value: body.takesMedication ? (body.medicationDetails || '') : '' },\n  { key: 'contact.ha_sido_operada',          field_value: siNo(body.hadSurgery) },\n  { key: 'contact.de_qu_operacin',           field_value: body.hadSurgery ? (body.surgeryDetails || '') : '' },\n  { key: 'contact.hace_ejercicio',           field_value: '' },\n  { key: 'contact.fuma',                     field_value: '' },\n\n  // ── Historial Ginecológico ────────────────────────────\n  { key: 'contact.edad_primera_menstruacin',  field_value: String(body.firstPeriodAge || '') },\n  { key: 'contact.fecha_ltima_menstruacin',   field_value: body.lastPeriodDate || '' },\n  { key: 'contact.usa_anticonceptivo',        field_value: siNo(body.usesContraceptive) },\n  { key: 'contact.cul_anticonceptivo',        field_value: body.usesContraceptive ? (body.contraceptiveDetails || '') : '' },\n  { key: 'contact.ha_estado_embarazada',      field_value: siNo(body.hasBeenPregnant) },\n  { key: 'contact.cuntas_veces_embarazada',   field_value: body.hasBeenPregnant ? String(body.pregnancyCount || '') : '' },\n  { key: 'contact.partos_vaginales',          field_value: body.hasBeenPregnant ? String(body.vaginalBirths || '0') : '' },\n  { key: 'contact.cesreas',                   field_value: body.hasBeenPregnant ? String(body.cesareans || '0') : '' },\n  { key: 'contact.abortos',                   field_value: body.hasBeenPregnant ? String(body.abortions || '0') : '' },\n  { key: 'contact.otros_embarazos',           field_value: body.hasBeenPregnant ? (body.otherPregnancies || '') : '' },\n\n  // ── Citología y VPH ───────────────────────────────────\n  { key: 'contact.se_ha_hecho_citologa',      field_value: siNo(body.hadPapSmear) },\n  { key: 'contact.fecha_ltima_citologa',      field_value: body.hadPapSmear ? (body.lastPapSmear || '') : '' },\n  { key: 'contact.citologa_alterada',         field_value: '' },\n  { key: 'contact.prueba_de_vph_realizada',   field_value: '' },\n\n  // ── Antecedentes Familiares ───────────────────────────\n  { key: 'contact.enfermedades_familiares',   field_value: body.familyHistory || '' },\n];\n\n// ──────────────────────────────────────────────────────\n// Construir nota resumen para GHL (sección Notas)\n// ──────────────────────────────────────────────────────\nconst fullName = `${body.firstName || ''} ${body.lastName || ''}`.trim();\n\nconst ts = body.timestamp\n  ? new Date(body.timestamp).toLocaleString('es-CR', { timeZone: 'America/Costa_Rica' })\n  : new Date().toLocaleString('es-CR', { timeZone: 'America/Costa_Rica' });\n\nconst lines = [\n  '======================================',\n  '   HISTORIAL MÉDICA - PRIMERA CITA    ',\n  '======================================',\n  '',\n  '[ DATOS BÁSICOS ]',\n  `Nombre completo : ${fullName}`,\n  `Cédula / ID     : ${body.idNumber}`,\n  `Edad            : ${body.age} años`,\n  `Fecha nac.      : ${body.dob}`,\n  `Email           : ${body.email}`,\n  `Teléfono        : ${body.phone}`,\n  `Fecha registro  : ${ts}`,\n  '',\n  '[ ANTECEDENTES MÉDICOS ]',\n  `Enfermedades crónicas : ${body.hasDisease ? 'SÍ — ' + body.diseaseDetails : 'No'}`,\n  `Medicamentos actuales : ${body.takesMedication ? 'SÍ — ' + body.medicationDetails : 'No'}`,\n  `Cirugías previas      : ${body.hadSurgery ? 'SÍ — ' + body.surgeryDetails : 'No'}`,\n  '',\n  '[ HISTORIAL GINECOLÓGICO ]',\n  `Primera menstruación  : ${body.firstPeriodAge} años`,\n  `Última menstruación   : ${body.lastPeriodDate}`,\n  `Anticonceptivos       : ${body.usesContraceptive ? 'SÍ — ' + body.contraceptiveDetails : 'No'}`,\n];\n\nif (body.hasBeenPregnant) {\n  lines.push('');\n  lines.push('[ HISTORIAL OBSTÉTRICO ]');\n  lines.push(`Total embarazos  : ${body.pregnancyCount}`);\n  lines.push(`Partos vaginales : ${body.vaginalBirths || 0}`);\n  lines.push(`Cesáreas         : ${body.cesareans || 0}`);\n  lines.push(`Abortos          : ${body.abortions || 0}`);\n  if (body.otherPregnancies) lines.push(`Otros            : ${body.otherPregnancies}`);\n} else {\n  lines.push('');\n  lines.push('[ HISTORIAL OBSTÉTRICO ]');\n  lines.push('Sin embarazos previos');\n}\n\nlines.push('');\nlines.push('[ CITOLOGÍA / PAP SMEAR ]');\nif (body.hadPapSmear) {\n  lines.push('Ha tenido PAP : Sí');\n  lines.push(`Último PAP    : ${body.lastPapSmear}`);\n} else {\n  lines.push('Ha tenido PAP : No');\n}\n\nlines.push('');\nlines.push('[ ANTECEDENTES FAMILIARES ]');\nlines.push(body.familyHistory || 'Sin información proporcionada');\nlines.push('');\nlines.push('======================================');\n\nconst medicalNote = lines.join('\\n');\n\n// ──────────────────────────────────────────────────────\n// Payload de actualización para GHL (PUT /contacts/{id})\n// Nota: el contacto ya tiene firstName, lastName, email y phone\n// por haberlos guardado en agendar-cita-ghl. Solo actualizamos\n// dateOfBirth y los custom fields médicos.\n// ──────────────────────────────────────────────────────\nconst ghlUpdate = {\n  dateOfBirth: body.dob || '',\n  customFields,\n};\n\nreturn [{ json: { contactId: body.contactId, ghlUpdate, medicalNote, rawData: body } }];"
+        "method": "GET",
+        "url": "https://services.leadconnectorhq.com/contacts/search/duplicate",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer REEMPLAZAR_CON_TU_GHL_PRIVATE_API_KEY"
+            },
+            {
+              "name": "Version",
+              "value": "2021-07-28"
+            }
+          ]
+        },
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "locationId",
+              "value": "REEMPLAZAR_CON_TU_GHL_LOCATION_ID"
+            },
+            {
+              "name": "email",
+              "value": "={{ $json.body.email }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "aa1bb2cc-0010-0010-0010-aa1bb2cc0010",
+      "name": "GHL - Buscar Contacto por Email",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "onError": "continueErrorOutput",
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// ──────────────────────────────────────────────────────\n// TRANSFORMAR datos del formulario al formato de GHL CRM\n// contactId se resuelve desde búsqueda por email en GHL\n// o desde el campo enviado por el frontend como fallback.\n// ──────────────────────────────────────────────────────\nconst body         = $('Recibir Datos Paciente').first().json.body;\nconst searchResult = $input.first().json;\n\n// Resolver contactId: primero búsqueda GHL, luego frontend\nconst contactId = searchResult.contact?.id || body.contactId || '';\n\nif (!contactId) {\n  throw new Error('No se encontró el contacto en GHL por email ni por contactId. Verifique que la paciente fue registrada.');\n}\n\n// Formatear teléfono para GHL (formato internacional +506XXXXXXXX)\nlet phone = (body.phone || '').replace(/\\D/g, '');\nif (phone.startsWith('506')) {\n  phone = '+' + phone;\n} else if (phone.length === 8) {\n  phone = '+506' + phone;\n} else {\n  phone = '+' + phone;\n}\n\n// Helper: booleano → 'Sí' / 'No'\nconst siNo = (val) => val ? 'Sí' : 'No';\n\n// ──────────────────────────────────────────────────────\n// Custom Fields → claves exactas de GHL\n// ──────────────────────────────────────────────────────\nconst customFields = [\n\n  // ── Datos Generales ──────────────────────────────────\n  { key: 'contact.nmero_de_identificacin',   field_value: String(body.idNumber || '') },\n  { key: 'contact.edad',                     field_value: String(body.age || '') },\n\n  // ── Antecedentes Médicos ──────────────────────────────\n  { key: 'contact.padece_enfermedad',        field_value: siNo(body.hasDisease) },\n  { key: 'contact.cul_enfermedad',           field_value: body.hasDisease ? (body.diseaseDetails || '') : '' },\n  { key: 'contact.toma_medicamentos',        field_value: siNo(body.takesMedication) },\n  { key: 'contact.cul_medicamento',          field_value: body.takesMedication ? (body.medicationDetails || '') : '' },\n  { key: 'contact.ha_sido_operada',          field_value: siNo(body.hadSurgery) },\n  { key: 'contact.de_qu_operacin',           field_value: body.hadSurgery ? (body.surgeryDetails || '') : '' },\n  { key: 'contact.hace_ejercicio',           field_value: '' },\n  { key: 'contact.fuma',                     field_value: '' },\n\n  // ── Historial Ginecológico ────────────────────────────\n  { key: 'contact.edad_primera_menstruacin',  field_value: String(body.firstPeriodAge || '') },\n  { key: 'contact.fecha_ltima_menstruacin',   field_value: body.lastPeriodDate || '' },\n  { key: 'contact.usa_anticonceptivo',        field_value: siNo(body.usesContraceptive) },\n  { key: 'contact.cul_anticonceptivo',        field_value: body.usesContraceptive ? (body.contraceptiveDetails || '') : '' },\n  { key: 'contact.ha_estado_embarazada',      field_value: siNo(body.hasBeenPregnant) },\n  { key: 'contact.cuntas_veces_embarazada',   field_value: body.hasBeenPregnant ? String(body.pregnancyCount || '') : '' },\n  { key: 'contact.partos_vaginales',          field_value: body.hasBeenPregnant ? String(body.vaginalBirths || '0') : '' },\n  { key: 'contact.cesreas',                   field_value: body.hasBeenPregnant ? String(body.cesareans || '0') : '' },\n  { key: 'contact.abortos',                   field_value: body.hasBeenPregnant ? String(body.abortions || '0') : '' },\n  { key: 'contact.otros_embarazos',           field_value: body.hasBeenPregnant ? (body.otherPregnancies || '') : '' },\n\n  // ── Citología y VPH ───────────────────────────────────\n  { key: 'contact.se_ha_hecho_citologa',      field_value: siNo(body.hadPapSmear) },\n  { key: 'contact.fecha_ltima_citologa',      field_value: body.hadPapSmear ? (body.lastPapSmear || '') : '' },\n  { key: 'contact.citologa_alterada',         field_value: '' },\n  { key: 'contact.prueba_de_vph_realizada',   field_value: '' },\n\n  // ── Antecedentes Familiares ───────────────────────────\n  { key: 'contact.enfermedades_familiares',   field_value: body.familyHistory || '' },\n];\n\n// ──────────────────────────────────────────────────────\n// Construir nota resumen para GHL (sección Notas)\n// ──────────────────────────────────────────────────────\nconst fullName = `${body.firstName || ''} ${body.lastName || ''}`.trim();\n\nconst ts = body.timestamp\n  ? new Date(body.timestamp).toLocaleString('es-CR', { timeZone: 'America/Costa_Rica' })\n  : new Date().toLocaleString('es-CR', { timeZone: 'America/Costa_Rica' });\n\nconst lines = [\n  '======================================',\n  '   HISTORIAL MÉDICA - PRIMERA CITA    ',\n  '======================================',\n  '',\n  '[ DATOS BÁSICOS ]',\n  `Nombre completo : ${fullName}`,\n  `Cédula / ID     : ${body.idNumber}`,\n  `Edad            : ${body.age} años`,\n  `Fecha nac.      : ${body.dob}`,\n  `Email           : ${body.email}`,\n  `Teléfono        : ${body.phone}`,\n  `Fecha registro  : ${ts}`,\n  '',\n  '[ ANTECEDENTES MÉDICOS ]',\n  `Enfermedades crónicas : ${body.hasDisease ? 'SÍ — ' + body.diseaseDetails : 'No'}`,\n  `Medicamentos actuales : ${body.takesMedication ? 'SÍ — ' + body.medicationDetails : 'No'}`,\n  `Cirugías previas      : ${body.hadSurgery ? 'SÍ — ' + body.surgeryDetails : 'No'}`,\n  '',\n  '[ HISTORIAL GINECOLÓGICO ]',\n  `Primera menstruación  : ${body.firstPeriodAge} años`,\n  `Última menstruación   : ${body.lastPeriodDate}`,\n  `Anticonceptivos       : ${body.usesContraceptive ? 'SÍ — ' + body.contraceptiveDetails : 'No'}`,\n];\n\nif (body.hasBeenPregnant) {\n  lines.push('');\n  lines.push('[ HISTORIAL OBSTÉTRICO ]');\n  lines.push(`Total embarazos  : ${body.pregnancyCount}`);\n  lines.push(`Partos vaginales : ${body.vaginalBirths || 0}`);\n  lines.push(`Cesáreas         : ${body.cesareans || 0}`);\n  lines.push(`Abortos          : ${body.abortions || 0}`);\n  if (body.otherPregnancies) lines.push(`Otros            : ${body.otherPregnancies}`);\n} else {\n  lines.push('');\n  lines.push('[ HISTORIAL OBSTÉTRICO ]');\n  lines.push('Sin embarazos previos');\n}\n\nlines.push('');\nlines.push('[ CITOLOGÍA / PAP SMEAR ]');\nif (body.hadPapSmear) {\n  lines.push('Ha tenido PAP : Sí');\n  lines.push(`Último PAP    : ${body.lastPapSmear}`);\n} else {\n  lines.push('Ha tenido PAP : No');\n}\n\nlines.push('');\nlines.push('[ ANTECEDENTES FAMILIARES ]');\nlines.push(body.familyHistory || 'Sin información proporcionada');\nlines.push('');\nlines.push('======================================');\n\nconst medicalNote = lines.join('\\n');\n\nconst ghlUpdate = {\n  dateOfBirth: body.dob || '',\n  customFields,\n};\n\nreturn [{ json: { contactId, ghlUpdate, medicalNote, rawData: body } }];"
       },
       "id": "b2c3d4e5-0002-0002-0002-b2c3d4e50002",
       "name": "Transformar Datos",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "onError": "continueErrorOutput",
-      "position": [460, 300]
+      "position": [720, 300]
     },
     {
       "parameters": {
@@ -52,7 +91,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.1,
       "onError": "continueErrorOutput",
-      "position": [720, 300]
+      "position": [980, 300]
     },
     {
       "parameters": {
@@ -63,7 +102,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "onError": "continueErrorOutput",
-      "position": [980, 300]
+      "position": [1240, 300]
     },
     {
       "parameters": {
@@ -96,7 +135,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.1,
       "onError": "continueErrorOutput",
-      "position": [1240, 300]
+      "position": [1500, 300]
     },
     {
       "parameters": {
@@ -129,7 +168,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.1,
       "onError": "continueErrorOutput",
-      "position": [1500, 300]
+      "position": [1760, 300]
     },
     {
       "parameters": {
@@ -151,7 +190,7 @@
       "name": "Responder Exito",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1,
-      "position": [1760, 300]
+      "position": [2020, 300]
     },
     {
       "parameters": {
@@ -173,13 +212,19 @@
       "name": "Responder Error",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1,
-      "position": [1500, 500]
+      "position": [1760, 500]
     }
   ],
   "connections": {
     "Recibir Datos Paciente": {
       "main": [
-        [{ "node": "Transformar Datos", "type": "main", "index": 0 }]
+        [{ "node": "GHL - Buscar Contacto por Email", "type": "main", "index": 0 }]
+      ]
+    },
+    "GHL - Buscar Contacto por Email": {
+      "main": [
+        [{ "node": "Transformar Datos", "type": "main", "index": 0 }],
+        [{ "node": "Responder Error", "type": "main", "index": 0 }]
       ]
     },
     "Transformar Datos": {
@@ -220,7 +265,7 @@
     "callerPolicy": "workflowsFromSameOwner",
     "errorWorkflow": ""
   },
-  "versionId": "4.0.0",
+  "versionId": "5.0.0",
   "meta": {
     "templateCredsSetupCompleted": false,
     "instanceId": "clinica-esperanza"
