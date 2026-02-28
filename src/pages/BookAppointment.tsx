@@ -119,6 +119,10 @@ const BookAppointmentContent = () => {
 
     setIsLoading(true);
 
+    // Reset flags so stale values never bleed into the next booking
+    localStorage.setItem('ghl_contact_existed', 'false');
+    localStorage.setItem('ghl_contact_id', '');
+
     // Parse duration minutes from service.duration string (e.g. "30 min" → 30)
     const durationMatch = selectedService.duration?.match(/\d+/);
     const durationMinutes = durationMatch ? parseInt(durationMatch[0], 10) : 30;
