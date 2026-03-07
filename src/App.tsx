@@ -13,6 +13,7 @@ import ScrollToTop from "./components/ScrollToTop";
 import AdminLogin from "./pages/admin/AdminLogin";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import PacientesList from "./pages/admin/PacientesList";
+import PacienteDetalle from "./pages/admin/PacienteDetalle";
 import AdminLayout from "./components/admin/AdminLayout";
 import ProtectedRoute from "./components/admin/ProtectedRoute";
 
@@ -45,6 +46,7 @@ const App = () => (
             <Route index element={<Navigate to="dashboard" replace />} />
             <Route path="dashboard" element={<AdminDashboard />} />
             <Route path="pacientes" element={<PacientesList />} />
+            <Route path="pacientes/:id" element={<PacienteDetalle />} />
             <Route path="calendario" element={<div className="text-muted-foreground">Calendario — Iteración 6</div>} />
             <Route path="configuracion" element={<div className="text-muted-foreground">Configuración — Próximamente</div>} />
           </Route>
