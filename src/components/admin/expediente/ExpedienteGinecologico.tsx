@@ -10,7 +10,10 @@ import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { toast } from '@/hooks/use-toast';
-import { Loader2, Save } from 'lucide-react';
+import {
+  CalendarDays, Pill, Baby, Heart, ClipboardList,
+  Loader2, Save,
+} from 'lucide-react';
 import { addDays, differenceInDays, format } from 'date-fns';
 
 interface Props { pacienteId: string; }
@@ -90,7 +93,7 @@ const ExpedienteGinecologico = ({ pacienteId }: Props) => {
     <form onSubmit={(e) => { e.preventDefault(); mutation.mutate(); }} className="space-y-3">
 
       {/* ── Row 1: Ciclo Menstrual (full width) ── */}
-      <Sec title="Ciclo Menstrual" icon="📅">
+      <Sec title="Ciclo Menstrual" icon={<CalendarDays className="h-4 w-4" />}>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           <div>
             <Label className="text-xs text-muted-foreground">Menarquia (edad)</Label>
@@ -110,12 +113,10 @@ const ExpedienteGinecologico = ({ pacienteId }: Props) => {
               {form.fpp
                 ? <Badge variant="outline" className="text-xs px-2 py-1 bg-green-50 text-green-700 border-green-200 w-full justify-center">FPP: {form.fpp}</Badge>
                 : <span className="text-xs text-muted-foreground">—</span>}
-              {eg && <Badge variant="outline" className="text-xs px-2 py-1 bg-primary/5 text-primary border-primary/20 w-full justify-center">🤰 {eg.semanas}s {eg.dias}d</Badge>}
+              {eg && <Badge variant="outline" className="text-xs px-2 py-1 bg-primary/5 text-primary border-primary/20 w-full justify-center">{eg.semanas}s {eg.dias}d de gest.</Badge>}
             </div>
           </div>
         </div>
-
-        {/* Ciclos + Dismenorrea en 2 columnas */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-3">
           <div className="space-y-1.5">
             <SW label="Ciclos regulares" checked={form.ciclos_regulares ?? false} onChange={(v) => update('ciclos_regulares', v)} />
@@ -138,7 +139,7 @@ const ExpedienteGinecologico = ({ pacienteId }: Props) => {
 
       {/* ── Row 2: Anticoncepción | Historial Obstétrico ── */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        <Sec title="Anticoncepción" icon="💊">
+        <Sec title="Anticoncepción" icon={<Pill className="h-4 w-4" />}>
           <div className="space-y-2">
             <div>
               <SW label="¿Usa anticonceptivo?" checked={form.usa_anticonceptivo ?? false} onChange={(v) => update('usa_anticonceptivo', v)} />
@@ -161,20 +162,16 @@ const ExpedienteGinecologico = ({ pacienteId }: Props) => {
           </div>
         </Sec>
 
-        <Sec title="Historial Obstétrico" icon="🤰">
+        <Sec title="Historial Obstétrico" icon={<Baby className="h-4 w-4" />}>
           <div className="space-y-2">
             <SW label="¿Ha estado embarazada alguna vez?" checked={form.ha_estado_embarazada ?? false} onChange={(v) => update('ha_estado_embarazada', v)} />
             {form.ha_estado_embarazada && (
               <div className="pl-9 animate-in fade-in duration-150 space-y-2">
-                {/* G P C A E HV in 6 compact cols */}
                 <div className="grid grid-cols-6 gap-1.5">
                   {[
-                    { f: 'gestas', l: 'G' },
-                    { f: 'partos_vaginales', l: 'PV' },
-                    { f: 'cesareas', l: 'C' },
-                    { f: 'abortos', l: 'A' },
-                    { f: 'ectopicos', l: 'E' },
-                    { f: 'hijos_vivos', l: 'HV' },
+                    { f: 'gestas', l: 'G' }, { f: 'partos_vaginales', l: 'PV' },
+                    { f: 'cesareas', l: 'C' }, { f: 'abortos', l: 'A' },
+                    { f: 'ectopicos', l: 'E' }, { f: 'hijos_vivos', l: 'HV' },
                   ].map(({ f, l }) => (
                     <div key={f} className="text-center">
                       <Label className="text-[10px] text-muted-foreground block">{l}</Label>
@@ -218,7 +215,7 @@ const ExpedienteGinecologico = ({ pacienteId }: Props) => {
 
       {/* ── Row 3: Vida Sexual | Historia Clínica ── */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        <Sec title="Vida Sexual" icon="❤️">
+        <Sec title="Vida Sexual" icon={<Heart className="h-4 w-4" />}>
           <div className="space-y-2">
             <div className="grid grid-cols-2 gap-2">
               <div>
@@ -237,7 +234,7 @@ const ExpedienteGinecologico = ({ pacienteId }: Props) => {
           </div>
         </Sec>
 
-        <Sec title="Historia Clínica" icon="📋">
+        <Sec title="Historia Clínica" icon={<ClipboardList className="h-4 w-4" />}>
           <div className="space-y-2">
             <div>
               <Label className="text-xs text-muted-foreground">Sugerencias</Label>
@@ -264,11 +261,16 @@ const ExpedienteGinecologico = ({ pacienteId }: Props) => {
 
 // ─── Micro-components ──────────────────────────────────────────────────────
 
-const Sec = ({ title, icon, children }: { title: string; icon: string; children: React.ReactNode }) => (
+const Sec = ({
+  title, icon, children,
+}: {
+  title: string; icon: React.ReactNode; children: React.ReactNode;
+}) => (
   <Card className="border border-border/60 shadow-sm">
     <CardHeader className="pb-2 pt-3 px-4">
-      <CardTitle className="text-xs font-semibold flex items-center gap-1.5 text-foreground">
-        <span>{icon}</span>{title}
+      <CardTitle className="text-sm font-semibold flex items-center gap-2 text-foreground">
+        <span className="text-primary">{icon}</span>
+        {title}
       </CardTitle>
     </CardHeader>
     <CardContent className="px-4 pb-4">{children}</CardContent>

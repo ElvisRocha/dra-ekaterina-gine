@@ -9,7 +9,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
 import { toast } from '@/hooks/use-toast';
-import { Loader2, Save, AlertTriangle, CheckCircle2 } from 'lucide-react';
+import { Loader2, Save, AlertTriangle, CheckCircle2, Microscope, TestTube2, ShieldCheck } from 'lucide-react';
 import { differenceInMonths } from 'date-fns';
 
 interface Props {
@@ -105,7 +105,7 @@ const ExpedienteCitologia = ({ pacienteId }: Props) => {
       )}
 
       {/* ── Citología / Papanicolaou ── */}
-      <SectionCard title="Citología (Papanicolaou)" icon="🔬">
+      <SectionCard title="Citología (Papanicolaou)" icon={<Microscope className="h-4 w-4" />}>
         <div className="space-y-4">
           <div className="space-y-2">
             <SwitchField
@@ -197,7 +197,7 @@ const ExpedienteCitologia = ({ pacienteId }: Props) => {
       </SectionCard>
 
       {/* ── Prueba de VPH ── */}
-      <SectionCard title="Prueba de VPH" icon="🧪">
+      <SectionCard title="Prueba de VPH" icon={<TestTube2 className="h-4 w-4" />}>
         <div className="space-y-4">
           <SwitchField
             label="¿Se ha hecho la prueba de VPH?"
@@ -224,7 +224,7 @@ const ExpedienteCitologia = ({ pacienteId }: Props) => {
       </SectionCard>
 
       {/* ── Resumen Visual ── */}
-      <SectionCard title="Estado Preventivo" icon="✅">
+      <SectionCard title="Estado Preventivo" icon={<ShieldCheck className="h-4 w-4" />}>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           <StatusChip
             label="Citología"
@@ -282,17 +282,17 @@ const SectionCard = ({
   children,
 }: {
   title: string;
-  icon: string;
+  icon: React.ReactNode;
   children: React.ReactNode;
 }) => (
   <Card className="border border-border/60 shadow-sm">
-    <CardHeader className="pb-3 pt-4 px-5">
+    <CardHeader className="pb-2 pt-3 px-4">
       <CardTitle className="text-sm font-semibold flex items-center gap-2 text-foreground">
-        <span className="text-base">{icon}</span>
+        <span className="text-primary">{icon}</span>
         {title}
       </CardTitle>
     </CardHeader>
-    <CardContent className="px-5 pb-5">{children}</CardContent>
+    <CardContent className="px-4 pb-4">{children}</CardContent>
   </Card>
 );
 

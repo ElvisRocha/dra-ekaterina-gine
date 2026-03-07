@@ -9,7 +9,10 @@ import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
 import { toast } from '@/hooks/use-toast';
-import { Loader2, Save } from 'lucide-react';
+import {
+  Stethoscope, ScanLine, Dumbbell, ShieldCheck,
+  Search, Pill, Users, HeartPulse, Save, Loader2,
+} from 'lucide-react';
 import { addDays, differenceInDays, format } from 'date-fns';
 
 interface Props { pacienteId: string; }
@@ -91,30 +94,15 @@ const ExpedienteAntecedentes = ({ pacienteId }: Props) => {
     <form onSubmit={(e) => { e.preventDefault(); mutation.mutate(); }} className="space-y-3">
 
       {/* ── Row 1: Antecedentes Patológicos (full width) ── */}
-      <Sec title="Antecedentes Patológicos" icon="🏥">
-        {/* 3 toggles con condicional inline */}
+      <Sec title="Antecedentes Patológicos" icon={<Stethoscope className="h-4 w-4" />}>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          <ToggleCell
-            label="¿Padece alguna enfermedad?"
-            checked={form.padece_enfermedad ?? false}
-            onChange={(v) => update('padece_enfermedad', v)}
-          >
+          <ToggleCell label="¿Padece alguna enfermedad?" checked={form.padece_enfermedad ?? false} onChange={(v) => update('padece_enfermedad', v)}>
             <Input value={form.cual_enfermedad || ''} onChange={(e) => update('cual_enfermedad', e.target.value)} placeholder="¿Cuál?" className="mt-1.5" />
           </ToggleCell>
-
-          <ToggleCell
-            label="¿Toma algún medicamento?"
-            checked={form.toma_medicamentos ?? false}
-            onChange={(v) => update('toma_medicamentos', v)}
-          >
+          <ToggleCell label="¿Toma algún medicamento?" checked={form.toma_medicamentos ?? false} onChange={(v) => update('toma_medicamentos', v)}>
             <Input value={form.cual_medicamento || ''} onChange={(e) => update('cual_medicamento', e.target.value)} placeholder="¿Cuál?" className="mt-1.5" />
           </ToggleCell>
-
-          <ToggleCell
-            label="¿La han operado?"
-            checked={form.ha_sido_operada ?? false}
-            onChange={(v) => update('ha_sido_operada', v)}
-          >
+          <ToggleCell label="¿La han operado?" checked={form.ha_sido_operada ?? false} onChange={(v) => update('ha_sido_operada', v)}>
             <Input value={form.de_que_operacion || ''} onChange={(e) => update('de_que_operacion', e.target.value)} placeholder="¿De qué?" className="mt-1.5" />
           </ToggleCell>
         </div>
@@ -126,7 +114,7 @@ const ExpedienteAntecedentes = ({ pacienteId }: Props) => {
 
       {/* ── Row 2: Ultrasonido | Hábitos | Preventivos ── */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-        <Sec title="Ultrasonido" icon="🔊">
+        <Sec title="Ultrasonido" icon={<ScanLine className="h-4 w-4" />}>
           <ToggleCell label="¿Tiene ultrasonido?" checked={form.tiene_ultrasonido ?? false} onChange={(v) => update('tiene_ultrasonido', v)}>
             <ToggleCell label="¿Acorde?" checked={form.ultrasonido_acorde ?? false} onChange={(v) => update('ultrasonido_acorde', v)}>
               <span className="text-xs text-muted-foreground italic">Acorde con FUR</span>
@@ -143,7 +131,7 @@ const ExpedienteAntecedentes = ({ pacienteId }: Props) => {
                 </div>
                 {eg && (
                   <Badge variant="outline" className="text-xs px-2 py-0.5 bg-primary/5 text-primary border-primary/20 w-full justify-center">
-                    🤰 {eg.semanas}s {eg.dias}d
+                    {eg.semanas}s {eg.dias}d de gestación
                   </Badge>
                 )}
               </div>
@@ -151,7 +139,7 @@ const ExpedienteAntecedentes = ({ pacienteId }: Props) => {
           </ToggleCell>
         </Sec>
 
-        <Sec title="Hábitos" icon="💪">
+        <Sec title="Hábitos" icon={<Dumbbell className="h-4 w-4" />}>
           <div className="grid grid-cols-2 gap-y-3 gap-x-2">
             <SW label="Ejercicio" checked={form.hace_ejercicio ?? false} onChange={(v) => update('hace_ejercicio', v)} />
             <SW label="Fuma" checked={form.fuma ?? false} onChange={(v) => update('fuma', v)} />
@@ -160,7 +148,7 @@ const ExpedienteAntecedentes = ({ pacienteId }: Props) => {
           </div>
         </Sec>
 
-        <Sec title="Preventivos" icon="💉">
+        <Sec title="Preventivos" icon={<ShieldCheck className="h-4 w-4" />}>
           <div className="space-y-3">
             <SW label="Gardasil (Vacuna VPH)" checked={form.gardasil ?? false} onChange={(v) => update('gardasil', v)} />
             <SW label="MMG (Mamografía)" checked={form.mamografia ?? false} onChange={(v) => update('mamografia', v)} />
@@ -170,7 +158,7 @@ const ExpedienteAntecedentes = ({ pacienteId }: Props) => {
 
       {/* ── Row 3: Síntomas | Pareja y Anticoncepción ── */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        <Sec title="Síntomas Ginecológicos" icon="🔍">
+        <Sec title="Síntomas Ginecológicos" icon={<Search className="h-4 w-4" />}>
           <div className="space-y-2">
             <ToggleCell label="Sinusorragia" checked={form.sinusorragia ?? false} onChange={(v) => update('sinusorragia', v)}>
               <SW label="Flujo Anormal" checked={form.flujo_anormal ?? false} onChange={(v) => update('flujo_anormal', v)} />
@@ -179,7 +167,7 @@ const ExpedienteAntecedentes = ({ pacienteId }: Props) => {
           </div>
         </Sec>
 
-        <Sec title="Pareja y Anticoncepción" icon="💊">
+        <Sec title="Pareja y Anticoncepción" icon={<Pill className="h-4 w-4" />}>
           <div className="space-y-2">
             <ToggleCell label="Tiene pareja actual" checked={form.tiene_pareja ?? false} onChange={(v) => update('tiene_pareja', v)}>
               <Input value={form.tiempo_con_pareja || ''} onChange={(e) => update('tiempo_con_pareja', e.target.value)} placeholder="Tiempo con la pareja (Ej: 2 años)" className="mt-1.5" />
@@ -210,12 +198,12 @@ const ExpedienteAntecedentes = ({ pacienteId }: Props) => {
 
       {/* ── Row 4: Antecedentes Familiares | Menopausia ── */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        <Sec title="Antecedentes Familiares" icon="👨‍👩‍👧">
+        <Sec title="Antecedentes Familiares" icon={<Users className="h-4 w-4" />}>
           <Label className="text-xs text-muted-foreground">Enfermedades importantes en la familia</Label>
           <Textarea value={form.antecedentes_familiares || ''} onChange={(e) => update('antecedentes_familiares', e.target.value)} rows={3} placeholder="Ej: Cáncer de mama, Diabetes, Hipertensión" className="mt-1" />
         </Sec>
 
-        <Sec title="Menopausia y Condiciones" icon="⚕️">
+        <Sec title="Menopausia y Condiciones" icon={<HeartPulse className="h-4 w-4" />}>
           <div className="space-y-2">
             <SW label="Menopausia" checked={form.menopausia ?? false} onChange={(v) => update('menopausia', v)} />
             {form.menopausia && (
@@ -246,18 +234,22 @@ const ExpedienteAntecedentes = ({ pacienteId }: Props) => {
 
 // ─── Micro-components ──────────────────────────────────────────────────────
 
-const Sec = ({ title, icon, children }: { title: string; icon: string; children: React.ReactNode }) => (
+const Sec = ({
+  title, icon, children,
+}: {
+  title: string; icon: React.ReactNode; children: React.ReactNode;
+}) => (
   <Card className="border border-border/60 shadow-sm">
     <CardHeader className="pb-2 pt-3 px-4">
-      <CardTitle className="text-xs font-semibold flex items-center gap-1.5 text-foreground">
-        <span>{icon}</span>{title}
+      <CardTitle className="text-sm font-semibold flex items-center gap-2 text-foreground">
+        <span className="text-primary">{icon}</span>
+        {title}
       </CardTitle>
     </CardHeader>
     <CardContent className="px-4 pb-4">{children}</CardContent>
   </Card>
 );
 
-/** Toggle + conditional children rendered inline (no extra indented block) */
 const ToggleCell = ({
   label, checked, onChange, children,
 }: {
@@ -266,19 +258,13 @@ const ToggleCell = ({
   <div>
     <div className="flex items-center gap-2">
       <Switch checked={checked} onCheckedChange={onChange} />
-      <span
-        className="text-sm font-medium cursor-pointer select-none"
-        onClick={() => onChange(!checked)}
-      >
-        {label}
-      </span>
+      <span className="text-sm font-medium cursor-pointer select-none" onClick={() => onChange(!checked)}>{label}</span>
       {checked && <Badge className="text-[10px] py-0 px-1 bg-green-100 text-green-700 border-green-200 h-4">Sí</Badge>}
     </div>
     {checked && <div className="mt-1 pl-9 animate-in fade-in duration-150">{children}</div>}
   </div>
 );
 
-/** Plain switch row */
 const SW = ({ label, checked, onChange }: { label: string; checked: boolean; onChange: (v: boolean) => void }) => (
   <div className="flex items-center gap-2">
     <Switch checked={checked} onCheckedChange={onChange} />
