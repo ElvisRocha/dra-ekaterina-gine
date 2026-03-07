@@ -47,7 +47,9 @@ const BookingModal = ({ isOpen, onClose, preselectedService }: BookingModalProps
   const [selectedService, setSelectedService] = useState<Service | null>(preselectedService || null);
   const [expandedInfo, setExpandedInfo] = useState<string | null>(null);
   const [formData, setFormData] = useState({
-    fullName: '',
+    firstName: '',
+    lastName: '',
+    email: '',
     idNumber: '',
     phone: '',
   });
