@@ -191,108 +191,267 @@ export type Database = {
           alcohol: boolean | null
           alergias: string | null
           antecedentes_familiares: string | null
+          ca_mama: boolean | null
           cesareas: number | null
           ciclo_regular: boolean | null
+          ciclos_regulares: boolean | null
           cirugias_previas: string | null
+          citologia_alterada: boolean | null
+          complicaciones_embarazos: string | null
           control_prenatal_activo: boolean | null
+          cual_anticonceptivo: string | null
+          cual_enfermedad: string | null
+          cual_medicamento: string | null
+          de_que_operacion: string | null
+          descripcion_citologia_alterada: string | null
+          descripcion_ciclos: string | null
+          descripcion_dismenorrea: string | null
+          desea_hijos: string | null
+          dismenorrea: boolean | null
+          dispareunia: boolean | null
           drogas: boolean | null
           duracion_ciclo: number | null
           ectopicos: number | null
           edad_menopausia: number | null
           ejercicio: string | null
           embarazada: boolean | null
+          enfermedad_actual: string | null
           enfermedades_cronicas: string | null
+          endom: boolean | null
+          fecha_proximo_ultrasonido: string | null
+          fecha_ultima_citologia: string | null
+          flujo_anormal: boolean | null
+          fpp: string | null
+          fuma: boolean | null
           fur: string | null
+          gardasil: boolean | null
           gestas: number | null
+          grupo_sanguineo: string | null
+          ha_estado_embarazada: boolean | null
+          ha_sido_operada: boolean | null
+          hace_ejercicio: boolean | null
+          hepatopatia: boolean | null
           hijos_vivos: number | null
           id: string
           its_previas: string | null
+          maca: string | null
+          macp: string | null
+          mamografia: boolean | null
           medicamentos_actuales: string | null
           menarca: number | null
           menopausia: boolean | null
           metodo_anticonceptivo: string | null
+          nps: number | null
           num_parejas_sexuales: number | null
+          otros_embarazos: string | null
           paciente_id: string
+          padece_enfermedad: boolean | null
           partos: number | null
+          partos_preterminos: string | null
+          partos_vaginales: number | null
+          pmf: string | null
+          problemas_anticonceptivos: string | null
+          prueba_vph_realizada: boolean | null
+          prs_anios: number | null
           resultado_papanicolaou: string | null
+          rh_paciente: string | null
+          rh_pareja: string | null
+          riesgo: string | null
+          se_ha_hecho_citologia: boolean | null
+          sinusorragia: boolean | null
+          sugerencias: string | null
           tabaco: boolean | null
           terapia_hormonal: boolean | null
+          tiempo_con_pareja: string | null
+          tiene_pareja: boolean | null
+          tiene_ultrasonido: boolean | null
+          toma_medicamentos: boolean | null
+          tratada_con: string | null
+          tvp: boolean | null
           ultimo_papanicolaou: string | null
           updated_at: string | null
+          usa_anticonceptivo: boolean | null
           vida_sexual_activa: boolean | null
           vph_positivo: boolean | null
+          ultrasonido_acorde: boolean | null
         }
         Insert: {
           abortos?: number | null
           alcohol?: boolean | null
           alergias?: string | null
           antecedentes_familiares?: string | null
+          ca_mama?: boolean | null
           cesareas?: number | null
           ciclo_regular?: boolean | null
+          ciclos_regulares?: boolean | null
           cirugias_previas?: string | null
+          citologia_alterada?: boolean | null
+          complicaciones_embarazos?: string | null
           control_prenatal_activo?: boolean | null
+          cual_anticonceptivo?: string | null
+          cual_enfermedad?: string | null
+          cual_medicamento?: string | null
+          de_que_operacion?: string | null
+          descripcion_citologia_alterada?: string | null
+          descripcion_ciclos?: string | null
+          descripcion_dismenorrea?: string | null
+          desea_hijos?: string | null
+          dismenorrea?: boolean | null
+          dispareunia?: boolean | null
           drogas?: boolean | null
           duracion_ciclo?: number | null
           ectopicos?: number | null
           edad_menopausia?: number | null
           ejercicio?: string | null
           embarazada?: boolean | null
+          enfermedad_actual?: string | null
           enfermedades_cronicas?: string | null
+          endom?: boolean | null
+          fecha_proximo_ultrasonido?: string | null
+          fecha_ultima_citologia?: string | null
+          flujo_anormal?: boolean | null
+          fpp?: string | null
+          fuma?: boolean | null
           fur?: string | null
+          gardasil?: boolean | null
           gestas?: number | null
+          grupo_sanguineo?: string | null
+          ha_estado_embarazada?: boolean | null
+          ha_sido_operada?: boolean | null
+          hace_ejercicio?: boolean | null
+          hepatopatia?: boolean | null
           hijos_vivos?: number | null
           id?: string
           its_previas?: string | null
+          maca?: string | null
+          macp?: string | null
+          mamografia?: boolean | null
           medicamentos_actuales?: string | null
           menarca?: number | null
           menopausia?: boolean | null
           metodo_anticonceptivo?: string | null
+          nps?: number | null
           num_parejas_sexuales?: number | null
+          otros_embarazos?: string | null
           paciente_id: string
+          padece_enfermedad?: boolean | null
           partos?: number | null
+          partos_preterminos?: string | null
+          partos_vaginales?: number | null
+          pmf?: string | null
+          problemas_anticonceptivos?: string | null
+          prueba_vph_realizada?: boolean | null
+          prs_anios?: number | null
           resultado_papanicolaou?: string | null
+          rh_paciente?: string | null
+          rh_pareja?: string | null
+          riesgo?: string | null
+          se_ha_hecho_citologia?: boolean | null
+          sinusorragia?: boolean | null
+          sugerencias?: string | null
           tabaco?: boolean | null
           terapia_hormonal?: boolean | null
+          tiempo_con_pareja?: string | null
+          tiene_pareja?: boolean | null
+          tiene_ultrasonido?: boolean | null
+          toma_medicamentos?: boolean | null
+          tratada_con?: string | null
+          tvp?: boolean | null
           ultimo_papanicolaou?: string | null
           updated_at?: string | null
+          usa_anticonceptivo?: boolean | null
           vida_sexual_activa?: boolean | null
           vph_positivo?: boolean | null
+          ultrasonido_acorde?: boolean | null
         }
         Update: {
           abortos?: number | null
           alcohol?: boolean | null
           alergias?: string | null
           antecedentes_familiares?: string | null
+          ca_mama?: boolean | null
           cesareas?: number | null
           ciclo_regular?: boolean | null
+          ciclos_regulares?: boolean | null
           cirugias_previas?: string | null
+          citologia_alterada?: boolean | null
+          complicaciones_embarazos?: string | null
           control_prenatal_activo?: boolean | null
+          cual_anticonceptivo?: string | null
+          cual_enfermedad?: string | null
+          cual_medicamento?: string | null
+          de_que_operacion?: string | null
+          descripcion_citologia_alterada?: string | null
+          descripcion_ciclos?: string | null
+          descripcion_dismenorrea?: string | null
+          desea_hijos?: string | null
+          dismenorrea?: boolean | null
+          dispareunia?: boolean | null
           drogas?: boolean | null
           duracion_ciclo?: number | null
           ectopicos?: number | null
           edad_menopausia?: number | null
           ejercicio?: string | null
           embarazada?: boolean | null
+          enfermedad_actual?: string | null
           enfermedades_cronicas?: string | null
+          endom?: boolean | null
+          fecha_proximo_ultrasonido?: string | null
+          fecha_ultima_citologia?: string | null
+          flujo_anormal?: boolean | null
+          fpp?: string | null
+          fuma?: boolean | null
           fur?: string | null
+          gardasil?: boolean | null
           gestas?: number | null
+          grupo_sanguineo?: string | null
+          ha_estado_embarazada?: boolean | null
+          ha_sido_operada?: boolean | null
+          hace_ejercicio?: boolean | null
+          hepatopatia?: boolean | null
           hijos_vivos?: number | null
           id?: string
           its_previas?: string | null
+          maca?: string | null
+          macp?: string | null
+          mamografia?: boolean | null
           medicamentos_actuales?: string | null
           menarca?: number | null
           menopausia?: boolean | null
           metodo_anticonceptivo?: string | null
+          nps?: number | null
           num_parejas_sexuales?: number | null
+          otros_embarazos?: string | null
           paciente_id?: string
+          padece_enfermedad?: boolean | null
           partos?: number | null
+          partos_preterminos?: string | null
+          partos_vaginales?: number | null
+          pmf?: string | null
+          problemas_anticonceptivos?: string | null
+          prueba_vph_realizada?: boolean | null
+          prs_anios?: number | null
           resultado_papanicolaou?: string | null
+          rh_paciente?: string | null
+          rh_pareja?: string | null
+          riesgo?: string | null
+          se_ha_hecho_citologia?: boolean | null
+          sinusorragia?: boolean | null
+          sugerencias?: string | null
           tabaco?: boolean | null
           terapia_hormonal?: boolean | null
+          tiempo_con_pareja?: string | null
+          tiene_pareja?: boolean | null
+          tiene_ultrasonido?: boolean | null
+          toma_medicamentos?: boolean | null
+          tratada_con?: string | null
+          tvp?: boolean | null
           ultimo_papanicolaou?: string | null
           updated_at?: string | null
+          usa_anticonceptivo?: boolean | null
           vida_sexual_activa?: boolean | null
           vph_positivo?: boolean | null
+          ultrasonido_acorde?: boolean | null
         }
         Relationships: [
           {

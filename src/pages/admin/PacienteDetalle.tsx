@@ -5,9 +5,25 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ArrowLeft, Phone, Mail, MapPin, Loader2, Pencil } from 'lucide-react';
+import {
+  ArrowLeft,
+  Phone,
+  Mail,
+  MapPin,
+  Loader2,
+  Pencil,
+  User,
+  Calendar,
+  FileText,
+  Activity,
+  TestTube2,
+  Baby,
+  ClipboardList,
+} from 'lucide-react';
 import ExpedienteResumen from '@/components/admin/expediente/ExpedienteResumen';
 import ExpedienteAntecedentes from '@/components/admin/expediente/ExpedienteAntecedentes';
+import ExpedienteGinecologico from '@/components/admin/expediente/ExpedienteGinecologico';
+import ExpedienteCitologia from '@/components/admin/expediente/ExpedienteCitologia';
 import ExpedienteConsultas from '@/components/admin/expediente/ExpedienteConsultas';
 import ExpedientePrenatal from '@/components/admin/expediente/ExpedientePrenatal';
 import ExpedienteCitas from '@/components/admin/expediente/ExpedienteCitas';
@@ -68,62 +84,123 @@ const PacienteDetalle = () => {
     queryClient.invalidateQueries({ queryKey: ['pacientes'] });
   };
 
+  const initials = `${paciente.primer_nombre?.[0] ?? ''}${paciente.primer_apellido?.[0] ?? ''}`.toUpperCase();
+
+  const idLabel =
+    paciente.tipo_identificacion === 'cedula'
+      ? 'Cédula'
+      : paciente.tipo_identificacion === 'dimex'
+      ? 'DIMEX'
+      : 'Pasaporte';
+
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-start gap-4">
-        <Button variant="ghost" size="icon" onClick={() => navigate('/admin/pacientes')}>
-          <ArrowLeft className="h-5 w-5" />
-        </Button>
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-3 flex-wrap">
-            <h2 className="text-2xl font-display text-foreground">{fullName}</h2>
-            {age !== null && (
-              <Badge variant="secondary">{age} años</Badge>
-            )}
-            <Button variant="outline" size="sm" onClick={() => setShowEdit(true)}>
-              <Pencil className="h-3.5 w-3.5 mr-1" /> Editar
-            </Button>
+    <div className="space-y-5">
+      {/* ── Back Button ── */}
+      <button
+        onClick={() => navigate('/admin/pacientes')}
+        className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors group"
+      >
+        <ArrowLeft className="h-4 w-4 group-hover:-translate-x-0.5 transition-transform" />
+        Volver a pacientes
+      </button>
+
+      {/* ── Patient Header Card ── */}
+      <div className="bg-card border border-border/60 rounded-xl p-5 shadow-sm">
+        <div className="flex items-start gap-4">
+          {/* Avatar */}
+          <div className="h-14 w-14 rounded-full bg-gradient-to-br from-primary/20 to-accent/20 border-2 border-primary/20 flex items-center justify-center flex-shrink-0">
+            <span className="text-lg font-display font-semibold text-primary">{initials}</span>
           </div>
-          <div className="flex items-center gap-4 mt-1 text-sm text-muted-foreground flex-wrap">
-            <span className="font-mono">
-              {paciente.tipo_identificacion === 'cedula' ? 'Céd.' : paciente.tipo_identificacion}{' '}
-              {paciente.numero_identificacion}
-            </span>
-            {paciente.telefono && (
-              <span className="flex items-center gap-1">
-                <Phone className="h-3 w-3" /> {paciente.telefono}
-              </span>
-            )}
-            {paciente.email && (
-              <span className="flex items-center gap-1">
-                <Mail className="h-3 w-3" /> {paciente.email}
-              </span>
-            )}
-            {paciente.direccion && (
-              <span className="flex items-center gap-1">
-                <MapPin className="h-3 w-3" /> {paciente.direccion}
-              </span>
-            )}
+
+          {/* Info */}
+          <div className="flex-1 min-w-0">
+            <div className="flex items-start justify-between gap-3 flex-wrap">
+              <div>
+                <h2 className="text-xl font-display text-foreground leading-tight">{fullName}</h2>
+                <div className="flex items-center gap-2 mt-1 flex-wrap">
+                  {age !== null && (
+                    <Badge variant="secondary" className="text-xs">
+                      {age} años
+                    </Badge>
+                  )}
+                  <span className="text-xs text-muted-foreground font-mono">
+                    {idLabel}: {paciente.numero_identificacion}
+                  </span>
+                </div>
+              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setShowEdit(true)}
+                className="flex-shrink-0"
+              >
+                <Pencil className="h-3.5 w-3.5 mr-1.5" />
+                Editar
+              </Button>
+            </div>
+
+            {/* Contact row */}
+            <div className="flex items-center gap-4 mt-3 text-sm text-muted-foreground flex-wrap">
+              {paciente.telefono && (
+                <a
+                  href={`tel:${paciente.telefono}`}
+                  className="flex items-center gap-1.5 hover:text-foreground transition-colors"
+                >
+                  <Phone className="h-3.5 w-3.5" />
+                  {paciente.telefono}
+                </a>
+              )}
+              {paciente.email && (
+                <a
+                  href={`mailto:${paciente.email}`}
+                  className="flex items-center gap-1.5 hover:text-foreground transition-colors"
+                >
+                  <Mail className="h-3.5 w-3.5" />
+                  {paciente.email}
+                </a>
+              )}
+              {paciente.direccion && (
+                <span className="flex items-center gap-1.5">
+                  <MapPin className="h-3.5 w-3.5" />
+                  {paciente.direccion}
+                </span>
+              )}
+              {paciente.ocupacion && (
+                <span className="flex items-center gap-1.5">
+                  <User className="h-3.5 w-3.5" />
+                  {paciente.ocupacion}
+                </span>
+              )}
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Tabs */}
+      {/* ── Tabs ── */}
       <Tabs defaultValue="resumen" className="w-full">
-        <TabsList className="w-full justify-start overflow-x-auto">
-          <TabsTrigger value="resumen">Resumen</TabsTrigger>
-          <TabsTrigger value="antecedentes">Antecedentes</TabsTrigger>
-          <TabsTrigger value="consultas">Consultas</TabsTrigger>
-          <TabsTrigger value="prenatal">Control Prenatal</TabsTrigger>
-          <TabsTrigger value="citas">Citas</TabsTrigger>
-        </TabsList>
+        <div className="overflow-x-auto -mx-1 px-1 pb-0.5">
+          <TabsList className="inline-flex w-auto min-w-full sm:w-full h-auto gap-1 p-1 bg-muted/50 rounded-xl">
+            <TabTrigger value="resumen" icon={<ClipboardList className="h-3.5 w-3.5" />} label="Resumen" />
+            <TabTrigger value="antecedentes" icon={<FileText className="h-3.5 w-3.5" />} label="Antecedentes" />
+            <TabTrigger value="ginecologico" icon={<Activity className="h-3.5 w-3.5" />} label="Ginecológico" />
+            <TabTrigger value="citologia" icon={<TestTube2 className="h-3.5 w-3.5" />} label="Citología / VPH" />
+            <TabTrigger value="consultas" icon={<FileText className="h-3.5 w-3.5" />} label="Consultas" />
+            <TabTrigger value="prenatal" icon={<Baby className="h-3.5 w-3.5" />} label="Prenatal" />
+            <TabTrigger value="citas" icon={<Calendar className="h-3.5 w-3.5" />} label="Citas" />
+          </TabsList>
+        </div>
 
         <TabsContent value="resumen" className="mt-4">
           <ExpedienteResumen paciente={paciente} />
         </TabsContent>
         <TabsContent value="antecedentes" className="mt-4">
           <ExpedienteAntecedentes pacienteId={paciente.id} />
+        </TabsContent>
+        <TabsContent value="ginecologico" className="mt-4">
+          <ExpedienteGinecologico pacienteId={paciente.id} />
+        </TabsContent>
+        <TabsContent value="citologia" className="mt-4">
+          <ExpedienteCitologia pacienteId={paciente.id} />
         </TabsContent>
         <TabsContent value="consultas" className="mt-4">
           <ExpedienteConsultas pacienteId={paciente.id} />
@@ -136,7 +213,6 @@ const PacienteDetalle = () => {
         </TabsContent>
       </Tabs>
 
-      {/* Edit modal */}
       <EditarPacienteModal
         open={showEdit}
         onOpenChange={setShowEdit}
@@ -146,5 +222,25 @@ const PacienteDetalle = () => {
     </div>
   );
 };
+
+// Custom tab trigger with icon
+const TabTrigger = ({
+  value,
+  icon,
+  label,
+}: {
+  value: string;
+  icon: React.ReactNode;
+  label: string;
+}) => (
+  <TabsTrigger
+    value={value}
+    className="flex items-center gap-1.5 text-xs px-3 py-2 rounded-lg data-[state=active]:bg-card data-[state=active]:shadow-sm data-[state=active]:text-primary whitespace-nowrap"
+  >
+    {icon}
+    <span className="hidden sm:inline">{label}</span>
+    <span className="sm:hidden">{label.split(' ')[0]}</span>
+  </TabsTrigger>
+);
 
 export default PacienteDetalle;
