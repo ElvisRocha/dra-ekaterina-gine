@@ -27,8 +27,8 @@ const featuredCards = [
   {
     id: 4,
     src: 'https://res.cloudinary.com/dcvipikha/image/upload/f_auto,q_auto/v1772221320/Mirena_in_situ_zng8pz.jpg',
-    alt: 'Mirena In Situ',
-    description: 'Mirena In Situ es un procedimiento que realizamos para verificar la correcta colocación del dispositivo intrauterino mediante ultrasonido, garantizando tu seguridad y bienestar.',
+    alt: 'Ultrasonido Ginecológico',
+    description: 'Ultrasonidos ginecológicos realizados con precisión y cuidado para evaluar útero y ovarios como parte de tu control ginecológico, brindándote la tranquilidad y confianza que mereces.',
   },
 ];
 
