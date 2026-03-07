@@ -241,7 +241,7 @@ const Sec = ({
 }) => (
   <Card className="border border-border/60 shadow-sm">
     <CardHeader className="pb-2 pt-3 px-4">
-      <CardTitle className="text-sm font-semibold flex items-center gap-2 text-foreground">
+      <CardTitle className="text-base font-semibold flex items-center gap-2 text-foreground">
         <span className="text-primary">{icon}</span>
         {title}
       </CardTitle>

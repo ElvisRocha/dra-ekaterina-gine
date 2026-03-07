@@ -50,11 +50,11 @@ const ExpedienteResumen = ({ paciente }: Props) => {
       {/* Datos personales */}
       <Card>
         <CardHeader className="pb-2">
-          <CardTitle className="text-sm flex items-center gap-2">
+        <CardTitle className="text-base font-semibold flex items-center gap-2">
             <User className="h-4 w-4 text-primary" /> Datos Personales
           </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-2 text-sm">
+        <CardContent className="space-y-2">
           <Row label="Sexo" value={paciente.sexo === 'F' ? 'Femenino' : 'Masculino'} />
           <Row label="Nacimiento" value={paciente.fecha_nacimiento ? format(new Date(paciente.fecha_nacimiento), 'dd MMM yyyy', { locale: es }) : '—'} />
           <Row label="Estado civil" value={paciente.estado_civil ? estadoCivil[paciente.estado_civil] || paciente.estado_civil : '—'} />
@@ -75,7 +75,7 @@ const ExpedienteResumen = ({ paciente }: Props) => {
       {/* Estadísticas */}
       <Card>
         <CardHeader className="pb-2">
-          <CardTitle className="text-sm flex items-center gap-2">
+          <CardTitle className="text-base font-semibold flex items-center gap-2">
             <FileText className="h-4 w-4 text-primary" /> Actividad
           </CardTitle>
         </CardHeader>
@@ -91,11 +91,11 @@ const ExpedienteResumen = ({ paciente }: Props) => {
       {/* Resumen ginecológico */}
       <Card>
         <CardHeader className="pb-2">
-          <CardTitle className="text-sm flex items-center gap-2">
+          <CardTitle className="text-base font-semibold flex items-center gap-2">
             <Baby className="h-4 w-4 text-accent" /> Resumen Gineco-Obstétrico
           </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-2 text-sm">
+        <CardContent className="space-y-2">
           {expediente ? (
             <>
               <Row label="Menarca" value={expediente.menarca ? `${expediente.menarca} años` : '—'} />

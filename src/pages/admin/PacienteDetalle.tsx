@@ -134,7 +134,7 @@ const PacienteDetalle = () => {
                 onClick={() => setShowEdit(true)}
                 className="flex-shrink-0"
               >
-                <Pencil className="h-3.5 w-3.5 mr-1.5" />
+                <Pencil className="h-4 w-4 mr-1.5" />
                 Editar
               </Button>
             </div>
@@ -146,7 +146,7 @@ const PacienteDetalle = () => {
                   href={`tel:${paciente.telefono}`}
                   className="flex items-center gap-1.5 hover:text-foreground transition-colors"
                 >
-                  <Phone className="h-3.5 w-3.5" />
+                  <Phone className="h-4 w-4" />
                   {paciente.telefono}
                 </a>
               )}
@@ -155,19 +155,19 @@ const PacienteDetalle = () => {
                   href={`mailto:${paciente.email}`}
                   className="flex items-center gap-1.5 hover:text-foreground transition-colors"
                 >
-                  <Mail className="h-3.5 w-3.5" />
+                  <Mail className="h-4 w-4" />
                   {paciente.email}
                 </a>
               )}
               {paciente.direccion && (
                 <span className="flex items-center gap-1.5">
-                  <MapPin className="h-3.5 w-3.5" />
+                  <MapPin className="h-4 w-4" />
                   {paciente.direccion}
                 </span>
               )}
               {paciente.ocupacion && (
                 <span className="flex items-center gap-1.5">
-                  <User className="h-3.5 w-3.5" />
+                  <User className="h-4 w-4" />
                   {paciente.ocupacion}
                 </span>
               )}
@@ -180,13 +180,13 @@ const PacienteDetalle = () => {
       <Tabs defaultValue="resumen" className="w-full">
         <div className="overflow-x-auto -mx-1 px-1 pb-0.5">
           <TabsList className="inline-flex w-auto min-w-full sm:w-full h-auto gap-1 p-1 bg-muted/50 rounded-xl">
-            <TabTrigger value="resumen" icon={<ClipboardList className="h-3.5 w-3.5" />} label="Resumen" />
-            <TabTrigger value="antecedentes" icon={<FileText className="h-3.5 w-3.5" />} label="Antecedentes" />
-            <TabTrigger value="ginecologico" icon={<Activity className="h-3.5 w-3.5" />} label="Ginecológico" />
-            <TabTrigger value="citologia" icon={<TestTube2 className="h-3.5 w-3.5" />} label="Citología / VPH" />
-            <TabTrigger value="consultas" icon={<FileText className="h-3.5 w-3.5" />} label="Consultas" />
-            <TabTrigger value="prenatal" icon={<Baby className="h-3.5 w-3.5" />} label="Prenatal" />
-            <TabTrigger value="citas" icon={<Calendar className="h-3.5 w-3.5" />} label="Citas" />
+            <TabTrigger value="resumen" icon={<ClipboardList className="h-4 w-4" />} label="Resumen" />
+            <TabTrigger value="antecedentes" icon={<FileText className="h-4 w-4" />} label="Antecedentes" />
+            <TabTrigger value="ginecologico" icon={<Activity className="h-4 w-4" />} label="Ginecológico" />
+            <TabTrigger value="citologia" icon={<TestTube2 className="h-4 w-4" />} label="Citología / VPH" />
+            <TabTrigger value="consultas" icon={<FileText className="h-4 w-4" />} label="Consultas" />
+            <TabTrigger value="prenatal" icon={<Baby className="h-4 w-4" />} label="Prenatal" />
+            <TabTrigger value="citas" icon={<Calendar className="h-4 w-4" />} label="Citas" />
           </TabsList>
         </div>
 
@@ -235,7 +235,7 @@ const TabTrigger = ({
 }) => (
   <TabsTrigger
     value={value}
-    className="flex items-center gap-1.5 text-xs px-3 py-2 rounded-lg data-[state=active]:bg-card data-[state=active]:shadow-sm data-[state=active]:text-primary whitespace-nowrap"
+    className="flex items-center gap-2 text-sm font-medium px-4 py-2.5 rounded-lg data-[state=active]:bg-card data-[state=active]:shadow-sm data-[state=active]:text-primary whitespace-nowrap"
   >
     {icon}
     <span className="hidden sm:inline">{label}</span>
