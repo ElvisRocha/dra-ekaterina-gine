@@ -79,7 +79,7 @@ const BookingModal = ({ isOpen, onClose, preselectedService }: BookingModalProps
     }
     if (step === 2) {
       const phoneDigits = formData.phone.replace(/^\+506/, '').replace(/\D/g, '');
-      if (!formData.fullName || !formData.idNumber || !formData.phone || phoneDigits.length !== 8) {
+      if (!formData.firstName || !formData.lastName || !formData.idNumber || !formData.phone || phoneDigits.length !== 8) {
         toast({
           title: language === 'es' ? 'Completa todos los campos' : 'Complete all fields',
           variant: 'destructive',
@@ -155,7 +155,7 @@ const BookingModal = ({ isOpen, onClose, preselectedService }: BookingModalProps
   const resetAndClose = () => {
     setStep(1);
     setSelectedService(null);
-    setFormData({ fullName: '', idNumber: '', phone: '' });
+    setFormData({ firstName: '', lastName: '', email: '', idNumber: '', phone: '' });
     onClose();
   };
 
@@ -318,15 +318,28 @@ const BookingModal = ({ isOpen, onClose, preselectedService }: BookingModalProps
                 className="space-y-4"
               >
                 <div>
-                  <Label htmlFor="fullName" className="flex items-center gap-2 mb-2">
+                  <Label htmlFor="firstName" className="flex items-center gap-2 mb-2">
                     <User className="w-4 h-4 text-muted-foreground" />
-                    {t('booking.fullName')}
+                    {language === 'es' ? 'Nombre' : 'First name'}
                   </Label>
                   <Input
-                    id="fullName"
-                    value={formData.fullName}
-                    onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
-                    placeholder={language === 'es' ? 'Nombre completo' : 'Full name'}
+                    id="firstName"
+                    value={formData.firstName}
+                    onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
+                    placeholder={language === 'es' ? 'Nombre' : 'First name'}
+                    className="h-12"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="lastName" className="flex items-center gap-2 mb-2">
+                    <User className="w-4 h-4 text-muted-foreground" />
+                    {language === 'es' ? 'Apellido' : 'Last name'}
+                  </Label>
+                  <Input
+                    id="lastName"
+                    value={formData.lastName}
+                    onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
+                    placeholder={language === 'es' ? 'Apellido' : 'Last name'}
                     className="h-12"
                   />
                 </div>
@@ -385,7 +398,7 @@ const BookingModal = ({ isOpen, onClose, preselectedService }: BookingModalProps
                   </div>
                   <div className="border-t border-border pt-4">
                     <p className="text-sm text-muted-foreground mb-1">{t('booking.patient')}</p>
-                    <p className="font-medium text-foreground">{formData.fullName}</p>
+                    <p className="font-medium text-foreground">{formData.firstName} {formData.lastName}</p>
                     <p className="text-sm text-muted-foreground">{formData.idNumber}</p>
                     <p className="text-sm text-muted-foreground">
                       {formData.phone.startsWith('+506') && formData.phone.length > 4
@@ -437,9 +450,12 @@ const BookingModal = ({ isOpen, onClose, preselectedService }: BookingModalProps
         isOpen={showFirstTimeForm}
         onComplete={handleFirstTimeFormComplete}
         initialData={{
-          fullName: formData.fullName,
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          email: formData.email,
           idNumber: formData.idNumber,
           phone: formData.phone,
+          contactId: '',
         }}
       />
     </>
