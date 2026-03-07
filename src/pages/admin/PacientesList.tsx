@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -24,6 +25,7 @@ const PacientesList = () => {
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(0);
   const [showNuevo, setShowNuevo] = useState(false);
+  const navigate = useNavigate();
 
   const { data, isLoading, refetch } = useQuery({
     queryKey: ['pacientes', search, page],
@@ -105,7 +107,7 @@ const PacientesList = () => {
                   </TableHeader>
                   <TableBody>
                     {data.pacientes.map((p) => (
-                      <TableRow key={p.id} className="cursor-pointer hover:bg-muted/50">
+                      <TableRow key={p.id} className="cursor-pointer hover:bg-muted/50" onClick={() => navigate(`/admin/pacientes/${p.id}`)}>
                         <TableCell>
                           <div>
                             <p className="font-medium text-foreground">
