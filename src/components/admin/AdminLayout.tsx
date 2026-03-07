@@ -1,10 +1,16 @@
-import { Outlet, useLocation } from 'react-router-dom';
+import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
 import AdminSidebar from './AdminSidebar';
 import { useAuth } from '@/hooks/useAuth';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Bell, User } from 'lucide-react';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { Settings, LogOut, User, ChevronDown } from 'lucide-react';
 
 const breadcrumbLabels: Record<string, string> = {
   dashboard: 'Dashboard',
@@ -13,30 +19,32 @@ const breadcrumbLabels: Record<string, string> = {
   configuracion: 'Configuración',
 };
 
+const roleColors: Record<string, string> = {
+  admin: 'bg-purple-100 text-purple-700',
+  doctora: 'bg-primary/10 text-primary',
+  secretaria: 'bg-blue-100 text-blue-700',
+};
+
 const AdminLayout = () => {
   const location = useLocation();
-  const { profile, role } = useAuth();
+  const navigate = useNavigate();
+  const { profile, role, logout } = useAuth();
 
-  // Build breadcrumb from path segments
   const segments = location.pathname.replace('/admin/', '').split('/').filter(Boolean);
   const crumbs = segments.map((seg) => breadcrumbLabels[seg] ?? (seg.length === 36 ? 'Expediente' : seg));
-
-  const roleColors: Record<string, string> = {
-    admin: 'bg-purple-100 text-purple-700 border-purple-200',
-    doctora: 'bg-primary/10 text-primary border-primary/20',
-    secretaria: 'bg-blue-100 text-blue-700 border-blue-200',
-  };
 
   return (
     <SidebarProvider>
       <div className="min-h-screen flex w-full bg-background">
         <AdminSidebar />
         <div className="flex-1 flex flex-col min-w-0">
-          {/* ── Header ── */}
+
+          {/* ── Header — h-14 matches sidebar header ── */}
           <header className="h-14 flex items-center justify-between border-b border-border px-4 bg-card/80 backdrop-blur-sm sticky top-0 z-10">
+
+            {/* Left: trigger + breadcrumbs */}
             <div className="flex items-center gap-3 min-w-0">
               <SidebarTrigger className="flex-shrink-0 hover:bg-muted rounded-md" />
-              {/* Breadcrumbs */}
               <nav className="flex items-center gap-1.5 text-sm min-w-0">
                 <span className="text-muted-foreground hidden sm:inline">Admin</span>
                 {crumbs.map((crumb, i) => (
@@ -56,26 +64,68 @@ const AdminLayout = () => {
               </nav>
             </div>
 
-            {/* Right side — user info */}
-            <div className="flex items-center gap-2 flex-shrink-0">
-              {profile && (
-                <div className="hidden md:flex items-center gap-2">
-                  <div className="text-right">
-                    <p className="text-xs font-medium text-foreground leading-none">
+            {/* Right: user dropdown */}
+            {profile && (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button className="flex items-center gap-2 rounded-lg px-2 py-1.5 hover:bg-muted transition-colors outline-none focus-visible:ring-2 focus-visible:ring-ring">
+                    {/* Avatar */}
+                    <div className="h-8 w-8 rounded-full bg-gradient-to-br from-primary/20 to-accent/20 border border-primary/20 flex items-center justify-center flex-shrink-0">
+                      <User className="h-4 w-4 text-primary" />
+                    </div>
+                    {/* Name + role — hidden on mobile */}
+                    <div className="hidden md:block text-left">
+                      <p className="text-xs font-medium text-foreground leading-none">
+                        {profile.nombre} {profile.apellido}
+                      </p>
+                      {role && (
+                        <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-medium mt-0.5 inline-block ${roleColors[role] ?? 'bg-muted'}`}>
+                          {role}
+                        </span>
+                      )}
+                    </div>
+                    <ChevronDown className="h-3.5 w-3.5 text-muted-foreground hidden md:block" />
+                  </button>
+                </DropdownMenuTrigger>
+
+                <DropdownMenuContent align="end" className="w-52">
+                  {/* User info header */}
+                  <DropdownMenuLabel className="font-normal pb-2">
+                    <p className="font-semibold text-sm text-foreground">
                       {profile.nombre} {profile.apellido}
                     </p>
+                    {profile.email && (
+                      <p className="text-xs text-muted-foreground truncate mt-0.5">{profile.email}</p>
+                    )}
                     {role && (
-                      <span className={`text-[10px] px-1.5 py-0.5 rounded-full border font-medium mt-0.5 inline-block ${roleColors[role] ?? 'bg-muted'}`}>
+                      <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-medium mt-1 inline-block ${roleColors[role] ?? 'bg-muted'}`}>
                         {role}
                       </span>
                     )}
-                  </div>
-                  <div className="h-8 w-8 rounded-full bg-gradient-to-br from-primary/20 to-accent/20 border border-primary/20 flex items-center justify-center">
-                    <User className="h-4 w-4 text-primary" />
-                  </div>
-                </div>
-              )}
-            </div>
+                  </DropdownMenuLabel>
+
+                  <DropdownMenuSeparator />
+
+                  {/* Configuración — solo admin/doctora */}
+                  {role && ['admin', 'doctora'].includes(role) && (
+                    <DropdownMenuItem onClick={() => navigate('/admin/configuracion')}>
+                      <Settings className="h-4 w-4 mr-2" />
+                      Configuración
+                    </DropdownMenuItem>
+                  )}
+
+                  <DropdownMenuSeparator />
+
+                  <DropdownMenuItem
+                    onClick={logout}
+                    className="text-destructive focus:text-destructive focus:bg-destructive/10"
+                  >
+                    <LogOut className="h-4 w-4 mr-2" />
+                    Cerrar sesión
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
           </header>
 
           {/* ── Main content ── */}
