@@ -1,21 +1,23 @@
+import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ArrowLeft, Phone, Mail, MapPin, Loader2 } from 'lucide-react';
-import { format } from 'date-fns';
-import { es } from 'date-fns/locale';
+import { ArrowLeft, Phone, Mail, MapPin, Loader2, Pencil } from 'lucide-react';
 import ExpedienteResumen from '@/components/admin/expediente/ExpedienteResumen';
 import ExpedienteAntecedentes from '@/components/admin/expediente/ExpedienteAntecedentes';
 import ExpedienteConsultas from '@/components/admin/expediente/ExpedienteConsultas';
 import ExpedientePrenatal from '@/components/admin/expediente/ExpedientePrenatal';
 import ExpedienteCitas from '@/components/admin/expediente/ExpedienteCitas';
+import EditarPacienteModal from '@/components/admin/EditarPacienteModal';
 
 const PacienteDetalle = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const [showEdit, setShowEdit] = useState(false);
 
   const { data: paciente, isLoading } = useQuery({
     queryKey: ['paciente', id],
@@ -60,6 +62,12 @@ const PacienteDetalle = () => {
 
   const age = calcAge(paciente.fecha_nacimiento);
 
+  const handleEditSuccess = () => {
+    setShowEdit(false);
+    queryClient.invalidateQueries({ queryKey: ['paciente', id] });
+    queryClient.invalidateQueries({ queryKey: ['pacientes'] });
+  };
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -73,6 +81,9 @@ const PacienteDetalle = () => {
             {age !== null && (
               <Badge variant="secondary">{age} años</Badge>
             )}
+            <Button variant="outline" size="sm" onClick={() => setShowEdit(true)}>
+              <Pencil className="h-3.5 w-3.5 mr-1" /> Editar
+            </Button>
           </div>
           <div className="flex items-center gap-4 mt-1 text-sm text-muted-foreground flex-wrap">
             <span className="font-mono">
@@ -124,6 +135,14 @@ const PacienteDetalle = () => {
           <ExpedienteCitas pacienteId={paciente.id} />
         </TabsContent>
       </Tabs>
+
+      {/* Edit modal */}
+      <EditarPacienteModal
+        open={showEdit}
+        onOpenChange={setShowEdit}
+        paciente={paciente}
+        onSuccess={handleEditSuccess}
+      />
     </div>
   );
 };
