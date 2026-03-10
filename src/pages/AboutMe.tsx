@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Palette, Scissors, Mountain, Activity, Stethoscope } from 'lucide-react';
+import { Stethoscope } from 'lucide-react';
 import { LanguageProvider, useLanguage } from '@/contexts/LanguageContext';
 import IsotipoImg from '@/assets/Isotipo.png';
 import Navbar from '@/components/Navbar';
@@ -21,13 +21,6 @@ const AboutMeContent = () => {
   const { language, t } = useLanguage();
 
   const handleBookClick = () => navigate('/BookAppointment');
-
-  const hobbies = [
-    { Icon: Palette, label: t('about.hobby1') },
-    { Icon: Scissors, label: t('about.hobby2') },
-    { Icon: Mountain, label: t('about.hobby3') },
-    { Icon: Activity, label: t('about.hobby4') },
-  ];
 
   const storyBlocks = [
     {
@@ -173,26 +166,6 @@ const AboutMeContent = () => {
           >
             {t('about.outsideDesc')}
           </motion.p>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.2 }}
-            className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12"
-          >
-            {hobbies.map(({ Icon, label }, i) => (
-              <div
-                key={i}
-                className="flex flex-col items-center gap-3 p-6 bg-background rounded-2xl shadow-sm border border-border"
-              >
-                <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center">
-                  <Icon className="w-7 h-7 text-primary" />
-                </div>
-                <p className="text-sm font-medium text-foreground text-center">{label}</p>
-              </div>
-            ))}
-          </motion.div>
 
         </div>
       </section>
